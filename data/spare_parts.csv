@@ -1,0 +1,16 @@
+part_no,description,asset_ids,criticality,stock_qty,min_qty,lead_time_days,unit_cost_usd,annual_usage
+BRG-K201-DE,"Drive-end journal bearing, K-201",K-201,A,1,1,120,18500,1
+BRG-K301-TH,"Thrust bearing assembly, K-301",K-301,A,0,1,150,24000,1
+SEAL-K401,"Dry gas seal cartridge, K-401",K-401,A,1,1,180,95000,0.5
+CPL-K201,"Disc coupling element, K-201",K-201,A,1,1,100,12000,0.3
+SEAL-P620,"Mechanical seal cartridge, P-620",P-620,A,1,1,90,7800,2
+IMP-P220,"Impeller, boiler feed water pump P-220",P-220,A,0,1,120,32000,0.3
+GBX-E510,"Gearbox bearing kit, E-510",E-510,A,1,1,140,41000,0.5
+BRG-P105,"Bearing set, P-105A/B",P-105A,B,6,2,30,1200,2
+VBELT-F110,"V-belt set, F-110",F-110,B,30,4,21,260,4
+MTR-P105,"Spare motor 75 kW, P-105A/B",P-105A,B,3,1,60,9500,0.2
+INS-VIB,Proximity vibration probe (generic),K-201;K-301;K-401;E-510,B,25,6,45,1100,5
+LUB-ISO46,"Turbine oil ISO VG 46, 200 L drum",K-201;K-301;K-401,B,80,20,14,650,30
+FLT-GEN,Oil filter element (generic),ALL,C,240,40,14,35,60
+GSK-SPW4,Spiral wound gasket 4 in (generic),ALL,C,900,150,21,18,120
+PKG-P220,"Gland packing set, P-220",P-220,C,120,10,14,90,8

@@ -1,0 +1,81 @@
+{
+  "_note": "SATU-SATUNYA file yang perlu diganti saat kasus final keluar: nama pabrik, unit, aset, suku cadang, kejadian. Lalu jalankan: node data/generate.mjs",
+  "plant": "Cilegon Integrated Petrochemical Complex (dummy)",
+  "seed": 2026,
+  "startDate": "2026-09-01",
+  "sensorDays": 60,
+  "energyDays": 30,
+
+  "assets": [
+    { "id": "K-201", "name": "Cracked Gas Compressor", "unit": "NC", "type": "compressor", "criticality": "A", "vibration_mm_s": 2.5, "temperature_c": 75, "pressure_barg": 36, "typicalFailure": "Drive-end bearing wear" },
+    { "id": "K-301", "name": "Propylene Refrigeration Compressor", "unit": "NC", "type": "compressor", "criticality": "A", "vibration_mm_s": 2.3, "temperature_c": 72, "pressure_barg": 18, "typicalFailure": "Thrust bearing degradation" },
+    { "id": "K-401", "name": "Ethylene Refrigeration Compressor", "unit": "NC", "type": "compressor", "criticality": "A", "vibration_mm_s": 2.4, "temperature_c": 70, "pressure_barg": 20, "typicalFailure": "Dry gas seal leak" },
+    { "id": "P-105A", "name": "Quench Water Pump", "unit": "NC", "type": "pump", "criticality": "B", "vibration_mm_s": 1.8, "temperature_c": 60, "pressure_barg": 8, "typicalFailure": "Bearing wear" },
+    { "id": "P-220", "name": "Boiler Feed Water Pump", "unit": "UT", "type": "pump", "criticality": "A", "vibration_mm_s": 2.0, "temperature_c": 65, "pressure_barg": 120, "typicalFailure": "Impeller erosion" },
+    { "id": "F-110", "name": "Furnace Induced Draft Fan", "unit": "NC", "type": "fan", "criticality": "B", "vibration_mm_s": 3.0, "temperature_c": 55, "pressure_barg": 0.1, "typicalFailure": "V-belt wear and imbalance" },
+    { "id": "E-510", "name": "PE Extruder Gearbox", "unit": "PE", "type": "gearbox", "criticality": "A", "vibration_mm_s": 2.2, "temperature_c": 70, "pressure_barg": 2.5, "typicalFailure": "Gear tooth pitting" },
+    { "id": "P-620", "name": "PP Reactor Circulation Pump", "unit": "PP", "type": "pump", "criticality": "A", "vibration_mm_s": 1.9, "temperature_c": 62, "pressure_barg": 35, "typicalFailure": "Mechanical seal leak" }
+  ],
+
+  "sensorEvents": [
+    { "asset": "K-201", "type": "trip", "day": 21, "rampHours": 72, "vibrationRise": 4.5, "tempRise": 15, "downtimeHours": 36, "mode": "Drive-end bearing failure", "partNo": "BRG-K201-DE", "costUsd": 185000 },
+    { "asset": "E-510", "type": "glitch", "day": 33, "mode": "Vibration probe fault (false alarm)" },
+    { "asset": "P-620", "type": "trip", "day": 44, "rampHours": 48, "vibrationRise": 2.5, "tempRise": 10, "downtimeHours": 20, "mode": "Mechanical seal leak", "partNo": "SEAL-P620", "costUsd": 42000 },
+    { "asset": "K-301", "type": "ongoing", "rampHours": 96, "vibrationRise": 3.2, "tempRise": 12, "mode": "Thrust bearing degradation (not yet detected)", "partNo": "BRG-K301-TH" }
+  ],
+
+  "spareParts": [
+    { "part_no": "BRG-K201-DE", "description": "Drive-end journal bearing, K-201", "asset_ids": "K-201", "criticality": "A", "stock_qty": 1, "min_qty": 1, "lead_time_days": 120, "unit_cost_usd": 18500, "annual_usage": 1 },
+    { "part_no": "BRG-K301-TH", "description": "Thrust bearing assembly, K-301", "asset_ids": "K-301", "criticality": "A", "stock_qty": 0, "min_qty": 1, "lead_time_days": 150, "unit_cost_usd": 24000, "annual_usage": 1 },
+    { "part_no": "SEAL-K401", "description": "Dry gas seal cartridge, K-401", "asset_ids": "K-401", "criticality": "A", "stock_qty": 1, "min_qty": 1, "lead_time_days": 180, "unit_cost_usd": 95000, "annual_usage": 0.5 },
+    { "part_no": "CPL-K201", "description": "Disc coupling element, K-201", "asset_ids": "K-201", "criticality": "A", "stock_qty": 1, "min_qty": 1, "lead_time_days": 100, "unit_cost_usd": 12000, "annual_usage": 0.3 },
+    { "part_no": "SEAL-P620", "description": "Mechanical seal cartridge, P-620", "asset_ids": "P-620", "criticality": "A", "stock_qty": 1, "min_qty": 1, "lead_time_days": 90, "unit_cost_usd": 7800, "annual_usage": 2 },
+    { "part_no": "IMP-P220", "description": "Impeller, boiler feed water pump P-220", "asset_ids": "P-220", "criticality": "A", "stock_qty": 0, "min_qty": 1, "lead_time_days": 120, "unit_cost_usd": 32000, "annual_usage": 0.3 },
+    { "part_no": "GBX-E510", "description": "Gearbox bearing kit, E-510", "asset_ids": "E-510", "criticality": "A", "stock_qty": 1, "min_qty": 1, "lead_time_days": 140, "unit_cost_usd": 41000, "annual_usage": 0.5 },
+    { "part_no": "BRG-P105", "description": "Bearing set, P-105A/B", "asset_ids": "P-105A", "criticality": "B", "stock_qty": 6, "min_qty": 2, "lead_time_days": 30, "unit_cost_usd": 1200, "annual_usage": 2 },
+    { "part_no": "VBELT-F110", "description": "V-belt set, F-110", "asset_ids": "F-110", "criticality": "B", "stock_qty": 30, "min_qty": 4, "lead_time_days": 21, "unit_cost_usd": 260, "annual_usage": 4 },
+    { "part_no": "MTR-P105", "description": "Spare motor 75 kW, P-105A/B", "asset_ids": "P-105A", "criticality": "B", "stock_qty": 3, "min_qty": 1, "lead_time_days": 60, "unit_cost_usd": 9500, "annual_usage": 0.2 },
+    { "part_no": "INS-VIB", "description": "Proximity vibration probe (generic)", "asset_ids": "K-201;K-301;K-401;E-510", "criticality": "B", "stock_qty": 25, "min_qty": 6, "lead_time_days": 45, "unit_cost_usd": 1100, "annual_usage": 5 },
+    { "part_no": "LUB-ISO46", "description": "Turbine oil ISO VG 46, 200 L drum", "asset_ids": "K-201;K-301;K-401", "criticality": "B", "stock_qty": 80, "min_qty": 20, "lead_time_days": 14, "unit_cost_usd": 650, "annual_usage": 30 },
+    { "part_no": "FLT-GEN", "description": "Oil filter element (generic)", "asset_ids": "ALL", "criticality": "C", "stock_qty": 240, "min_qty": 40, "lead_time_days": 14, "unit_cost_usd": 35, "annual_usage": 60 },
+    { "part_no": "GSK-SPW4", "description": "Spiral wound gasket 4 in (generic)", "asset_ids": "ALL", "criticality": "C", "stock_qty": 900, "min_qty": 150, "lead_time_days": 21, "unit_cost_usd": 18, "annual_usage": 120 },
+    { "part_no": "PKG-P220", "description": "Gland packing set, P-220", "asset_ids": "P-220", "criticality": "C", "stock_qty": 120, "min_qty": 10, "lead_time_days": 14, "unit_cost_usd": 90, "annual_usage": 8 }
+  ],
+
+  "energyUnits": [
+    { "id": "NC", "name": "Naphtha Cracker", "product": "Ethylene", "production_t_h": 110, "fuel_gas_gj_per_t": 13.5, "steam_t_per_t": 0.6, "electricity_mwh_per_t": 0.08, "fixedShare": 0.35 },
+    { "id": "PE", "name": "Polyethylene Plant", "product": "Polyethylene", "production_t_h": 45, "fuel_gas_gj_per_t": 0.3, "steam_t_per_t": 0.4, "electricity_mwh_per_t": 0.45, "fixedShare": 0.3 },
+    { "id": "PP", "name": "Polypropylene Plant", "product": "Polypropylene", "production_t_h": 60, "fuel_gas_gj_per_t": 0.2, "steam_t_per_t": 0.3, "electricity_mwh_per_t": 0.35, "fixedShare": 0.3 },
+    { "id": "BD", "name": "Butadiene Extraction", "product": "Butadiene", "production_t_h": 15, "fuel_gas_gj_per_t": 1.5, "steam_t_per_t": 2.5, "electricity_mwh_per_t": 0.1, "fixedShare": 0.4 }
+  ],
+  "crackerUnit": "NC",
+  "decokingDays": [8],
+  "energyEvents": [
+    { "unit": "PE", "day": 12, "hours": 30, "electricityPct": 15, "cause": "Extruder screw wear raising motor load" },
+    { "unit": "PP", "day": 14, "hours": 20, "productionPct": -60, "cause": "P-620 seal leak trip, one reactor train down" },
+    { "unit": "NC", "day": 22, "hours": 54, "fuelGasPct": 12, "cause": "Fouled burners on furnace F-103" }
+  ],
+  "energyConversion": { "steam_gj_per_t": 2.8, "electricity_gj_per_mwh": 3.6 },
+  "emissionFactors": [
+    { "source": "fuel_gas", "factor": 0.0561, "unit": "tCO2e/GJ", "reference": "IPCC 2006 default, natural gas (verify)" },
+    { "source": "steam", "factor": 0.175, "unit": "tCO2e/t", "reference": "Gas-fired boiler, 2.8 GJ/t at 90% efficiency (assumption)" },
+    { "source": "electricity", "factor": 0.87, "unit": "tCO2e/MWh", "reference": "Indonesia Jamali grid factor (verify; on-site gas power is lower)" }
+  ],
+
+  "planning": {
+    "cargoEveryDays": 5,
+    "cargoVolumeKt": 60,
+    "products": [
+      { "product": "Ethylene", "base_kt": 75 },
+      { "product": "Polyethylene", "base_kt": 30 },
+      { "product": "Polypropylene", "base_kt": 40 },
+      { "product": "Butadiene", "base_kt": 10 }
+    ],
+    "maintenance": [
+      { "unit_id": "PP", "start": "2026-11-18", "end": "2026-11-21", "scope": "P-620 seal upgrade + reactor inspection", "rate_loss_pct": 50 },
+      { "unit_id": "NC", "start": "2026-12-05", "end": "2026-12-08", "scope": "Furnace F-103 decoking and burner cleaning", "rate_loss_pct": 12 },
+      { "unit_id": "PE", "start": "2027-01-12", "end": "2027-01-16", "scope": "Extruder screw replacement", "rate_loss_pct": 100 },
+      { "unit_id": "NC", "start": "2027-03-01", "end": "2027-03-28", "scope": "Planned turnaround (TA)", "rate_loss_pct": 100 }
+    ]
+  }
+}

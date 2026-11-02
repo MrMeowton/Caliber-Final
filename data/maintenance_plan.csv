@@ -1,0 +1,5 @@
+unit_id,start,end,scope,rate_loss_pct
+PP,2026-11-18,2026-11-21,P-620 seal upgrade + reactor inspection,50
+NC,2026-12-05,2026-12-08,Furnace F-103 decoking and burner cleaning,12
+PE,2027-01-12,2027-01-16,Extruder screw replacement,100
+NC,2027-03-01,2027-03-28,Planned turnaround (TA),100
