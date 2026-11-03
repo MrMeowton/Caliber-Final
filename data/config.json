@@ -1,0 +1,14 @@
+{
+  "plant": "[ISI: plant name]",
+  "unit": "[ISI: unit name]",
+  "currency": "USD",
+  "assets": [
+    { "tag": "F-101", "name": "Cracking Furnace", "type": "furnace", "pos": [-9, 0, 0], "health": 92, "desc": "Cracks naphtha into ethylene and propylene at ~840 °C coil outlet temperature." },
+    { "tag": "E-201", "name": "Transfer Line Exchanger", "type": "exchanger", "pos": [-4, 0, 3], "health": 88, "desc": "Quenches furnace effluent and generates high-pressure steam." },
+    { "tag": "T-301", "name": "Quench Tower", "type": "column", "pos": [-1, 0, -2], "health": 95, "desc": "Cools cracked gas with water and removes heavy oils." },
+    { "tag": "K-101", "name": "Cracked Gas Compressor", "type": "compressor", "pos": [4, 0, 1], "health": 41, "desc": "Multi-stage centrifugal compressor; most critical rotating asset of the unit." },
+    { "tag": "P-201A", "name": "Quench Water Pump", "type": "pump", "pos": [1, 0, 4], "health": 76, "desc": "Circulates quench water; spare P-201B on standby." },
+    { "tag": "V-401", "name": "Ethylene Storage Sphere", "type": "sphere", "pos": [10, 0, -2], "health": 97, "desc": "Stores refrigerated ethylene product before dispatch." }
+  ],
+  "links": [["F-101", "E-201"], ["E-201", "T-301"], ["T-301", "K-101"], ["P-201A", "T-301"], ["K-101", "V-401"]]
+}
