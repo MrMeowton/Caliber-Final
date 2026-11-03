@@ -1,6 +1,6 @@
 # 02 — KPI Library + Kalkulator Dampak Bisnis
 
-> Atas = rumus referensi (tetap). Bawah = **kalkulator yang diisi hari H** → hasilnya langsung ke slide Business Impact.
+> Atas = rumus referensi (tetap). Bawah = **kalkulator yang diisi hari H** → angka KPI yang ditampilkan di prototype.
 
 ## Rumus referensi
 | Area | KPI | Rumus |

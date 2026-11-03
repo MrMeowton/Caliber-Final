@@ -1,11 +1,11 @@
-# 03 — Analisis Kasus (diisi hari H, 08.45–10.00 · Analyst)
+# 03 — Analisis Kasus
 
-> Isi semua `[ISI: …]`. Konsep **terkunci 10.00**. Bantuan: `prompts/01-case-analysis.md`.
+> Isi dengan hasil analisis kasus tim.
 
 ## 1. Kasus dalam 3 kalimat
 [ISI]
 
-## 2. Problem statement (EN, untuk slide 2)
+## 2. Problem statement (EN)
 [ISI: "[User] at [unit/asset] struggles to [task] because [root cause], causing [measurable impact]."]
 
 ## 3. User terdampak & pain point
@@ -35,18 +35,12 @@
 | B | [ISI] | [ISI] | [ISI] | [ISI] |
 | C | [ISI] | [ISI] | [ISI] | [ISI] |
 
-**Keputusan (10.00):** opsi [ISI] karena [ISI]
+**Keputusan:** opsi [ISI] karena [ISI]
 **Nama solusi + tagline (EN):** [ISI]
 **2–3 fitur inti:** [ISI]
 
 ## 7. KPI & dampak
 → isi tabel kalkulator di `02-kpi-library.md`, salin totalnya: [ISI: USD/th]
 
-## 8. Cek kriteria juri
-- [ ] A — problem & impact punya angka
-- [ ] B — teknologi jelas, ada traceability & human approval
-- [ ] D — 3 risiko utama teridentifikasi
-- [ ] E — menyebut unit/aset/istilah kimia spesifik dari kasus
-
-## 9. Asumsi & pertanyaan terbuka
+## 8. Asumsi & pertanyaan terbuka
 - [ISI]

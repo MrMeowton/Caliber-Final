@@ -7,7 +7,6 @@
 - Sedang menyiapkan pabrik **Chlor-Alkali (CA)** dan **Ethylene Dichloride (EDC)**.
 - Bisnis infrastruktur: listrik, air, logistik, pelabuhan & penyimpanan.
 - Fasilitas di **Pulau Bukom** dan **Pulau Jurong**, Singapura.
-- Angka kapasitas: ambil dari laporan tahunan resmi bila dikutip di deck.
 
 ## Rantai proses (untuk mengaitkan solusi ke aset)
 ```
@@ -47,9 +46,9 @@ Utilitas: steam, listrik, air pendingin, flare
 | Purdue model, IEC 62443 | Segregasi jaringan IT/OT, standar keamanan siber industri |
 
 ## Pemetaan ke kasus final (diisi hari H)
-| Unit/aset di kasus | Posisi di rantai proses | Isu di kasus | Istilah teknis yang dipakai di deck |
+| Unit/aset di kasus | Posisi di rantai proses | Isu di kasus | Istilah teknis yang dipakai |
 |---|---|---|---|
 | [ISI] | [ISI] | [ISI] | [ISI] |
 | [ISI] | [ISI] | [ISI] | [ISI] |
 
-Kalimat relevansi domain untuk deck (EN): [ISI: mis. "Targets the cracked gas compressor, the single point of failure of the cracker…"]
+Kalimat relevansi domain (EN): [ISI: mis. "Targets the cracked gas compressor, the single point of failure of the cracker…"]

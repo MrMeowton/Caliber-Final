@@ -1,6 +1,6 @@
-# 04 — spec (diisi hari H sebelum 10.00, bahasa Inggris · Analyst + Builder)
+# 04 — Spec (bahasa Inggris)
 
-> Isi `[ISI: …]`. Builder lalu menjalankan `prompts/03-spec-to-tasks.md` dengan `@docs/04-spec-template.md`.
+> Isi dengan spec solusi yang sudah dikunci; ini acuan utama AI saat membangun prototype.
 
 # Spec: [ISI: Solution Name]
 
@@ -49,4 +49,4 @@ Help [ISI: user] to [ISI: action] so that [ISI: KPI] improves from [ISI: X] to [
 ## Done when
 - [ ] Demo flow runs end-to-end on [ISI: Vercel URL] from another device
 - [ ] Fallback works with API key removed
-- [ ] KPI numbers on screen match the deck
+- [ ] KPI numbers on screen match `docs/02-kpi-library.md`
