@@ -1,6 +1,6 @@
 # prompts/ — Prompt runtime
 
-Prompt yang dipanggil di dalam app lewat AI wrapper (`modules/foundation/README.md`). Setiap `{{variabel}}` diisi oleh kode dari data.
+Prompt yang dipanggil di dalam app lewat `lib/ai.ts` (lihat `docs/DESIGN.md` §2). Setiap `{{variabel}}` diisi oleh kode dari data.
 
 | File | Dipakai oleh |
 |---|---|

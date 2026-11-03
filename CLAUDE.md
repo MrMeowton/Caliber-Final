@@ -1,41 +1,41 @@
 # CLAUDE.md — CALIBER 2026 Final (Tim Itu Ae)
 
-## Hari H (isi pukul 10.00 setelah konsep terkunci)
+## Hari H (diisi `/spec`)
 - Kasus final: [ISI: judul kasus]
-- Solusi: [ISI: nama solusi — 1 kalimat]
-- Modul dipakai: [ISI: foundation + knowledge / reliability / energy]
+- Solusi: [ISI: nama — 1 kalimat]
 - URL deploy: [ISI]
 
+## Baca (hanya ini)
+- `docs/SPEC.md` → APA yang dibangun. Sumber kebenaran.
+- `docs/DESIGN.md` → BAGAIMANA: visual §1, fondasi §2, fitur gong §3, modul §4. Baca bagian yang relevan saja.
+- JANGAN baca `docs/CASE.md` / `docs/REFERENCE.md` kecuali lewat `/spec` atau diminta.
+- JANGAN baca `node_modules/`, `.next/`, lockfile.
+
 ## Stack
-- Next.js + TypeScript (ikuti basis prototype MIND), deploy Vercel
-- AI: Claude API lewat wrapper bersama + fallback hardcoded (`modules/foundation/README.md`)
-- Data: JSON dummy di `data/` (dibuat hari H sesuai kasus)
+- Next.js + TypeScript + Tailwind (ikuti basis prototype MIND), deploy Vercel
+- 3D: three + @react-three/fiber + @react-three/drei · diagram: @xyflow/react · chart: recharts
+- AI: `lib/ai.ts` (Claude API, fallback bila timeout / `AI_FALLBACK_ONLY=true`), prompt di `prompts/runtime/`
+- Data: JSON dummy di `data/` (aset & posisi 3D di `data/config.json`)
 
 ## Perintah
 ```bash
 npm install && npm run dev          # app lokal
+npm run build                       # cek sebelum commit
 node scripts/check-templates.mjs    # daftar [ISI] yang belum diisi
-vercel --prod                       # deploy
 ```
-
-## Peta (baca hanya yang relevan dengan task)
-- Spec terkunci → `docs/04-spec-template.md` · daftar task → `tasks.md`
-- Fondasi (layout, panel "Why?", approve/reject, AI wrapper) → `modules/foundation/README.md`
-- Modul → `modules/knowledge|reliability|energy/README.md`
-- Prompt → `prompts/README.md`
-- Konteks kasus & kriteria → `docs/00-brief.md`, `docs/03-case-template.md`
+Slash command: `/spec` · `/tasks` · `/build T1` · `/fix <error>` · `/demo-check`
 
 ## Aturan
-- Semua teks UI, data demo, dan output AI dalam bahasa Inggris.
-- Setiap rekomendasi AI: alasan + data sumber + confidence + Approve/Reject.
-- Jangan pernah menulis ke sistem kontrol; semua aksi berupa draft yang disetujui manusia.
-- Setiap fitur terhubung ke KPI di `docs/02-kpi-library.md`.
-- Secret hanya di `.env.local` (contoh: `.env.example`).
-- Satu task per sesi → commit → `/clear`. Bug gagal 2x → kembali ke commit terakhir, ganti pendekatan.
+- Semua teks UI, data demo, dan output AI dalam bahasa Inggris. Angka selalu dengan satuan.
+- Setiap rekomendasi AI: alasan + data sumber + confidence + Approve/Reject. Tidak pernah menulis ke sistem kontrol.
+- Pakai komponen fondasi (DESIGN §2) sebelum membuat baru. Jangan tambah library di luar stack tanpa izin.
+- Secret hanya di `.env.local`.
+- Satu task per sesi → commit → `/clear`. Bug gagal 2x → berhenti, jelaskan, kembali ke commit terakhir.
 - Tanpa subagent, browser automation, atau screenshot; manusia yang mengecek tampilan.
+- Jawaban ringkas: tampilkan bagian yang berubah, bukan seluruh file.
 
 ## Working principles (andrej-karpathy-skills)
-1. **Think before coding** — state assumptions; if unclear or several interpretations exist, ask instead of picking silently; propose a simpler approach and push back when warranted.
-2. **Simplicity first** — minimum code that solves the task; no unrequested features, single-use abstractions, configurability, or handling of impossible errors. If 200 lines could be 50, rewrite.
-3. **Surgical changes** — touch only what the task needs; don't "improve" adjacent code, comments, or formatting; match existing style; remove only orphans your change created, mention (don't delete) pre-existing dead code. Every changed line must trace to the request.
-4. **Goal-driven execution** — turn the task into verifiable success criteria; for multi-step work state `step → verify: check`, then loop until verified.
+1. **Think before coding** — state assumptions; if unclear, ask instead of picking silently; push back when warranted.
+2. **Simplicity first** — minimum code that solves the task; no unrequested features or abstractions.
+3. **Surgical changes** — touch only what the task needs; match existing style; every changed line traces to the request.
+4. **Goal-driven execution** — turn the task into verifiable success criteria; `step → verify: check` until verified.
