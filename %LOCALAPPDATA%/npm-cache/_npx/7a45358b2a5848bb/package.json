@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "omniroute": "^3.8.52"
+  },
+  "_npx": {
+    "packages": [
+      "omniroute@latest"
+    ]
+  }
+}
