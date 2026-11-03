@@ -18,4 +18,4 @@ Return ONLY JSON:
 Never recommend direct control-system actions; this is a draft for human approval. State uncertainty honestly.
 ```
 
-Fallback demo (K-301): [ISI: JSON hardcoded]
+Fallback demo: [ISI: JSON hardcoded]

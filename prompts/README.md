@@ -1,6 +1,6 @@
 # prompts/ — Template Prompt
 
-Cara pakai: salin blok prompt, ganti setiap `{{variabel}}`, lalu kirim. Setelah dipakai saat latihan, isi **Log uji** di file tersebut. Prompt dianggap "teruji" kalau sudah berhasil minimal 1x.
+Cara pakai: salin blok prompt, ganti setiap `{{variabel}}`, lalu kirim. Setelah dipakai, isi **Log uji** di file tersebut. Prompt dianggap "teruji" kalau sudah berhasil minimal 1x.
 
 | File | Dipakai oleh | Kapan (hari H) | Teruji? |
 |---|---|---|---|

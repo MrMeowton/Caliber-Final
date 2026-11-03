@@ -1,4 +1,0 @@
-source,factor,unit,reference
-fuel_gas,0.0561,tCO2e/GJ,"IPCC 2006 default, natural gas (verify)"
-steam,0.175,tCO2e/t,"Gas-fired boiler, 2.8 GJ/t at 90% efficiency (assumption)"
-electricity,0.87,tCO2e/MWh,Indonesia Jamali grid factor (verify; on-site gas power is lower)

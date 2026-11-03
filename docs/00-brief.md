@@ -7,7 +7,7 @@
 |---|---|
 | Judul kasus | [ISI: judul persis dari slide kasus] |
 | Ringkasan 1 kalimat | [ISI] |
-| Unit/aset yang disebut | [ISI: mis. naphtha cracker, K-201, gudang suku cadang] |
+| Unit/aset yang disebut | [ISI: mis. naphtha cracker, kompresor, gudang suku cadang] |
 | Data yang disediakan panitia | [ISI] |
 | Pertanyaan/task resmi | [ISI: salin persis] |
 | Foto slide kasus | [ISI: link folder foto] |

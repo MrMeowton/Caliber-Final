@@ -14,7 +14,7 @@ Help [ISI: user] to [ISI: action] so that [ISI: KPI] improves from [ISI: X] to [
 
 ## Modules & config
 - Modules: [ISI: foundation + knowledge / reliability / energy]
-- Changes in `data/plant.config.json`: [ISI: rename plant/units/assets, events]
+- Dummy data in `data/`: [ISI: plant/units/assets, events]
 
 ## Core features (max 3)
 | ID | Feature | Acceptance criteria (Given / When / Then) | KPI |

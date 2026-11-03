@@ -11,7 +11,6 @@
 | AI wrapper | Satu fungsi untuk memanggil Claude API; timeout 15 s → jawaban fallback | Keandalan sistem |
 | Fallback hardcoded | Jawaban siap pakai untuk skenario demo bila API/Wi-Fi mati | Demo tetap jalan |
 | Loader data dummy | Membaca `data/*.json` | Integrasi data pabrik + enterprise |
-| Config | Nama pabrik/unit/aset dari `data/plant.config.json` | Mudah diganti per kasus |
 
 ## Kontrak data rekomendasi (dipakai semua modul)
 ```ts
@@ -26,7 +25,7 @@ type Recommendation = {
 
 ## Penyesuaian hari H
 - Nama solusi di header: [ISI]
-- Nama pabrik/unit/aset: ubah `data/plant.config.json` → `node data/generate.mjs`
+- Nama pabrik/unit/aset: [ISI]
 - Peran approver (label tombol): [ISI: mis. Reliability Engineer]
 - Fallback untuk skenario demo: [ISI: tulis jawaban AI yang diharapkan]
 - Model AI: [ISI: claude-sonnet-5-5 (default, hemat) / claude-opus-5-5]

@@ -1,5 +1,0 @@
-id,name,product,production_t_h,fuel_gas_gj_per_t,steam_t_per_t,electricity_mwh_per_t,fixedShare
-NC,Naphtha Cracker,Ethylene,110,13.5,0.6,0.08,0.35
-PE,Polyethylene Plant,Polyethylene,45,0.3,0.4,0.45,0.3
-PP,Polypropylene Plant,Polypropylene,60,0.2,0.3,0.35,0.3
-BD,Butadiene Extraction,Butadiene,15,1.5,2.5,0.1,0.4

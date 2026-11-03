@@ -16,4 +16,4 @@ Return ONLY JSON:
  "safety_note": str}
 ```
 
-Fallback demo (F-103 fuel gas): [ISI: JSON hardcoded]
+Fallback demo: [ISI: JSON hardcoded]

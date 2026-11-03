@@ -1,9 +1,0 @@
-id,name,unit,type,criticality,vibration_mm_s,temperature_c,pressure_barg,typical_failure
-K-201,Cracked Gas Compressor,NC,compressor,A,2.5,75,36,Drive-end bearing wear
-K-301,Propylene Refrigeration Compressor,NC,compressor,A,2.3,72,18,Thrust bearing degradation
-K-401,Ethylene Refrigeration Compressor,NC,compressor,A,2.4,70,20,Dry gas seal leak
-P-105A,Quench Water Pump,NC,pump,B,1.8,60,8,Bearing wear
-P-220,Boiler Feed Water Pump,UT,pump,A,2,65,120,Impeller erosion
-F-110,Furnace Induced Draft Fan,NC,fan,B,3,55,0.1,V-belt wear and imbalance
-E-510,PE Extruder Gearbox,PE,gearbox,A,2.2,70,2.5,Gear tooth pitting
-P-620,PP Reactor Circulation Pump,PP,pump,A,1.9,62,35,Mechanical seal leak
