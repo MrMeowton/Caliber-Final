@@ -14,7 +14,7 @@ Claude Code hanya membawa `CLAUDE.md` + `SPEC.md` + bagian `DESIGN.md` yang rele
 
 ## Alur hari H
 1. `git switch -c final` (template kosong di `main` tetap utuh)
-2. Analyst + tim isi `docs/CASE.md` di Claude chat → kunci §5 sebelum 10.00
+2. Analyst + tim isi `docs/CASE.md` di Claude chat
 3. Builder: `/spec` → cek SPEC.md → `/tasks`
 4. Tiap task: `/build T1` → cek di browser → `git commit` → `/clear`
 5. Error: `/fix <tempel baris error saja>`
