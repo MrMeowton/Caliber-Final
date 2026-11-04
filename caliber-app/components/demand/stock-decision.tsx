@@ -70,7 +70,7 @@ export function StockDecision({ material: m }: { material: Material }) {
 
   if (lambda <= 0) {
     return (
-      <Card title="How many to keep, and should we stock it at all?" info="demand.stock" subtitle="Spare-part economics and stock vs buy-on-demand">
+      <Card title="Stock quantity decision" info="demand.stock" subtitle="Spare-part economics and stock vs buy-on-demand">
         <p className="rounded-xl bg-[#f4f6fa] px-4 py-3 text-sm text-[#45576f]">
           {m.criticality === "S" || m.criticality === "A"
             ? `No forecast use. Critical (${m.criticality}) insurance spare: keep 1–2 units, stop buying beyond that.`
@@ -95,7 +95,7 @@ export function StockDecision({ material: m }: { material: Material }) {
 
   return (
     <Card
-      title="How many to keep, and should we stock it at all?" info="demand.stock"
+      title="Stock quantity decision" info="demand.stock"
       subtitle={`Lead-time demand ~ Poisson(${fmtNum((lambda * m.lt_p50) / 365, 2)} ${m.unit}) from ${fmtNum(lambda, 1)} ${m.unit}/yr forecast and ${fmtNum(m.lt_p50)} days lead time`}
     >
       <div className="flex flex-wrap gap-x-6 gap-y-3 rounded-xl bg-[#f4f6fa] px-4 py-3">
@@ -149,7 +149,7 @@ export function StockDecision({ material: m }: { material: Material }) {
 
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
-            <h4 className="text-sm font-semibold text-[#24364c]">Keep in stock or buy when needed?</h4>
+            <h4 className="text-sm font-semibold text-[#24364c]">Stock or buy on demand</h4>
             <Pill tone={m.mrp_type === "STOCK ITEM" ? "blue" : "neutral"}>today: {m.mrp_type === "STOCK ITEM" ? "Stock Item" : "Non Stock"}</Pill>
           </div>
           <div className={`mt-2 rounded-xl border px-4 py-3 ${stockSwap ? "border-[#bfd3f6] bg-[#eef4ff]" : "border-[#d7e9df] bg-[#effaf4]"}`}>

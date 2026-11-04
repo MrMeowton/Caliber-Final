@@ -14,11 +14,11 @@ import type { Summary } from "./types";
 type Tab = "overview" | "sku" | "pm" | "race" | "backtest";
 
 const TABS: { id: Tab; label: string; icon: typeof Gauge }[] = [
-  { id: "overview", label: "What drives demand?", icon: Gauge },
+  { id: "overview", label: "Demand drivers", icon: Gauge },
   { id: "sku", label: "One part in detail", icon: PackageSearch },
   { id: "pm", label: "Parts for planned maintenance", icon: CalendarClock },
-  { id: "race", label: "Will the part arrive before the job?", icon: Flag },
-  { id: "backtest", label: "How accurate is the forecast?", icon: BarChart3 },
+  { id: "race", label: "Part arrival vs. job date", icon: Flag },
+  { id: "backtest", label: "Forecast accuracy", icon: BarChart3 },
 ];
 const isTab = (v: string | undefined): v is Tab => TABS.some((t) => t.id === v);
 
@@ -48,7 +48,7 @@ export function DemandIntelligence({ initialTab, initialSku }: { initialTab?: st
     <div className="min-h-full space-y-6 text-[#131416]">
       <PageHeader
         step={2}
-        title="What will we need, and when?"
+        title="Demand forecast and timing"
         subtitle="Spare-part demand is irregular. MIND splits it into everyday use, planned maintenance, equipment failures and one-off events, forecasts each one, and checks the forecast against months it had not seen."
       />
 

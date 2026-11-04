@@ -549,7 +549,7 @@ export function ActionCenterContent({ onNavigate, initialFocus }: { onNavigate?:
     <div className="space-y-6 text-[#131416]">
       <PageHeader
         step={3}
-        title="What should we order, reduce or keep?"
+        title="Order, reduce or keep"
         subtitle="Start with the reorder list, let AI rank the work, then check that the recommended Min–Max and the cost vs risk balance hold up."
       />
 
@@ -568,7 +568,7 @@ export function ActionCenterContent({ onNavigate, initialFocus }: { onNavigate?:
           value={formatCurrency(data.kpis.excessCapitalIdr)}
           verdict={data.kpis.excessCapitalIdr > 0 ? "watch" : "ok"}
           meaning="Released by stopping purchases of overstocked parts and moving the surplus where it is needed."
-          action={onNavigate && { label: "See stop-buy list", onClick: () => onNavigate({ section: "monitor", tab: "health" }) }}
+          action={onNavigate && { label: "See stop-buy list", onClick: () => onNavigate({ section: "monitor", tab: "health-stop-buy" }) }}
         />
         <MetricCard
           label="Planned jobs in the next 90 days"

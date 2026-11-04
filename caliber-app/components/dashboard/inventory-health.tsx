@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { AlertTriangle, Search } from "lucide-react";
 import { Card, CritBadge, ErrorNote, Loading, Source, getJSON } from "@/components/demand/ui";
@@ -35,11 +35,18 @@ const TONE: Record<HealthCategory, string> = {
 };
 
 
-export function InventoryHealth() {
+export function InventoryHealth({
+  initialFilter = "all",
+  focusTable = false,
+}: {
+  initialFilter?: Filter;
+  focusTable?: boolean;
+}) {
   const [data, setData] = useState<Health | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [filter, setFilter] = useState<Filter>("all");
+  const [filter, setFilter] = useState<Filter>(initialFilter);
   const [q, setQ] = useState("");
+  const tableRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const ctrl = new AbortController();
@@ -48,6 +55,12 @@ export function InventoryHealth() {
       .catch((e) => { if (!ctrl.signal.aborted) setError(String(e.message ?? e)); });
     return () => ctrl.abort();
   }, []);
+
+  useEffect(() => {
+    if (data && focusTable) {
+      tableRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [data, focusTable]);
 
   const rows = useMemo(() => {
     if (!data) return [];
@@ -68,7 +81,7 @@ export function InventoryHealth() {
     <div className="space-y-6">
       <section className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h2 className="text-lg font-semibold">Which stock is overstocked, slow or dead?</h2>
+          <h2 className="text-lg font-semibold">Stock health and aging</h2>
           <p className="mt-1 text-sm text-[#5d5f60]">
             <b className="text-[#131416]">{fmtIDR(releasable)}</b> could be released
           </p>
@@ -127,24 +140,25 @@ export function InventoryHealth() {
         </Source>
       </Card>
 
-      <Card
-        info="overview.health.table"
-        title="Parts to review"
-        subtitle={filter === "all" ? "All flagged parts, largest releasable value first" : `Filtered: ${filter === "slowing" ? "Becoming slow-moving" : data.categories.find((c) => c.key === filter)?.label}`}
-        right={
-          <label className="relative block w-full sm:w-72">
-            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#5d5f60]" aria-hidden="true" />
-            <input
-              type="search"
-              value={q}
-              onChange={(e) => setQ(e.target.value)}
-              placeholder="Search material"
-              aria-label="Search parts to review"
-              className="min-h-10 w-full rounded-md border border-[#cdced1] bg-white pl-9 pr-3 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1b6c80]"
-            />
-          </label>
-        }
-      >
+      <div ref={tableRef} className="scroll-mt-4">
+        <Card
+          info="overview.health.table"
+          title="Parts to review"
+          subtitle={filter === "all" ? "All flagged parts, largest releasable value first" : `Filtered: ${filter === "slowing" ? "Becoming slow-moving" : data.categories.find((c) => c.key === filter)?.label}`}
+          right={
+            <label className="relative block w-full sm:w-72">
+              <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#5d5f60]" aria-hidden="true" />
+              <input
+                type="search"
+                value={q}
+                onChange={(e) => setQ(e.target.value)}
+                placeholder="Search material"
+                aria-label="Search parts to review"
+                className="min-h-10 w-full rounded-md border border-[#cdced1] bg-white pl-9 pr-3 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1b6c80]"
+              />
+            </label>
+          }
+        >
         <div className="overflow-x-auto">
           <table className="w-full min-w-[960px] text-left text-sm">
             <thead className="bg-[#f4f6f8] text-xs text-[#5d5f60]">
@@ -190,7 +204,8 @@ export function InventoryHealth() {
           </table>
         </div>
         <Source>Showing up to 60 parts. Recommendations only; nothing is changed in SAP. A critical S/A spare that never moves is kept as insurance up to its BoM Max (at least 2 units); stock above that floor is counted as excess.</Source>
-      </Card>
+        </Card>
+      </div>
     </div>
   );
 }

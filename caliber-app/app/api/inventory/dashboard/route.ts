@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { idrUnitPrices, type PurchasePriceRow } from "@/lib/inventory/pricing";
 import plantLayout from "@/data/plant-layout.json";
 
 const PLANT_TAGS = new Set(plantLayout.equipment.map((item) => item.tag));
@@ -34,14 +35,6 @@ type MaintenanceRow = {
   priority: string | null;
   cycle: string | null;
   startDate: string | null;
-};
-
-type PriceRow = {
-  materialNo: string;
-  quantity: number | null;
-  amount: number | null;
-  currency: string | null;
-  prDate: string | null;
 };
 
 type DemandStats = {
@@ -177,29 +170,6 @@ function getDemandStats(issues: DailyIssue[]): Map<string, DemandStats> {
   );
 }
 
-function idrUnitPrices(rows: PriceRow[]): Map<string, number> {
-  const prices = new Map<string, number>();
-  const sorted = [...rows].sort((a, b) =>
-    String(b.prDate ?? "").localeCompare(String(a.prDate ?? ""))
-  );
-
-  for (const row of sorted) {
-    if (
-      row.currency?.trim().toUpperCase() !== "IDR" ||
-      !row.materialNo ||
-      prices.has(row.materialNo) ||
-      finite(row.quantity) <= 0 ||
-      finite(row.amount) < 0
-    ) {
-      continue;
-    }
-
-    prices.set(row.materialNo, finite(row.amount) / finite(row.quantity));
-  }
-
-  return prices;
-}
-
 function countDistinct<T>(items: T[], key: (item: T) => string): number {
   return new Set(items.map(key)).size;
 }
@@ -292,7 +262,7 @@ export async function GET() {
            AND date(pr_date) <= date('now')
          ORDER BY date(pr_date) DESC`
       )
-      .all() as PriceRow[];
+      .all() as PurchasePriceRow[];
 
     const leadTimeRows = db
       .prepare(
@@ -453,7 +423,7 @@ export async function GET() {
           .filter((row) => row.maxEligible)
           .map((row) => row.stock - row.maxQty)
       );
-      const unitPriceIdr = priceBySku.get(materialNo) ?? null;
+      const unitPriceIdr = priceBySku.get(materialNo)?.unitPriceIdr ?? null;
       return {
         materialNo,
         description: representative.description,
@@ -698,7 +668,8 @@ export async function GET() {
           .sort((a, b) => a.dueDate.localeCompare(b.dueDate))[0];
         return {
           ...row,
-          unitPriceIdr: priceBySku.get(row.materialNo) ?? null,
+          unitPriceIdr: priceBySku.get(row.materialNo)?.unitPriceIdr ?? null,
+          unitPriceDate: priceBySku.get(row.materialNo)?.priceDate ?? null,
           locationDescription: source?.locationDescription ?? row.functionalLoc,
           assetId: key,
           nextMaintenance: upcoming?.description ?? null,
@@ -734,7 +705,7 @@ export async function GET() {
         );
         return {
           ...row,
-          unitPriceIdr: priceBySku.get(row.materialNo) ?? null,
+          unitPriceIdr: priceBySku.get(row.materialNo)?.unitPriceIdr ?? null,
           locationDescription: source?.locationDescription ?? row.functionalLoc,
           assetId: equipmentKey(row.functionalLoc, source?.locationDescription ?? null),
           nextMaintenance: null,

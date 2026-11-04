@@ -93,7 +93,7 @@ export function OverviewTab({ data, onOpenTab }: { data: Summary; onOpenTab: (ta
       </div>
 
       <Card
-        title="What drives spare-part demand?" info="demand.decomposition"
+        title="Spare-part demand drivers" info="demand.decomposition"
         subtitle="Money spent on parts each month, split by reason, then the forecast for the next 12 months"
         right={
           <Segmented
@@ -140,7 +140,7 @@ export function OverviewTab({ data, onOpenTab }: { data: Summary; onOpenTab: (ta
 
       <div className="grid gap-5 xl:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
         <Card
-          title="How regular is demand for each part?" info="demand.classes"
+          title="Demand regularity by part" info="demand.classes"
           subtitle="Each dot is a part: further right = used less often, higher = more uneven amounts each time"
         >
           <div className="h-[300px]">

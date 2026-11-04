@@ -140,7 +140,7 @@ export function DynamicMinMaxSummary() {
     <div className="space-y-5">
       <Card
         info="action.minmax"
-        title="Would the recommended Min–Max have worked? Replay of May–Sep 2026"
+        title="Min–Max replay results, May–Sep 2026"
         subtitle={`Both policies replayed day by day on the ${fmtNum(bt.skus)} Stock Items that were actually issued, from the same reconstructed starting stock`}
       >
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">

@@ -38,8 +38,8 @@ export function FailureRisk({ id, unit }: { id: string; unit: string }) {
     return () => ctrl.abort();
   }, [id]);
 
-  if (error) return <Card info="demand.sku.failure" title="How often does the equipment break?"><ErrorNote error={error} /></Card>;
-  if (!data) return <Card info="demand.sku.failure" title="How often does the equipment break?"><Loading text="Reading failure history…" /></Card>;
+  if (error) return <Card info="demand.sku.failure" title="Equipment failure history"><ErrorNote error={error} /></Card>;
+  if (!data) return <Card info="demand.sku.failure" title="Equipment failure history"><Loading text="Reading failure history…" /></Card>;
 
   const { profile: p, backtest: bt } = data;
   const t = p.totals;
@@ -51,7 +51,7 @@ export function FailureRisk({ id, unit }: { id: string; unit: string }) {
   return (
     <Card
       info="demand.sku.failure"
-      title="How often does the equipment break?"
+      title="Equipment failure history"
       subtitle={`Breakdowns recorded in Notif History on the ${p.hostCount} equipment this part is installed on${partLevel ? ", and how many of them mention this part" : ""}`}
     >
       {p.hostCount === 0 ? (
@@ -191,7 +191,7 @@ export function AiNeed({ id, unit }: { id: string; unit: string }) {
   return (
     <Card
       info="demand.sku.aiNeed"
-      title="When will this part be needed?"
+      title="Part need date"
       subtitle="AI reads the forecast, planned maintenance, failure history and lead time, then estimates when stock runs short and what could cause it"
       right={
         <button

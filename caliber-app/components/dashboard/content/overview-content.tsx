@@ -266,10 +266,18 @@ export function OverviewContent({ initialTab, onNavigate }: { initialTab?: strin
   const [loading, setLoading] = useState(true);
   const [refreshKey, setRefreshKey] = useState(0);
   const [activeTab, setActiveTab] = useState<DashboardTab>(
-    initialTab === "health" || initialTab === "pareto" ? initialTab : "monitor"
+    initialTab === "health" || initialTab === "health-stop-buy"
+      ? "health"
+      : initialTab === "pareto"
+        ? "pareto"
+        : "monitor"
   );
   const [selectedAssetId, setSelectedAssetId] = useState("BF-112");
   const [plantTag, setPlantTag] = useState<string | null>(null);
+  const openStopBuyList = () => {
+    if (onNavigate) onNavigate({ section: "monitor", tab: "health-stop-buy" });
+    else setActiveTab("health");
+  };
 
   useEffect(() => {
     const controller = new AbortController();
@@ -363,7 +371,7 @@ export function OverviewContent({ initialTab, onNavigate }: { initialTab?: strin
     <div className="space-y-6 text-[#131416]">
       <PageHeader
         step={1}
-        title="What is happening to our spare parts right now?"
+        title="Spare parts at a glance"
         subtitle="Five health checks, a 3D map of where the risk sits in the plant, and the stock that is overstocked, slow or dead."
         right={
         <div className="flex items-center gap-3">
@@ -426,7 +434,7 @@ export function OverviewContent({ initialTab, onNavigate }: { initialTab?: strin
           value={formatCount(kpis.excessSkus)}
           verdict={kpis.excessSkus > 0 ? "watch" : "ok"}
           meaning={<>{formatCurrency(kpis.excessCapitalIdr)} of cash sits above the agreed Max. Stop buying these and move the surplus where it is needed.</>}
-          action={{ label: "See stop-buy list", onClick: () => setActiveTab("health") }}
+          action={{ label: "See stop-buy list", onClick: openStopBuyList }}
         />
         <MetricCard
           label="Parts unused for 12 months"
@@ -449,7 +457,7 @@ export function OverviewContent({ initialTab, onNavigate }: { initialTab?: strin
       <section className="space-y-3" aria-label="3D plant view">
         <div className="flex items-start justify-between gap-2">
           <div className="flex min-w-0 flex-wrap items-baseline gap-x-4 gap-y-1">
-            <h2 className="text-lg font-semibold">Where in the plant is the risk?</h2>
+            <h2 className="text-lg font-semibold">Plant risk locations</h2>
             <p className="text-sm text-[#5d5f60]">
               Click the plant to split it · click a tag to zoom · X-Ray shows the missing part
             </p>
@@ -470,9 +478,9 @@ export function OverviewContent({ initialTab, onNavigate }: { initialTab?: strin
       >
         {(
           [
-            ["monitor", "Which equipment is at risk?"],
+            ["monitor", "Equipment at risk"],
             ["health", "Overstocked, slow & dead stock"],
-            ["pareto", "Where is the money?"],
+            ["pareto", "Inventory value by part"],
           ] as const
         ).map(([tab, label]) => (
           <button
@@ -797,7 +805,10 @@ export function OverviewContent({ initialTab, onNavigate }: { initialTab?: strin
 
       {activeTab === "health" && (
         <div id="inventory-panel-health" role="tabpanel" aria-labelledby="inventory-tab-health">
-          <InventoryHealth />
+          <InventoryHealth
+            initialFilter={initialTab === "health-stop-buy" ? "excess" : "all"}
+            focusTable={initialTab === "health-stop-buy"}
+          />
         </div>
       )}
 

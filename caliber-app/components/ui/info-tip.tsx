@@ -8,9 +8,9 @@ import { cn } from "@/lib/utils";
 import { INFO, type InfoCopy, type InfoId } from "@/lib/info-copy";
 
 const SECTIONS = [
-  ["what", "What is this?"],
-  ["source", "Where does the data come from?"],
-  ["why", "Why is it here?"],
+  ["what", "Overview"],
+  ["source", "Data source"],
+  ["why", "Purpose"],
   ["read", "How to read it"],
 ] as const;
 

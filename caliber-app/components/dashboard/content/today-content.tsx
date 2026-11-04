@@ -48,7 +48,7 @@ export function TodayContent({ onNavigate }: { onNavigate: Navigate }) {
   return (
     <div className="space-y-8 text-[#131416]">
       <PageHeader
-        title="What do I need to decide today?"
+        title="Today's decisions"
         subtitle={
           data
             ? <>Three decisions need a planner now, based on stock at {formatDate(Date.parse(data.asOf), { day: "numeric", month: "short", year: "numeric" })}. Each card says what is wrong, why it matters and where to act.</>
@@ -96,7 +96,7 @@ export function TodayContent({ onNavigate }: { onNavigate: Navigate }) {
                   <b>{fmtIDR(data.overstock.openPoValue)}</b> in open orders on {fmtNum(data.overstock.openPoParts)} parts can still be stopped.
                 </>
               }
-              action={{ label: "See stop-buy list", onClick: () => onNavigate({ section: "monitor", tab: "health" }) }}
+              action={{ label: "See stop-buy list", onClick: () => onNavigate({ section: "monitor", tab: "health-stop-buy" }) }}
               listTitle="Largest spend"
               list={data.overstock.items.map((p) => ({
                 key: p.material_no,
@@ -177,7 +177,7 @@ export function TodayContent({ onNavigate }: { onNavigate: Navigate }) {
                   <span className="grid h-7 w-7 place-items-center rounded-full bg-[#1b6c80] text-sm font-semibold text-white">{s.n}</span>
                   <span className="text-base font-semibold">{s.name}</span>
                 </span>
-                <span className="mt-2 text-[15px] font-medium text-[#131416]">{s.question}</span>
+                <span className="mt-2 text-[15px] font-medium text-[#131416]">{s.headline}</span>
                 <span className="mt-1 flex-1 text-sm leading-5 text-[#45484a]">{s.what}</span>
                 <span className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-[#1b6c80]">
                   Open {s.name} <ArrowRight className="h-4 w-4" aria-hidden="true" />
@@ -191,10 +191,10 @@ export function TodayContent({ onNavigate }: { onNavigate: Navigate }) {
   );
 }
 
-const STEPS: { n: number; name: string; section: Section; question: string; what: string }[] = [
-  { n: 1, name: "Monitor", section: "monitor", question: "What is happening to our spare parts now?", what: "Stock health · 3D plant map · dead stock" },
-  { n: 2, name: "Forecast", section: "forecast", question: "What will we need, and when?", what: "Demand forecast · failures · AI run-out date" },
-  { n: 3, name: "Act", section: "act", question: "What should we order, reduce or keep?", what: "Reorder · dynamic Min–Max · cost vs risk" },
+const STEPS: { n: number; name: string; section: Section; headline: string; what: string }[] = [
+  { n: 1, name: "Monitor", section: "monitor", headline: "Spare parts at a glance", what: "Stock health · 3D plant map · dead stock" },
+  { n: 2, name: "Forecast", section: "forecast", headline: "Demand forecast and timing", what: "Demand forecast · failures · AI run-out date" },
+  { n: 3, name: "Act", section: "act", headline: "Order, reduce or keep", what: "Reorder · dynamic Min–Max · cost vs risk" },
 ];
 
 type ListItem = { key: string; title: string; crit: string; detail: string; onClick: () => void };

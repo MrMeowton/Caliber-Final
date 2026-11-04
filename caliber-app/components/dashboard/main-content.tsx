@@ -6,13 +6,15 @@ import { DataNotes } from "@/components/ui/data-notes";
 import { TodayContent } from "./content/today-content";
 import { OverviewContent } from "./content/overview-content";
 import { ActionCenterContent } from "./content/action-center-content";
+import { OrderDraftsContent } from "./content/order-drafts-content";
 import { DemandIntelligence } from "@/components/demand/demand-intelligence";
 
-const crumbs: Record<Section, string> = {
+const pageTitles: Record<Section, string> = {
   today: "Today's decisions",
-  monitor: "Step 1 · Monitor",
-  forecast: "Step 2 · Forecast",
-  act: "Step 3 · Act",
+  monitor: "Monitor",
+  forecast: "Forecast",
+  act: "Action Center",
+  orders: "Order Drafts",
 };
 
 export function MainContent({
@@ -32,6 +34,8 @@ export function MainContent({
         return <DemandIntelligence initialTab={nav.tab} initialSku={nav.sku} />;
       case "act":
         return <ActionCenterContent onNavigate={onNavigate} initialFocus={nav.tab} />;
+      case "orders":
+        return <OrderDraftsContent onNavigate={onNavigate} />;
       default:
         return <TodayContent onNavigate={onNavigate} />;
     }
@@ -40,7 +44,7 @@ export function MainContent({
   return (
     <div className="flex min-h-0 min-w-0 flex-1 flex-col">
       <header className="flex h-12 shrink-0 items-center justify-between gap-3 bg-[#f3f6f7] px-3 md:px-5">
-        <p className="truncate text-sm font-medium text-[#353736]">{crumbs[nav.section]}</p>
+        <p className="truncate text-base font-semibold text-[#131416]">{pageTitles[nav.section]}</p>
         <div className="flex items-center gap-2">
           <DataNotes />
           <button

@@ -176,7 +176,7 @@ export const INFO = {
     what: "Parts whose stock has fallen to or below the reorder point (the level at which a new order should be placed), with a proposed order quantity you can adjust and stage as a draft.",
     source: "Stock and maximum from the BoM; daily demand from the goods-movement history; lead time from the PR/PO history. Reorder point = average demand during the lead time + safety stock.",
     why: "It turns the analysis into a concrete action list. The proposed quantity never takes stock above the maximum, and nothing is sent to SAP: a person reviews and decides.",
-    read: "Tick the parts you agree with, adjust the draft quantity if needed, then press 'Stage'. The staged draft is only a local preview.",
+    read: "Select parts and adjust quantities, then stage them for review. Saving stores an estimate in a separate local SQLite table; historical IDR prices are estimates, and no PR, PO or SAP record is created.",
   },
   "overview.draft": {
     title: "Draft prepared for review",

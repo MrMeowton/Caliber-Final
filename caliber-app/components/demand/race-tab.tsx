@@ -97,7 +97,7 @@ export function RaceTab() {
   return (
     <div className="space-y-5">
       <Card
-        title="Will the part arrive before the job that needs it?" info="demand.race"
+        title="Part arrival vs. job date" info="demand.race"
         subtitle="For every part a planned job needs: the day the shelf runs short versus the day a new part can arrive"
         right={
           <button type="button" onClick={demo} className="inline-flex items-center gap-1.5 rounded-xl border border-[#bfd3f6] bg-[#eef4ff] px-3 py-2 text-xs font-semibold text-[#1257c7] hover:bg-[#e2ecfd]">

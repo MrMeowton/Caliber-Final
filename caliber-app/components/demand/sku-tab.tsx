@@ -244,7 +244,7 @@ function SkuDetailPanel({ id }: { id: string }) {
       <DynamicMinMax id={m.material_no} />
 
       <div className="grid gap-5 2xl:grid-cols-2">
-        <Card info="demand.sku.tournament" title="Which forecasting method was closest for this part?" subtitle="Each method's forecast for May–Sep 2026 compared with what was really used">
+        <Card info="demand.sku.tournament" title="Forecast methods compared for this part" subtitle="Each method's forecast for May–Sep 2026 compared with what was really used">
           {bt ? (
             <div className="h-[220px]">
               <ResponsiveContainer width="100%" height="100%">
@@ -316,4 +316,3 @@ function Fact({ label, value, sub }: { label: string; value: string; sub?: strin
     </div>
   );
 }
-

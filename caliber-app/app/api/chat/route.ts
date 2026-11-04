@@ -18,6 +18,7 @@ const PAGE_CONTEXTS: Record<string, string> = {
     monitor: "Step 1 Monitor (stock health, 3D plant, inventory health)",
     forecast: "Step 2 Forecast (demand forecast, failures, maintenance demand)",
     act: "Step 3 Act (reorder list, recommended Min-Max, cost vs risk, AI to-do list)",
+    orders: "Order Drafts (saved local reorder estimates and frontend-only PR/PO form)",
 };
 
 const SYSTEM = `You are a spare-parts analyst for a petrochemical plant (Case 3: Spare Part Intelligence).

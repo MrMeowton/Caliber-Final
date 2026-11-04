@@ -12,6 +12,7 @@ const pageNames: Record<Section, string> = {
   monitor: "Step 1 · Monitor",
   forecast: "Step 2 · Forecast",
   act: "Step 3 · Act",
+  orders: "Order Drafts",
 };
 
 function isRecord(value: unknown): value is Record<string, unknown> {

@@ -113,7 +113,7 @@ function formatTimestamp(value: string): string {
   }).format(date);
 }
 
-const prompts = ["Is vibration within the normal range?", "What should I inspect next?", "Summarize this machine's health"];
+const prompts = ["Check vibration status", "Get inspection recommendations", "Summarize machine health"];
 
 const greeting = "I’m monitoring the equipment. Ask me about its signals, alerts, or recommended operator checks.";
 

@@ -1,7 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { Menu, Sparkles, X } from "lucide-react";
+import {
+  Activity,
+  BarChart3,
+  ClipboardCheck,
+  ClipboardList,
+  LayoutDashboard,
+  Menu,
+  Sparkles,
+  X,
+} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import type { Section } from "@/app/page";
 
 interface AppSidebarProps {
@@ -9,12 +19,12 @@ interface AppSidebarProps {
   onSectionChange: (section: Section) => void;
 }
 
-// Today first, then the three steps of the deck: Monitor → Forecast → Act.
-const mainMenu: Array<{ id: Section; label: string; question: string; step?: number }> = [
-  { id: "today", label: "Today", question: "What must I decide today?" },
-  { id: "monitor", label: "Monitor", question: "What is happening now?", step: 1 },
-  { id: "forecast", label: "Forecast", question: "What will we need, and when?", step: 2 },
-  { id: "act", label: "Act", question: "What should we order, reduce or keep?", step: 3 },
+const mainMenu: Array<{ id: Section; label: string; icon: LucideIcon }> = [
+  { id: "today", label: "Today", icon: LayoutDashboard },
+  { id: "monitor", label: "Monitor", icon: Activity },
+  { id: "forecast", label: "Forecast", icon: BarChart3 },
+  { id: "act", label: "Action Center", icon: ClipboardList },
+  { id: "orders", label: "Order Drafts", icon: ClipboardCheck },
 ];
 
 export function AppSidebar({
@@ -45,7 +55,7 @@ export function AppSidebar({
         <div className="px-4 pb-4">
           <div className="border-t border-[#e8eaec] pt-3 text-xs leading-5 text-[#5d5f60]">
             Caliber inventory
-            <span className="block">Read-only local data</span>
+            <span className="block">Local estimate drafts only</span>
           </div>
         </div>
       </aside>
@@ -92,7 +102,7 @@ export function AppSidebar({
               </div>
               <p className="mt-auto border-t border-[#e8eaec] pt-3 text-xs leading-5 text-[#5d5f60]">
                 Caliber inventory
-                <span className="block">Read-only local data</span>
+                <span className="block">Local estimate drafts only</span>
               </p>
             </nav>
           </div>
@@ -125,31 +135,27 @@ function NavButton({
   active,
   onClick,
 }: {
-  item: { id: Section; label: string; question: string; step?: number };
+  item: { id: Section; label: string; icon: LucideIcon };
   active: boolean;
   onClick: () => void;
 }) {
+  const Icon = item.icon;
   return (
     <button
       type="button"
       aria-current={active ? "page" : undefined}
       onClick={onClick}
-      className={`flex w-full items-start gap-3 rounded-md px-3 py-2.5 text-left transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1b6c80] ${
-        active ? "bg-white shadow-[0_1px_2px_rgba(19,20,22,0.08)]" : "hover:bg-[#ebedee]"
+      className={`flex min-h-11 w-full items-center gap-3 rounded-md px-3 text-left text-sm transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1b6c80] ${
+        active
+          ? "bg-white font-medium text-[#131416] shadow-[0_1px_2px_rgba(19,20,22,0.08)]"
+          : "text-[#5d5f60] hover:bg-[#ebedee] hover:text-[#131416]"
       }`}
     >
-      <span
-        className={`mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full text-xs font-semibold ${
-          active ? "bg-[#1b6c80] text-white" : "bg-[#dfe3e5] text-[#353736]"
-        }`}
+      <Icon
+        className={`h-[18px] w-[18px] shrink-0 ${active ? "text-[#1b6c80]" : "text-[#5d5f60]"}`}
         aria-hidden="true"
-      >
-        {item.step ?? <Sparkles className="h-3.5 w-3.5" />}
-      </span>
-      <span className="min-w-0">
-        <span className={`block text-sm font-semibold ${active ? "text-[#131416]" : "text-[#353736]"}`}>{item.label}</span>
-        <span className="block text-xs leading-4 text-[#5d5f60]">{item.question}</span>
-      </span>
+      />
+      <span>{item.label}</span>
     </button>
   );
 }

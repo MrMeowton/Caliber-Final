@@ -47,7 +47,7 @@ export function PmCalendarTab({ onOpenRace }: { onOpenRace: () => void }) {
       </div>
 
       <Card
-        title="Which parts will planned maintenance need, month by month?" info="demand.pm.calendar"
+        title="Planned maintenance demand by month" info="demand.pm.calendar"
         subtitle="Click a month to see its jobs. Bars = value of parts needed; line = critical parts with too little stock for that month's jobs"
       >
         <div className="h-[300px]">

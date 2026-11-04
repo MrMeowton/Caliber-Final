@@ -17,6 +17,8 @@ type Recommendation = {
   reorderPoint: number;
   orderCap: number;
   recommendedQty: number;
+  unitPriceIdr: number | null;
+  unitPriceDate: string | null;
   locationDescription: string;
   nextMaintenance: string | null;
   nextMaintenanceDate: string | null;
@@ -24,7 +26,15 @@ type Recommendation = {
 };
 
 const num = new Intl.NumberFormat("en-US", { maximumFractionDigits: 1 });
+const idr = new Intl.NumberFormat("id-ID", {
+  style: "currency",
+  currency: "IDR",
+  maximumFractionDigits: 0,
+});
 const PAGE_SIZE = 100;
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
 const day = (v: string | null) =>
   v ? new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", year: "numeric" }).format(new Date(`${v.slice(0, 10)}T00:00:00`)) : "";
 
@@ -38,6 +48,13 @@ export function ReorderList() {
   const [selected, setSelected] = useState<Set<string>>(() => new Set());
   const [quantities, setQuantities] = useState<Record<string, number>>({});
   const [draft, setDraft] = useState<Array<Recommendation & { qty: number }>>([]);
+  const [savingDraft, setSavingDraft] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [savedEstimate, setSavedEstimate] = useState<{
+    id: string;
+    totalEstimatedIdr: number;
+    unpricedItemCount: number;
+  } | null>(null);
 
   useEffect(() => {
     const ctrl = new AbortController();
@@ -63,6 +80,69 @@ export function ReorderList() {
   const qtyOf = (r: Recommendation) => quantities[key(r)] ?? r.recommendedQty;
   const stageable = (rows ?? []).filter((r) => selected.has(key(r)) && qtyOf(r) > 0);
   const urgent = (rows ?? []).filter((r) => verdictOf(r) === "act").length;
+  const draftTotal = draft.reduce(
+    (total, item) => total + (item.unitPriceIdr === null ? 0 : Math.round(item.unitPriceIdr * item.qty)),
+    0
+  );
+  const draftUnpricedCount = draft.filter((item) => item.unitPriceIdr === null).length;
+
+  function stageSelected() {
+    setDraft(
+      stageable.map((r) => ({
+        ...r,
+        qty: Math.min(r.orderCap, Math.max(0, Math.floor(qtyOf(r)))),
+      }))
+    );
+    setSavedEstimate(null);
+    setSaveError(null);
+  }
+
+  async function saveDraftEstimate() {
+    if (savingDraft || savedEstimate || draft.length === 0) return;
+    setSavingDraft(true);
+    setSaveError(null);
+    try {
+      const response = await fetch("/api/inventory/reorder-drafts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          items: draft.map((item) => ({
+            functionalLoc: item.functionalLoc,
+            materialNo: item.materialNo,
+            quantity: item.qty,
+          })),
+        }),
+      });
+      const payload: unknown = await response.json();
+      if (!isRecord(payload)) {
+        throw new Error("The estimate service returned an unexpected response.");
+      }
+      if (!response.ok) {
+        throw new Error(
+          "error" in payload && typeof payload.error === "string"
+            ? payload.error
+            : `Could not save estimate (${response.status}).`
+        );
+      }
+      if (
+        typeof payload.id !== "string" ||
+        typeof payload.totalEstimatedIdr !== "number" ||
+        typeof payload.unpricedItemCount !== "number"
+      ) {
+        throw new Error("The estimate service returned an unexpected response.");
+      }
+      setSavedEstimate({
+        id: payload.id,
+        totalEstimatedIdr: payload.totalEstimatedIdr,
+        unpricedItemCount: payload.unpricedItemCount,
+      });
+      setSelected(new Set<string>());
+    } catch (error) {
+      setSaveError(error instanceof Error ? error.message : "Unable to save the estimate.");
+    } finally {
+      setSavingDraft(false);
+    }
+  }
 
   return (
     <section id="reorder" className="relative rounded-lg border border-[#e8eaec] bg-white" aria-label="Reorder list">
@@ -98,7 +178,7 @@ export function ReorderList() {
           </label>
           <button
             type="button"
-            onClick={() => setDraft(stageable.map((r) => ({ ...r, qty: Math.min(r.orderCap, Math.max(0, Math.floor(qtyOf(r)))) })))}
+            onClick={stageSelected}
             disabled={stageable.length === 0}
             className="min-h-10 shrink-0 rounded-md bg-[#1b6c80] px-4 text-sm font-semibold text-white hover:bg-[#155768] disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1b6c80]"
           >
@@ -110,7 +190,7 @@ export function ReorderList() {
       {error && <p className="m-4 rounded-md bg-[#ffedea] p-3 text-sm text-[#9b1c1f]" role="alert">{error}</p>}
 
       <div className="max-h-[560px] overflow-auto">
-        <table className="w-full min-w-[880px] text-left text-sm">
+        <table className="w-full min-w-[1020px] text-left text-sm">
           <thead className="sticky top-0 bg-[#f4f6f8] text-xs text-[#45484a]">
             <tr>
               <th className="w-10 px-4 py-2.5"><span className="sr-only">Select</span></th>
@@ -119,6 +199,7 @@ export function ReorderList() {
               <th className="px-3 py-2.5 font-semibold">On hand</th>
               <th className="px-3 py-2.5 font-semibold">Reorder level</th>
               <th className="px-3 py-2.5 font-semibold">Max</th>
+              <th className="px-3 py-2.5 font-semibold">Est. unit price</th>
               <th className="px-3 py-2.5 font-semibold">Why</th>
               <th className="px-3 py-2.5 font-semibold">Order qty</th>
             </tr>
@@ -153,6 +234,14 @@ export function ReorderList() {
                   <td className="px-3 py-3 font-semibold">{num.format(r.stock)} {r.unit}</td>
                   <td className="px-3 py-3">{num.format(r.reorderPoint)}</td>
                   <td className="px-3 py-3">{num.format(r.maxQty)}</td>
+                  <td className="px-3 py-3 whitespace-nowrap">
+                    {r.unitPriceIdr === null ? "No price history" : idr.format(r.unitPriceIdr)}
+                    {r.unitPriceDate && (
+                      <span className="mt-1 block text-xs text-[#5d5f60]">
+                        PR date {day(r.unitPriceDate)}
+                      </span>
+                    )}
+                  </td>
                   <td className="max-w-[240px] px-3 py-3 text-xs leading-5 text-[#353736]">
                     {r.reason}
                     {r.orderCap === 0 ? " · Max is 0; review the target stock level" : ""}
@@ -177,7 +266,7 @@ export function ReorderList() {
               );
             })}
             {rows && filtered.length === 0 && (
-              <tr><td colSpan={8} className="px-4 py-8 text-center text-[#5d5f60]">{search ? "No parts match this search." : "No part is below its reorder level."}</td></tr>
+              <tr><td colSpan={9} className="px-4 py-8 text-center text-[#5d5f60]">{search ? "No parts match this search." : "No part is below its reorder level."}</td></tr>
             )}
           </tbody>
         </table>
@@ -216,13 +305,52 @@ export function ReorderList() {
 
       {draft.length > 0 && (
         <div className="border-t border-[#e8eaec] bg-[#f4f6f8] p-4 sm:p-5" aria-live="polite">
-          <p className="font-semibold">Draft ready for review <span className="text-sm font-normal text-[#45484a]">· local preview, not submitted</span></p>
-          <ul className="mt-2 divide-y divide-[#e8eaec]">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <p className="font-semibold">Reorder estimate ready</p>
+              <p className="mt-1 text-sm text-[#45484a]">
+                Historical IDR unit prices are estimates only. Saving does not create a PR or PO.
+              </p>
+              <p className="mt-1 text-xs text-[#5d5f60]">
+                Local SQLite only; Vercel cannot persist these drafts.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={saveDraftEstimate}
+              disabled={savingDraft || savedEstimate !== null}
+              className="min-h-10 shrink-0 rounded-md bg-[#1b6c80] px-4 text-sm font-semibold text-white hover:bg-[#155768] disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1b6c80]"
+            >
+              {savedEstimate ? "Estimate saved" : savingDraft ? "Saving…" : "Save estimate to database"}
+            </button>
+          </div>
+          <p className="mt-3 text-sm tabular-nums">
+            Estimated subtotal: <b>{idr.format(draftTotal)}</b>
+            {draftUnpricedCount > 0 && ` · ${draftUnpricedCount} item(s) have no price history`}
+          </p>
+          {saveError && (
+            <p className="mt-3 rounded-md bg-[#ffedea] p-3 text-sm text-[#9b1c1f]" role="alert">
+              {saveError}
+            </p>
+          )}
+          {savedEstimate && (
+            <p className="mt-3 rounded-md bg-white p-3 text-sm text-[#155768]" role="status">
+              Saved estimate {savedEstimate.id} · known subtotal {idr.format(savedEstimate.totalEstimatedIdr)}
+              {savedEstimate.unpricedItemCount > 0 &&
+                ` · ${savedEstimate.unpricedItemCount} item(s) still need a price`}
+              . No PO/PR history was changed.
+            </p>
+          )}
+          <ul className="mt-3 divide-y divide-[#e8eaec]">
             {draft.map((d) => (
               <li key={key(d)} className="flex flex-wrap justify-between gap-2 py-2 text-sm">
                 <span><span className="font-mono">{d.materialNo}</span> · {d.description}</span>
                 <span className="tabular-nums">
                   {num.format(d.stock)} + {num.format(d.qty)} = <b>{num.format(d.stock + d.qty)}</b> {d.unit} (Max {num.format(d.maxQty)})
+                  {" · "}
+                  {d.unitPriceIdr === null
+                    ? "Price unavailable"
+                    : `${idr.format(d.unitPriceIdr)} × ${num.format(d.qty)} = ${idr.format(Math.round(d.unitPriceIdr * d.qty))}`}
                 </span>
               </li>
             ))}
