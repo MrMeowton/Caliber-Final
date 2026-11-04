@@ -1,7 +1,5 @@
 # CALIBER 2026 Final — Template Tim Itu Ae
 
-Template untuk final CALIBER (kasus Chandra Asri, 4–5 November). Hari H tim tinggal mengisi `[ISI: …]`.
-
 ## File konteks (hanya 4, dipisah menurut pembacanya)
 | File | Isi | Diisi oleh | Dibaca oleh |
 |---|---|---|---|
@@ -20,17 +18,6 @@ Claude Code hanya membawa `CLAUDE.md` + `SPEC.md` + bagian `DESIGN.md` yang rele
 5. Error: `/fix <tempel baris error saja>`
 6. 20.30 `/demo-check` → 21.00 feature freeze
 
-## Struktur
-```
-caliber-final/
-├── CLAUDE.md                ← dibaca otomatis Claude Code
-├── .claude/commands/        ← /spec /tasks /build /fix /demo-check
-├── docs/                    ← CASE · REFERENCE · SPEC · DESIGN
-├── data/config.json         ← plant, unit, aset + posisi 3D (ganti hari H)
-├── prompts/runtime/         ← prompt yang dipanggil di dalam app
-└── scripts/check-templates.mjs
-```
-
 ## Konvensi
 - `[ISI: petunjuk]` wajib diisi hari H. Cek sisa: `node scripts/check-templates.mjs docs`.
 - `{{variabel}}` di `prompts/` diisi kode saat runtime.
@@ -39,4 +26,3 @@ caliber-final/
 ```bash
 cp .env.example .env.local    # isi ANTHROPIC_API_KEY
 ```
-Hanya Builder yang mengubah kode; Analyst & Storyteller mengedit `docs/` lewat GitHub web.
