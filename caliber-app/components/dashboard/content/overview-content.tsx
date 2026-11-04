@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
-import type { ComponentType } from "react";
 import {
   Area,
   AreaChart,
@@ -17,7 +16,7 @@ import {
   YAxis,
 } from "recharts";
 import { RefreshCw, Search } from "lucide-react";
-import { pumpSkid as pumpSkidTemplate } from "@/templates/02-3d-asset-viewer/src/data/pumpSkid";
+import type { PlantAsset } from "@/components/dashboard/plant-3d/faults";
 import {
   Card,
   CardContent,
@@ -26,7 +25,6 @@ import {
 } from "@/components/ui/card";
 
 type DashboardTab = "monitor" | "pareto" | "actions";
-type ModelType = "pump" | "compressor";
 type Status = "critical" | "watch" | "ready";
 
 type InventoryPart = {
@@ -139,65 +137,18 @@ type DashboardData = {
   }>;
   segmentation: { A: number; B: number; C: number };
   assets: EquipmentRisk[];
+  plantAssets?: PlantAsset[];
   recommendations: Recommendation[];
 };
 
-type Asset3DViewProps = {
-  asset: typeof pumpSkid;
-  readings: Record<string, Record<string, number>>;
-  running: boolean;
-  height: string;
-  defaultShowLabels?: boolean;
-  legend?: boolean;
-};
-
-type XRayViewerProps = {
-  faults: Record<string, { value: string }>;
-  rpm: number;
-  height: string;
-  showHint: boolean;
-};
-
-const pumpSkid = {
-  ...pumpSkidTemplate,
-  name: "Pump skid reference",
-  subtitle: "Representative geometry · no live sensor feed",
-  parts: pumpSkidTemplate.parts.map((part) => ({ ...part, sensors: [] })),
-};
-
-const Asset3DView = dynamic<Asset3DViewProps>(
-  () =>
-    import("@/templates/02-3d-asset-viewer/src/features/asset-3d/Asset3DView").then(
-      (module) => ({
-        default: module.default as ComponentType<Asset3DViewProps>,
-      })
-    ),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="grid h-full place-items-center text-sm text-[#5d5f60]">
-        Loading reference model…
-      </div>
-    ),
-  }
-);
-
-const XRayViewer = dynamic<XRayViewerProps>(
-  () =>
-    import("@/templates/04-xray-asset-view/src/features/xray/XRayViewer").then(
-      (module) => ({
-        default: module.default as ComponentType<XRayViewerProps>,
-      })
-    ),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="grid h-full place-items-center text-sm text-[#5d5f60]">
-        Loading reference model…
-      </div>
-    ),
-  }
-);
+const PlantTwin = dynamic(() => import("@/components/dashboard/plant-3d/plant-twin"), {
+  ssr: false,
+  loading: () => (
+    <div className="grid h-[420px] place-items-center rounded-lg bg-[#0e1419] text-sm text-white/60 sm:h-[560px]">
+      Loading plant model…
+    </div>
+  ),
+});
 
 type DraftLine = {
   key: string;
@@ -323,7 +274,7 @@ export function OverviewContent() {
   const [refreshKey, setRefreshKey] = useState(0);
   const [activeTab, setActiveTab] = useState<DashboardTab>("monitor");
   const [selectedAssetId, setSelectedAssetId] = useState("BF-112");
-  const [selectedModel, setSelectedModel] = useState<ModelType>("pump");
+  const [plantTag, setPlantTag] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [selectedRecommendations, setSelectedRecommendations] = useState<
     Set<string>
@@ -388,6 +339,17 @@ export function OverviewContent() {
         .includes(query)
     );
   }, [data, search]);
+
+  // Opening equipment in 3D also selects it in the equipment risk list below.
+  const openPlantTag = useCallback(
+    (tag: string | null) => {
+      setPlantTag(tag);
+      if (tag && data?.assets.some((asset) => asset.id === tag)) {
+        setSelectedAssetId(tag);
+      }
+    },
+    [data]
+  );
 
   const refresh = () => {
     setError(null);
@@ -516,6 +478,76 @@ export function OverviewContent() {
         </div>
       )}
 
+      <section
+        className="grid grid-cols-2 divide-x divide-y divide-[#e8eaec] rounded-lg border border-[#e8eaec] bg-white lg:grid-cols-5 lg:divide-y-0"
+        aria-label="Inventory health indicators"
+      >
+        <div className="col-span-2 p-4 lg:col-span-1">
+          <p className="text-sm text-[#5d5f60]">Stock policy health</p>
+          <p className="mt-1 text-[28px] font-medium leading-9 tabular-nums">
+            {healthPercent === null ? "—" : `${healthPercent}%`}
+          </p>
+          <p className="mt-1 text-xs leading-5 text-[#5d5f60]">
+            {formatCount(kpis.healthAtOrAboveMinimum)} of{" "}
+            {formatCount(kpis.healthEligiblePositions)} stock-item BOM positions at or above minimum
+          </p>
+          {healthPercent !== null && (
+            <div
+              className="mt-2 h-1.5 overflow-hidden rounded bg-[#ebedee]"
+              role="img"
+              aria-label={`Stock policy health ${healthPercent} percent`}
+            >
+              <div
+                className="h-full bg-[#1e7b4f]"
+                style={{ width: `${healthPercent}%` }}
+              />
+            </div>
+          )}
+        </div>
+        <KpiCell
+          label="Critical zero-stock"
+          value={formatCount(kpis.criticalZeroPositions)}
+          detail="S/A stock-item BOM positions"
+          tone="negative"
+        />
+        <KpiCell
+          label="Above maximum"
+          value={formatCount(kpis.excessSkus)}
+          detail={`${formatCurrency(kpis.excessCapitalIdr)} estimated · ${formatCount(kpis.pricedExcessSkus)} of ${formatCount(kpis.totalExcessSkus)} excess SKUs priced`}
+          tone="warning"
+        />
+        <KpiCell
+          label="Non-moving · 12 months"
+          value={formatCount(kpis.nonMovingSkus)}
+          detail={
+            kpis.hasObsolescenceWindow
+              ? `${formatCount(kpis.obsoleteSkus)} potentially obsolete · 24-month rule`
+              : "24-month obsolete test unavailable; history is shorter"
+          }
+          tone="neutral"
+        />
+        <KpiCell
+          label="Non-stock with on-hand"
+          value={formatCount(kpis.nonStockWithPhysicalSkus)}
+          detail="Distinct non-stock SKUs with positive quantity"
+          tone="neutral"
+        />
+      </section>
+
+      <section className="space-y-3" aria-label="3D plant view">
+        <div className="flex flex-wrap items-baseline justify-between gap-2">
+          <h2 className="text-base font-semibold">Plant view</h2>
+          <p className="text-sm text-[#5d5f60]">
+            Stock risk on each equipment&apos;s BOM mapped to its 3D parts · click a tag, then X-Ray to locate the faulty part
+          </p>
+        </div>
+        <PlantTwin
+          assets={data.plantAssets ?? []}
+          selectedTag={plantTag}
+          onSelect={openPlantTag}
+        />
+      </section>
+
       <nav
         role="tablist"
         className="flex gap-6 overflow-x-auto border-b border-[#e8eaec]"
@@ -554,63 +586,7 @@ export function OverviewContent() {
           role="tabpanel"
           aria-labelledby="inventory-tab-monitor"
         >
-          <section
-            className="grid grid-cols-2 divide-x divide-y divide-[#e8eaec] rounded-lg border border-[#e8eaec] bg-white lg:grid-cols-5 lg:divide-y-0"
-            aria-label="Inventory health indicators"
-          >
-            <div className="col-span-2 p-4 lg:col-span-1">
-              <p className="text-sm text-[#5d5f60]">Stock policy health</p>
-              <p className="mt-1 text-[28px] font-medium leading-9 tabular-nums">
-                {healthPercent === null ? "—" : `${healthPercent}%`}
-              </p>
-              <p className="mt-1 text-xs leading-5 text-[#5d5f60]">
-                {formatCount(kpis.healthAtOrAboveMinimum)} of{" "}
-                {formatCount(kpis.healthEligiblePositions)} stock-item BOM positions at or above minimum
-              </p>
-              {healthPercent !== null && (
-                <div
-                  className="mt-2 h-1.5 overflow-hidden rounded bg-[#ebedee]"
-                  role="img"
-                  aria-label={`Stock policy health ${healthPercent} percent`}
-                >
-                  <div
-                    className="h-full bg-[#1e7b4f]"
-                    style={{ width: `${healthPercent}%` }}
-                  />
-                </div>
-              )}
-            </div>
-            <KpiCell
-              label="Critical zero-stock"
-              value={formatCount(kpis.criticalZeroPositions)}
-              detail="S/A stock-item BOM positions"
-              tone="negative"
-            />
-            <KpiCell
-              label="Above maximum"
-              value={formatCount(kpis.excessSkus)}
-              detail={`${formatCurrency(kpis.excessCapitalIdr)} estimated · ${formatCount(kpis.pricedExcessSkus)} of ${formatCount(kpis.totalExcessSkus)} excess SKUs priced`}
-              tone="warning"
-            />
-            <KpiCell
-              label="Non-moving · 12 months"
-              value={formatCount(kpis.nonMovingSkus)}
-              detail={
-                kpis.hasObsolescenceWindow
-                  ? `${formatCount(kpis.obsoleteSkus)} potentially obsolete · 24-month rule`
-                  : "24-month obsolete test unavailable; history is shorter"
-              }
-              tone="neutral"
-            />
-            <KpiCell
-              label="Non-stock with on-hand"
-              value={formatCount(kpis.nonStockWithPhysicalSkus)}
-              detail="Distinct non-stock SKUs with positive quantity"
-              tone="neutral"
-            />
-          </section>
-
-          <section className="grid gap-6 2xl:grid-cols-[minmax(0,1.2fr)_minmax(390px,0.8fr)]">
+          <section>
             <Card className="gap-0 rounded-lg border-[#e8eaec] py-0 shadow-none">
               <CardHeader className="gap-1 px-5 py-4">
                 <CardTitle className="text-base font-semibold">
@@ -620,10 +596,10 @@ export function OverviewContent() {
                   Select a real functional-location group to inspect stock status and upcoming work.
                 </p>
               </CardHeader>
-              <CardContent className="space-y-4 px-5 pb-5">
+              <CardContent className="px-5 pb-5">
                 {selectedAsset ? (
-                  <>
-                    <div className="max-h-48 divide-y divide-[#f0f1f2] overflow-y-auto border-y border-[#f0f1f2]">
+                  <div className="grid gap-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+                    <div className="max-h-[440px] self-start divide-y divide-[#f0f1f2] overflow-y-auto border-y border-[#f0f1f2]">
                       {data.assets.map((asset) => (
                         <button
                           key={asset.id}
@@ -654,6 +630,7 @@ export function OverviewContent() {
                       ))}
                     </div>
 
+                    <div className="min-w-0 space-y-4">
                     <div className="flex flex-wrap items-start justify-between gap-3">
                       <div>
                         <h3 className="text-sm font-semibold">{selectedAsset.name}</h3>
@@ -739,71 +716,13 @@ export function OverviewContent() {
                         Downtime duration is not recorded in the source data; scheduled-work exposure is shown instead.
                       </p>
                     </div>
-                  </>
+                    </div>
+                  </div>
                 ) : (
                   <p className="py-6 text-sm text-[#5d5f60]">
                     No equipment risk records match the current inventory data.
                   </p>
                 )}
-              </CardContent>
-            </Card>
-
-            <Card className="gap-0 rounded-lg border-[#e8eaec] py-0 shadow-none">
-              <CardHeader className="gap-1 px-5 py-4">
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <CardTitle className="text-base font-semibold">
-                    3D asset references
-                  </CardTitle>
-                  <div className="flex gap-1" aria-label="Reference model">
-                    {(
-                      [
-                        ["pump", "Pump skid"],
-                        ["compressor", "Compressor X-Ray"],
-                      ] as const
-                    ).map(([model, label]) => (
-                      <button
-                        key={model}
-                        type="button"
-                        aria-pressed={selectedModel === model}
-                        onClick={() => setSelectedModel(model)}
-                        className={`min-h-8 rounded px-2 text-xs font-medium focus-visible:outline-2 focus-visible:outline-[#1b6c80] ${
-                          selectedModel === model
-                            ? "bg-[#ebedee] text-[#131416]"
-                            : "text-[#5d5f60] hover:bg-[#f4f6f8]"
-                        }`}
-                      >
-                        {label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                <p className="text-sm text-[#5d5f60]">
-                  Interactive reference geometry, not an as-built model or live sensor feed.
-                </p>
-              </CardHeader>
-              <CardContent className="px-3 pb-3">
-                <div className="h-[240px] overflow-hidden rounded-md bg-[#f4f6f8] sm:h-[310px]">
-                  {selectedModel === "pump" ? (
-                    <Asset3DView
-                      asset={pumpSkid}
-                      readings={{}}
-                      running={false}
-                      height="100%"
-                      defaultShowLabels={false}
-                      legend={false}
-                    />
-                  ) : (
-                    <XRayViewer
-                      faults={{}}
-                      rpm={0}
-                      height="100%"
-                      showHint={false}
-                    />
-                  )}
-                </div>
-                <p className="px-2 pt-2 text-xs leading-5 text-[#5d5f60]">
-                  Risk colors apply to the linked BOM list; the reference model is not colored from plant data.
-                </p>
               </CardContent>
             </Card>
           </section>

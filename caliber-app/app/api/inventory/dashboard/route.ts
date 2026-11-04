@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import plantLayout from "@/data/plant-layout.json";
+
+const PLANT_TAGS = new Set(plantLayout.equipment.map((item) => item.tag));
 
 
 
@@ -868,6 +871,8 @@ export async function GET() {
       assets: assets
         .filter((asset) => asset.atRiskParts > 0 || asset.upcomingPlans > 0)
         .slice(0, 24),
+      // Unfiltered records for the equipment drawn in the 3D plant layout.
+      plantAssets: assets.filter((asset) => PLANT_TAGS.has(asset.id)),
       recommendations,
       actionCandidates,
     });
