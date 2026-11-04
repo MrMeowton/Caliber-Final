@@ -13,13 +13,19 @@ const MODELS = [
 ];
 const MAX_STEPS = 6;
 const MAX_ROWS = 50;
+const PAGE_CONTEXTS: Record<string, string> = {
+    overview: "Dashboard",
+    forecasting: "Forecasting",
+    "action-center": "Action Center",
+    notifications: "Notifications",
+};
 
-const SYSTEM = `Kamu adalah analis spare part untuk pabrik petrokimia (Case 3: Spare Part Intelligence).
-Jawab dalam bahasa yang dipakai user, singkat dan berbasis angka dari database.
-Gunakan tool run_sql (SQLite, read-only) untuk mengambil data. JANGAN mengarang angka.
-Untuk analisis, pakai tabel *_clean dan features_material bila ada; tabel mentah hanya jika perlu.
-Kategori rekomendasi: Stockout Risk, Overstock Risk, Reorder, Maintain, Reduce, Monitor.
-Sebut material_no dan alasan singkat tiap rekomendasi. Jika data tidak cukup, katakan terus terang.
+const SYSTEM = `You are a spare-parts analyst for a petrochemical plant (Case 3: Spare Part Intelligence).
+Answer in concise English and ground numerical claims in database evidence.
+Use run_sql (SQLite, read-only) to retrieve data. Never invent figures.
+Prefer *_clean tables and features_material for analysis; use raw tables only when needed.
+Recommendation categories: Stockout Risk, Overstock Risk, Reorder, Maintain, Reduce, Monitor.
+Include material_no and a brief reason for each recommendation. State plainly when the data is insufficient.
 
 Skema database:
 `;
@@ -91,9 +97,31 @@ export async function POST(req: NextRequest) {
         );
     }
 
-    const { messages } = (await req.json()) as {
-        messages: { role: "user" | "assistant"; content: string }[];
-    };
+    const body: unknown = await req.json();
+    if (
+        typeof body !== "object" ||
+        body === null ||
+        !("messages" in body) ||
+        !Array.isArray(body.messages) ||
+        body.messages.length === 0 ||
+        body.messages.length > 40 ||
+        !body.messages.every(
+            (message) =>
+                typeof message === "object" &&
+                message !== null &&
+                (message.role === "user" || message.role === "assistant") &&
+                typeof message.content === "string" &&
+                message.content.length <= 24000
+        )
+    ) {
+        return NextResponse.json({ error: "Invalid chat messages." }, { status: 400 });
+    }
+
+    const messages = body.messages as { role: "user" | "assistant"; content: string }[];
+    const pageContext =
+        "pageContext" in body && typeof body.pageContext === "string"
+            ? PAGE_CONTEXTS[body.pageContext]
+            : undefined;
 
     const ai = new GoogleGenAI({ apiKey: API_KEY });
     const contents: Content[] = messages.map((m) => ({
@@ -102,7 +130,10 @@ export async function POST(req: NextRequest) {
     }));
 
     try {
-        const systemInstruction = SYSTEM + schemaText();
+        const systemInstruction =
+            SYSTEM +
+            schemaText() +
+            (pageContext ? `\nCurrent dashboard page: ${pageContext}. Use this only as conversational context.` : "");
 
         for (let step = 0; step < MAX_STEPS; step++) {
             const res = await generate(ai, {

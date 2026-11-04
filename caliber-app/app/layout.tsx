@@ -1,31 +1,35 @@
 import type { Metadata } from "next";
-import { Geist_Mono, Inter } from "next/font/google";
+import { IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
 import "./globals.css";
 import "../templates/02-3d-asset-viewer/src/features/asset-3d/asset-3d.css";
 import "../templates/04-xray-asset-view/src/features/xray/xray.css";
 
-const inter = Inter({
-  variable: "--font-inter",
+const plexSans = IBM_Plex_Sans({
+  variable: "--font-ibm-plex-sans",
   subsets: ["latin"],
+  weight: ["400", "500", "600"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const plexMono = IBM_Plex_Mono({
+  variable: "--font-ibm-plex-mono",
   subsets: ["latin"],
+  weight: ["400", "500"],
 });
 
 export const metadata: Metadata = {
-  title: "MIND | Industrial Operations",
-  description: "Industrial operations and equipment health dashboard.",
+  title: "MIND | Inventory Command",
+  description: "Inventory health, maintenance risk, and replenishment planning.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${plexSans.variable} ${plexMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col font-sans text-[15px] leading-6">{children}</body>
+      <body className="flex min-h-full flex-col font-sans text-sm leading-5">
+        {children}
+      </body>
     </html>
   );
 }

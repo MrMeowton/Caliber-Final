@@ -1,107 +1,85 @@
 "use client";
 
+import { useState } from "react";
+import { Bot } from "lucide-react";
 import type { Section } from "@/app/page";
 import { OverviewContent } from "./content/overview-content";
+import { ActionCenterContent } from "./content/action-center-content";
 import { IncidentsContent } from "./content/incidents-content";
 import { AlertsContent } from "./content/alerts-content";
-import { PerformanceContent } from "./content/performance-content";
-import { ServicesContent } from "./content/services-content";
-import { Bell, Calendar, RefreshCw, Plus, AlertCircle } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { ForecastingContent } from "./content/forecasting-content";
 
 interface MainContentProps {
   activeSection: Section;
-  onSectionChange: (section: Section) => void;
+  onOpenAssistant: () => void;
 }
 
-const sectionConfig: Record<Section, { title: string; subtitle: string }> = {
-  overview: {
-    title: "Production overview",
-    subtitle: "Live line performance and plant readiness",
-  },
-  equipment: {
-    title: "Equipment",
-    subtitle: "Machine health across the production floor",
-  },
-  alerts: {
-    title: "Alerts",
-    subtitle: "Machine alerts, ownership, and recommended actions",
-  },
-  incidents: {
-    title: "Incidents",
-    subtitle: "Active production events and response status",
-  },
-  insights: {
-    title: "Insights",
-    subtitle: "Trends, throughput, and operational analysis",
-  },
+const sectionTitles: Record<Section, string> = {
+  overview: "MIND · Inventory",
+  forecasting: "Demand Intelligence",
+  "action-center": "Action Center",
+  notifications: "Notifications",
 };
 
-export function MainContent({ activeSection, onSectionChange }: MainContentProps) {
-  const config = sectionConfig[activeSection];
+export function MainContent({
+  activeSection,
+  onOpenAssistant,
+}: MainContentProps) {
+  const [notificationTab, setNotificationTab] = useState<"alerts" | "incidents">("alerts");
 
   const renderContent = () => {
     switch (activeSection) {
       case "overview":
-        return <OverviewContent onNavigate={onSectionChange} />;
-      case "incidents":
-        return <IncidentsContent />;
-      case "equipment":
-        return <ServicesContent />;
-      case "alerts":
-        return <AlertsContent />;
-      case "insights":
-        return <PerformanceContent />;
+        return <OverviewContent />;
+      case "forecasting":
+        return <ForecastingContent />;
+      case "action-center":
+        return <ActionCenterContent />;
+      case "notifications":
+        return (
+          <div className="space-y-5">
+            <nav className="flex gap-5 border-b border-[#e8eaec]" aria-label="Notification views">
+              {(["alerts", "incidents"] as const).map((tab) => (
+                <button
+                  key={tab}
+                  type="button"
+                  aria-pressed={notificationTab === tab}
+                  onClick={() => setNotificationTab(tab)}
+                  className={`min-h-11 border-b-2 px-1 text-sm font-medium capitalize ${
+                    notificationTab === tab
+                      ? "border-[#1b6c80] text-[#131416]"
+                      : "border-transparent text-[#5d5f60] hover:text-[#131416]"
+                  }`}
+                >
+                  {tab}
+                </button>
+              ))}
+            </nav>
+            {notificationTab === "alerts" ? <AlertsContent /> : <IncidentsContent />}
+          </div>
+        );
       default:
-        return <OverviewContent onNavigate={onSectionChange} />;
+        return <OverviewContent />;
     }
   };
 
   return (
-    <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-      {/* Header */}
-      <header className="h-16 px-8 flex items-center justify-between border-b border-border bg-card shrink-0">
-        <div>
-          <h1 className="text-lg font-semibold text-foreground tracking-tight">
-            {config.title}
-          </h1>
-          <p className="text-sm text-muted-foreground">{config.subtitle}</p>
-        </div>
-
-        <div className="flex items-center gap-3">
-          {/* Time Range */}
-          <Button variant="outline" size="sm" className="gap-2 bg-transparent">
-            <Calendar className="w-4 h-4" />
-            <span>Current shift</span>
-          </Button>
-
-          {/* Refresh */}
-          <Button variant="outline" size="sm" className="gap-2 bg-transparent">
-            <RefreshCw className="w-4 h-4" />
-            <span>Refresh</span>
-          </Button>
-
-          {/* Alerts */}
-          <button
-            type="button"
-            className="relative p-2 rounded-xl hover:bg-muted transition-colors"
-            aria-label="Alerts"
-            onClick={() => onSectionChange("alerts")}
-          >
-            <Bell className="w-5 h-5 text-muted-foreground" />
-            <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-destructive rounded-full animate-pulse" />
-          </button>
-
-          {/* Primary Action */}
-          <Button size="sm" className="gap-2 bg-destructive hover:bg-destructive/90 text-destructive-foreground">
-            <AlertCircle className="w-4 h-4" />
-            <span>Log production event</span>
-          </Button>
-        </div>
+    <div className="flex min-h-0 min-w-0 flex-1 flex-col">
+      <header className="flex h-12 shrink-0 items-center justify-between gap-3 bg-[#f3f6f7] px-3 md:px-5">
+        <p className="text-sm font-medium text-[#353736]">
+          {sectionTitles[activeSection]}
+        </p>
+        <button
+          type="button"
+          onClick={onOpenAssistant}
+          className="inline-flex min-h-9 shrink-0 items-center gap-2 rounded-md border border-[#cdced1] bg-white px-3 text-sm font-medium text-[#131416] hover:bg-[#f4f6f8] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1b6c80]"
+        >
+          <Bot className="h-4 w-4 text-[#1b6c80]" aria-hidden="true" />
+          <span className="hidden sm:inline">Ask MIND AI</span>
+          <span className="sm:hidden">AI</span>
+        </button>
       </header>
-
-      {/* Content */}
-      <main className="flex-1 overflow-y-auto p-8">
+      <main className="min-h-0 flex-1 overflow-y-auto rounded-[16px] border border-[#e8eaec] bg-white px-4 py-5 sm:px-6 sm:py-6 md:mb-2 md:mr-2">
         <div key={activeSection} className="animate-fade-in">
           {renderContent()}
         </div>
