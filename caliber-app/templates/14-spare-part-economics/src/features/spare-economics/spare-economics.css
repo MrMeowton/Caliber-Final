@@ -1,0 +1,70 @@
+/* Gaya modul spare-economics — semua class ber-prefix se- */
+
+.se-root {
+  --se-bg: #0b1120;
+  --se-line: #1e293b;
+  --se-text: #e2e8f0;
+  --se-muted: #94a3b8;
+  --se-hold: #38bdf8;
+  --se-down: #f87171;
+  --se-total: #f8fafc;
+  --se-good: #4ade80;
+  --se-warn: #fbbf24;
+
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 16px;
+  border-radius: 14px;
+  background: var(--se-bg);
+  border: 1px solid var(--se-line);
+  color: var(--se-text);
+}
+
+.se-kpis, .se-dk { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 8px; }
+.se-kpi { display: flex; flex-direction: column; padding: 10px 12px; border-radius: 10px; background: #020617; border: 1px solid var(--se-line); }
+.se-kpi b { font-size: 20px; font-variant-numeric: tabular-nums; }
+.se-kpi span { font-size: 12px; color: var(--se-muted); }
+.se-kpi.is-good b { color: var(--se-good); }
+.se-kpi.is-warn b { color: var(--se-warn); }
+
+.se-scroll { overflow-x: auto; }
+.se-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.se-table th { font-size: 11px; font-weight: 500; color: var(--se-muted); text-align: right; padding: 6px 10px; border-bottom: 1px solid var(--se-line); white-space: nowrap; }
+.se-table th:first-child, .se-table td:first-child { text-align: left; }
+.se-table td { padding: 8px 10px; text-align: right; border-bottom: 1px solid var(--se-line); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.se-table td small { display: block; font-size: 11px; color: var(--se-muted); }
+.se-table td em { display: block; font-style: normal; font-size: 10px; }
+.se-table tbody tr { cursor: pointer; transition: background 0.2s; }
+.se-table tbody tr:hover { background: rgba(56, 189, 248, 0.05); }
+.se-table tbody tr.is-sel { background: rgba(56, 189, 248, 0.1); }
+.se-table tbody tr:focus-visible { outline: 1px solid var(--se-hold); }
+.se-table .is-up { color: var(--se-warn); }
+.se-table .is-down { color: var(--se-good); }
+.se-table .is-save { color: var(--se-good); font-weight: 600; }
+
+.se-detail { display: flex; flex-direction: column; gap: 10px; padding-top: 6px; border-top: 1px solid var(--se-line); }
+.se-dh { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; align-items: flex-end; }
+.se-dh h3 { font-size: 18px; }
+.se-dh small { font-size: 12px; color: var(--se-muted); }
+.se-verdict { padding: 8px 12px; border-radius: 10px; font-size: 13px; background: rgba(74, 222, 128, 0.08); border: 1px solid rgba(74, 222, 128, 0.35); }
+.se-verdict b { color: var(--se-good); font-size: 16px; }
+
+.se-chart { width: 100%; height: auto; display: block; }
+.se-grid { stroke: var(--se-line); }
+.se-ax { fill: var(--se-muted); font-size: 12px; }
+.se-l { fill: none; stroke-width: 2.5; stroke-linejoin: round; transition: d 0.4s; }
+.se-l.is-hold { stroke: var(--se-hold); }
+.se-l.is-down { stroke: var(--se-down); }
+.se-l.is-total { stroke: var(--se-total); stroke-width: 3; }
+.se-best-band { fill: rgba(74, 222, 128, 0.08); }
+.se-opt circle { fill: var(--se-good); stroke: var(--se-bg); stroke-width: 3; }
+.se-opt text { fill: var(--se-good); font-size: 13px; font-weight: 600; }
+.se-cur circle { fill: var(--se-bg); stroke: var(--se-warn); stroke-width: 2.5; }
+.se-cur text { fill: var(--se-warn); font-size: 12px; }
+.se-lg text { fill: var(--se-muted); font-size: 12px; }
+.se-lg rect.is-hold { fill: var(--se-hold); }
+.se-lg rect.is-down { fill: var(--se-down); }
+.se-lg rect.is-total { fill: var(--se-total); }
+
+@media (prefers-reduced-motion: reduce) { .se-root * { transition: none !important; } }

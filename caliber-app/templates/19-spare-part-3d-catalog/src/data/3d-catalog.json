@@ -1,0 +1,2410 @@
+{
+ "parts": [
+  {
+   "id": "trim-set",
+   "component": "TrimSet",
+   "category": "valve-internal",
+   "priority": "P1",
+   "hint": "Control valve trim: cage (perforated cylinder), plug, stem, seat ring stacked on Y axis.",
+   "materials": 496,
+   "stockItems": 159,
+   "consumedIn17m": 122,
+   "funclocs": 496,
+   "criticalSA": 195,
+   "units": [
+    "SET"
+   ],
+   "usedIn": [
+    "control-valve"
+   ],
+   "examples": [
+    "TRIM SET,CONTROL VALVE,SIZE NN15,PTFE",
+    "TRIM SET,CONTROL VALVE,DWG.397-2668,FOR ",
+    "TRIM SET,CONTROL VALVE,DWG.539-4886,FOR ",
+    "TRIM SET,CONTROL VALVE,DWG.688-2327,FOR "
+   ]
+  },
+  {
+   "id": "bearing-journal",
+   "component": "BearingJournal",
+   "category": "rotating",
+   "priority": "P1",
+   "hint": "Hydrodynamic journal (sleeve) bearing: split babbitt-lined shell, two half-cylinders (top/bottom) with oil groove and anti-rotation pin.",
+   "materials": 445,
+   "stockItems": 156,
+   "consumedIn17m": 42,
+   "funclocs": 91,
+   "criticalSA": 419,
+   "units": [
+    "SET"
+   ],
+   "usedIn": [
+    "centrifugal-compressor",
+    "steam-turbine"
+   ],
+   "examples": [
+    "BEARING,JOURNAL,TYPE FT14,A182F11",
+    "BEARING,JOURNAL,TYPE OC984,INCOLOY",
+    "BEARING,JOURNAL,MODEL AM99,INCOLOY",
+    "BEARING,JOURNAL,DWG.828-3925,FOR KC-106B"
+   ]
+  },
+  {
+   "id": "bearing-thrust-pad",
+   "component": "BearingThrustPad",
+   "category": "rotating",
+   "priority": "P1",
+   "hint": "Tilting-pad thrust bearing: ring of 6-8 kidney-shaped pads on a carrier ring facing a thrust collar disc.",
+   "materials": 402,
+   "stockItems": 161,
+   "consumedIn17m": 30,
+   "funclocs": 90,
+   "criticalSA": 387,
+   "units": [
+    "SET"
+   ],
+   "usedIn": [
+    "steam-turbine",
+    "centrifugal-compressor"
+   ],
+   "examples": [
+    "BEARING,THRUST PAD,SIZE NO123,A105",
+    "BEARING,THRUST PAD,TYPE AS180,A105",
+    "BEARING,THRUST PAD,DWG.148-3158,FOR KC-1",
+    "BEARING,THRUST PAD,DWG.182-5089,FOR KC-1"
+   ]
+  },
+  {
+   "id": "seal-labyrinth",
+   "component": "SealLabyrinth",
+   "category": "sealing",
+   "priority": "P1",
+   "hint": "Labyrinth seal: short sleeve with 6-10 thin circumferential knife-edge teeth (stacked torus/thin cylinders).",
+   "materials": 375,
+   "stockItems": 93,
+   "consumedIn17m": 34,
+   "funclocs": 91,
+   "criticalSA": 359,
+   "units": [
+    "SET"
+   ],
+   "usedIn": [
+    "centrifugal-compressor",
+    "steam-turbine"
+   ],
+   "examples": [
+    "SEAL,LABYRINTH,DWG.702-2423,FOR KC-106B",
+    "SEAL,LABYRINTH,TYPE KI535,A182F11",
+    "SEAL,LABYRINTH,DWG.698-7509,FOR KC-145",
+    "SEAL,LABYRINTH,DWG.694-8721,FOR KC-150A"
+   ]
+  },
+  {
+   "id": "positioner",
+   "component": "Positioner",
+   "category": "instrument",
+   "priority": "P1",
+   "hint": "Valve positioner: rectangular housing with display window, gauge ports, feedback lever arm.",
+   "materials": 334,
+   "stockItems": 147,
+   "consumedIn17m": 101,
+   "funclocs": 395,
+   "criticalSA": 149,
+   "units": [
+    "EA"
+   ],
+   "usedIn": [
+    "control-valve"
+   ],
+   "examples": [
+    "POSITIONER,VALVE,TYPE FO338,MONEL",
+    "POSITIONER,VALVE,DWG.834-3196,FOR FCV-10",
+    "POSITIONER,VALVE,TYPE VN762,VITON",
+    "POSITIONER,VALVE,DWG.317-5830,FOR FCV-10"
+   ]
+  },
+  {
+   "id": "coupling",
+   "component": "Coupling",
+   "category": "rotating",
+   "priority": "P1",
+   "hint": "Flexible disc/grid coupling: two hubs with flanges and a spacer, bolt circle between flanges.",
+   "materials": 330,
+   "stockItems": 125,
+   "consumedIn17m": 57,
+   "funclocs": 269,
+   "criticalSA": 240,
+   "units": [
+    "SET"
+   ],
+   "usedIn": [
+    "centrifugal-pump",
+    "centrifugal-compressor"
+   ],
+   "examples": [
+    "COUPLING,TYPE RD822,A105",
+    "COUPLING,MODEL WX810,MONEL",
+    "COUPLING,DWG.795-4722,FOR KC-137A",
+    "COUPLING,TYPE BM896,NBR"
+   ]
+  },
+  {
+   "id": "spring",
+   "component": "Spring",
+   "category": "valve-internal",
+   "priority": "P1",
+   "hint": "Helical compression spring (TubeGeometry along a helix curve) with ground flat ends.",
+   "materials": 324,
+   "stockItems": 109,
+   "consumedIn17m": 48,
+   "funclocs": 198,
+   "criticalSA": 292,
+   "units": [
+    "EA"
+   ],
+   "usedIn": [
+    "safety-valve",
+    "steam-turbine"
+   ],
+   "examples": [
+    "SPRING,SAFETY VALVE,DWG.895-9739,FOR KT-",
+    "SPRING,SAFETY VALVE,SIZE QV915,NBR",
+    "SPRING,SAFETY VALVE,DWG.148-3141,FOR KT-",
+    "SPRING,SAFETY VALVE,DWG.206-1629,FOR KT-"
+   ]
+  },
+  {
+   "id": "seat-ring",
+   "component": "SeatRing",
+   "category": "valve-internal",
+   "priority": "P1",
+   "hint": "Seat ring: thick short ring with chamfered sealing edge and threads (torus + cylinder).",
+   "materials": 274,
+   "stockItems": 79,
+   "consumedIn17m": 65,
+   "funclocs": 330,
+   "criticalSA": 123,
+   "units": [
+    "EA"
+   ],
+   "usedIn": [
+    "control-valve"
+   ],
+   "examples": [
+    "SEAT RING,VALVE,TYPE LX216,SS304",
+    "SEAT RING,VALVE,DWG.103-5575,FOR FCV-104",
+    "SEAT RING,VALVE,DWG.619-8656,FOR FCV-108",
+    "SEAT RING,VALVE,TYPE CD360,VITON"
+   ]
+  },
+  {
+   "id": "impeller",
+   "component": "Impeller",
+   "category": "rotating",
+   "priority": "P1",
+   "hint": "Closed centrifugal pump impeller: hub, shroud discs, 6-7 curved backward vanes.",
+   "materials": 235,
+   "stockItems": 50,
+   "consumedIn17m": 52,
+   "funclocs": 215,
+   "criticalSA": 136,
+   "units": [
+    "EA"
+   ],
+   "usedIn": [
+    "centrifugal-pump"
+   ],
+   "examples": [
+    "IMPELLER,SIZE FY592,NBR",
+    "IMPELLER,SIZE SZ712,SS316",
+    "IMPELLER,DWG.140-1299,FOR PP-103",
+    "IMPELLER,SIZE DM745,CS"
+   ]
+  },
+  {
+   "id": "gasket",
+   "component": "Gasket",
+   "category": "sealing",
+   "priority": "P1",
+   "hint": "Spiral-wound / ring gasket: flat annulus with inner + outer guide rings.",
+   "materials": 229,
+   "stockItems": 173,
+   "consumedIn17m": 107,
+   "funclocs": 1221,
+   "criticalSA": 203,
+   "units": [
+    "EA"
+   ],
+   "usedIn": [
+    "control-valve",
+    "shell-tube-exchanger",
+    "centrifugal-pump",
+    "centrifugal-compressor",
+    "steam-turbine",
+    "cracking-furnace"
+   ],
+   "examples": [
+    "GASKET,RING,1-1/2IN,300#,PTFE",
+    "GASKET,RING,10IN,300#,PTFE",
+    "GASKET,RING,8IN,600#,GRAPHITE",
+    "GASKET,RING,8IN,150#,GR/304"
+   ]
+  },
+  {
+   "id": "valve-governor",
+   "component": "ValveGovernor",
+   "category": "valve",
+   "priority": "P1",
+   "hint": "Steam turbine governor valve: valve chest with plug/cage, actuator linkage and servo cylinder on top.",
+   "materials": 221,
+   "stockItems": 45,
+   "consumedIn17m": 8,
+   "funclocs": 13,
+   "criticalSA": 221,
+   "units": [
+    "ASS"
+   ],
+   "usedIn": [
+    "steam-turbine"
+   ],
+   "examples": [
+    "VALVE,GOVERNOR,SIZE UI72,CS",
+    "VALVE,GOVERNOR,DWG.336-2904,FOR KT-202",
+    "VALVE,GOVERNOR,DWG.279-1636,FOR KT-202",
+    "VALVE,GOVERNOR,DWG.303-3064,FOR KT-202"
+   ]
+  },
+  {
+   "id": "blade",
+   "component": "Blade",
+   "category": "rotating",
+   "priority": "P1",
+   "hint": "Turbine/compressor rotor blade: twisted aerofoil (extruded curved profile) with fir-tree root.",
+   "materials": 209,
+   "stockItems": 32,
+   "consumedIn17m": 10,
+   "funclocs": 13,
+   "criticalSA": 209,
+   "units": [
+    "SET"
+   ],
+   "usedIn": [
+    "steam-turbine"
+   ],
+   "examples": [
+    "BLADE,ROTOR,SIZE LW323,CS",
+    "BLADE,ROTOR,DWG.317-1756,FOR KT-202",
+    "BLADE,ROTOR,MODEL GJ662,SS316",
+    "BLADE,ROTOR,DWG.824-8763,FOR KT-202"
+   ]
+  },
+  {
+   "id": "bearing-ball",
+   "component": "BearingBall",
+   "category": "rotating",
+   "priority": "P1",
+   "hint": "Deep-groove ball bearing: outer race torus, inner race torus, 8-12 balls in a cage ring. Axis along X.",
+   "materials": 126,
+   "stockItems": 109,
+   "consumedIn17m": 60,
+   "funclocs": 412,
+   "criticalSA": 108,
+   "units": [
+    "EA"
+   ],
+   "usedIn": [
+    "centrifugal-pump",
+    "centrifugal-compressor",
+    "steam-turbine"
+   ],
+   "examples": [
+    "BEARING,BALL,1ROW,DEEP GROOVE,6210BDB",
+    "BEARING,BALL,ANGULAR,NU319BDB",
+    "BEARING,BALL,ANGULAR,7212",
+    "BEARING,BALL,1ROW,DEEP GROOVE,6305"
+   ]
+  },
+  {
+   "id": "thermocouple",
+   "component": "Thermocouple",
+   "category": "instrument",
+   "priority": "P1",
+   "hint": "Thermocouple assembly: long thin sheath, head (small cylinder) with cable gland.",
+   "materials": 78,
+   "stockItems": 52,
+   "consumedIn17m": 27,
+   "funclocs": 191,
+   "criticalSA": 69,
+   "units": [
+    "EA"
+   ],
+   "usedIn": [
+    "temperature-element",
+    "cracking-furnace",
+    "steam-turbine"
+   ],
+   "examples": [
+    "THERMOCOUPLE,K-2ELMNT,6.4X2000LG",
+    "THERMOCOUPLE,N-2ELMNT,8X2300LG",
+    "THERMOCOUPLE,K-1ELMNT,8X1100LG",
+    "THERMOCOUPLE,N-1ELMNT,3.2X3700LG"
+   ]
+  },
+  {
+   "id": "seal-mechanical",
+   "component": "SealMechanical",
+   "category": "sealing",
+   "priority": "P1",
+   "hint": "Cartridge mechanical seal: gland plate (flange with 4 bolt holes), sleeve, rotating face ring + stationary face ring, spring set.",
+   "materials": 72,
+   "stockItems": 47,
+   "consumedIn17m": 31,
+   "funclocs": 226,
+   "criticalSA": 57,
+   "units": [
+    "SET"
+   ],
+   "usedIn": [
+    "centrifugal-pump"
+   ],
+   "examples": [
+    "SEAL,MECHANICAL,TYPE WL931,CS",
+    "SEAL,MECHANICAL,TYPE AV862,NBR",
+    "SEAL,MECHANICAL,SIZE RQ741,MONEL",
+    "SEAL,MECHANICAL,TYPE WB489,NBR"
+   ]
+  },
+  {
+   "id": "bearing-roller",
+   "component": "BearingRoller",
+   "category": "rotating",
+   "priority": "P1",
+   "hint": "Cylindrical roller bearing: outer/inner rings (tube geometry) with 12-16 short cylinders as rollers, axial along X.",
+   "materials": 62,
+   "stockItems": 54,
+   "consumedIn17m": 24,
+   "funclocs": 174,
+   "criticalSA": 53,
+   "units": [
+    "EA"
+   ],
+   "usedIn": [
+    "centrifugal-pump",
+    "centrifugal-compressor",
+    "steam-turbine"
+   ],
+   "examples": [
+    "BEARING,ROLLER,CYL,1ROW,6205-2Z",
+    "BEARING,ROLLER,CYL,1ROW,7215BDB",
+    "BEARING,ROLLER,CYL,1ROW,6313 C3",
+    "BEARING,ROLLER,CYL,1ROW,6219-2Z"
+   ]
+  },
+  {
+   "id": "valve-gate",
+   "component": "ValveGate",
+   "category": "valve",
+   "priority": "P1",
+   "hint": "Gate valve: flanged body, bonnet, yoke, handwheel on rising stem, wedge gate inside (gate visible when body in x-ray).",
+   "materials": 60,
+   "stockItems": 51,
+   "consumedIn17m": 21,
+   "funclocs": 136,
+   "criticalSA": 39,
+   "units": [
+    "EA"
+   ],
+   "usedIn": [
+    "piping-line",
+    "cracking-furnace",
+    "vessel-drum"
+   ],
+   "examples": [
+    "VALVE,GATE,4IN,300#,A216WCB,RF",
+    "VALVE,GATE,6IN,300#,A216WCB,RF",
+    "VALVE,GATE,1IN,150#,CF8,RF",
+    "VALVE,GATE,12IN,150#,A216WCB,SW"
+   ]
+  },
+  {
+   "id": "burner-tip",
+   "component": "BurnerTip",
+   "category": "furnace",
+   "priority": "P1",
+   "hint": "Furnace burner tip: short nozzle cylinder with drilled gas ports around a dome.",
+   "materials": 59,
+   "stockItems": 24,
+   "consumedIn17m": 14,
+   "funclocs": 57,
+   "criticalSA": 54,
+   "units": [
+    "EA"
+   ],
+   "usedIn": [
+    "cracking-furnace"
+   ],
+   "examples": [
+    "BURNER TIP,SIZE RI114,INCOLOY",
+    "BURNER TIP,TYPE FE681,VITON",
+    "BURNER TIP,SIZE ML394,MONEL",
+    "BURNER TIP,TYPE PU42,INCOLOY"
+   ]
+  },
+  {
+   "id": "firebrick",
+   "component": "Firebrick",
+   "category": "furnace",
+   "priority": "P1",
+   "hint": "Insulating firebrick: rectangular brick (230x114x76 mm) with porous look.",
+   "materials": 53,
+   "stockItems": 33,
+   "consumedIn17m": 23,
+   "funclocs": 52,
+   "criticalSA": 52,
+   "units": [
+    "EA"
+   ],
+   "usedIn": [
+    "cracking-furnace"
+   ],
+   "examples": [
+    "FIREBRICK,INSUL,23,65T,114W,230L",
+    "FIREBRICK,INSUL,28,65T,114W,230L",
+    "FIREBRICK,INSUL,28,65T,114W,230L",
+    "FIREBRICK,INSUL,26,76T,114W,230L"
+   ]
+  },
+  {
+   "id": "castable",
+   "component": "Castable",
+   "category": "furnace",
+   "priority": "P1",
+   "hint": "Refractory castable lining: thick curved slab section (furnace wall layer).",
+   "materials": 51,
+   "stockItems": 27,
+   "consumedIn17m": 19,
+   "funclocs": 36,
+   "criticalSA": 49,
+   "units": [
+    "KG"
+   ],
+   "usedIn": [
+    "cracking-furnace"
+   ],
+   "examples": [
+    "CASTABLE,REFRACTORY,DENSE,1500DEG C",
+    "CASTABLE,REFRACTORY,INSUL,1500DEG C",
+    "CASTABLE,REFRACTORY,INSUL,1600DEG C",
+    "CASTABLE,REFRACTORY,DENSE,1700DEG C"
+   ]
+  },
+  {
+   "id": "ceramic-fiber",
+   "component": "CeramicFiber",
+   "category": "furnace",
+   "priority": "P1",
+   "hint": "Ceramic fiber blanket: soft rolled blanket layer (box with rounded edges).",
+   "materials": 49,
+   "stockItems": 32,
+   "consumedIn17m": 18,
+   "funclocs": 12,
+   "criticalSA": 49,
+   "units": [
+    "RL"
+   ],
+   "usedIn": [
+    "cracking-furnace"
+   ],
+   "examples": [
+    "CERAMIC FIBER,BLANKET,25T,128KG/M3,1260C",
+    "CERAMIC FIBER,BLANKET,25T,96KG/M3,1260C",
+    "CERAMIC FIBER,BLANKET,25T,96KG/M3,1260C",
+    "CERAMIC FIBER,BLANKET,25T,96KG/M3,1430C"
+   ]
+  },
+  {
+   "id": "valve-globe",
+   "component": "ValveGlobe",
+   "category": "valve",
+   "priority": "P1",
+   "hint": "Globe valve: spherical-ish body with flanges, bonnet, stem, handwheel, plug + seat inside.",
+   "materials": 35,
+   "stockItems": 28,
+   "consumedIn17m": 10,
+   "funclocs": 74,
+   "criticalSA": 3,
+   "units": [
+    "EA"
+   ],
+   "usedIn": [
+    "piping-line"
+   ],
+   "examples": [
+    "VALVE,GLOBE,6IN,150#,A216WCB,SW",
+    "VALVE,GLOBE,1IN,300#,A105,SW",
+    "VALVE,GLOBE,10IN,300#,A216WCB,SW",
+    "VALVE,GLOBE,6IN,150#,A105,RF"
+   ]
+  },
+  {
+   "id": "transmitter",
+   "component": "Transmitter",
+   "category": "instrument",
+   "priority": "P2",
+   "hint": "Pressure/DP transmitter: twin-chamber housing, round electronics head with display, process flange below.",
+   "materials": 192,
+   "stockItems": 106,
+   "consumedIn17m": 78,
+   "funclocs": 496,
+   "criticalSA": 151,
+   "units": [
+    "EA"
+   ],
+   "usedIn": [
+    "transmitter",
+    "steam-turbine"
+   ],
+   "examples": [
+    "TRANSMITTER,TEMP,TYPE CE324,CS",
+    "TRANSMITTER,DIFF.PRESS,0~10000MMH2O,FF",
+    "TRANSMITTER,DIFF.PRESS,0~2500MMH2O,HART",
+    "TRANSMITTER,PRESS,MODEL DY707,INCOLOY"
+   ]
+  },
+  {
+   "id": "sleeve",
+   "component": "Sleeve",
+   "category": "rotating",
+   "priority": "P2",
+   "hint": "Shaft sleeve: thin tube with keyway slot and collar.",
+   "materials": 176,
+   "stockItems": 49,
+   "consumedIn17m": 38,
+   "funclocs": 176,
+   "criticalSA": 94,
+   "units": [
+    "EA"
+   ],
+   "usedIn": [
+    "centrifugal-pump"
+   ],
+   "examples": [
+    "SLEEVE,SHAFT,DWG.397-9904,FOR PP-1022",
+    "SLEEVE,SHAFT,DWG.600-6735,FOR PP-1022",
+    "SLEEVE,SHAFT,DWG.483-6612,FOR PP-1029C",
+    "SLEEVE,SHAFT,DWG.334-7162,FOR PP-1033"
+   ]
+  },
+  {
+   "id": "disc",
+   "component": "Disc",
+   "category": "valve-internal",
+   "priority": "P2",
+   "hint": "Safety valve disc: disc with sealing lip and guide stem stub.",
+   "materials": 175,
+   "stockItems": 52,
+   "consumedIn17m": 37,
+   "funclocs": 171,
+   "criticalSA": 149,
+   "units": [
+    "EA"
+   ],
+   "usedIn": [
+    "safety-valve"
+   ],
+   "examples": [
+    "DISC,SAFETY VALVE,SIZE YQ886,CS",
+    "DISC,SAFETY VALVE,DWG.679-8123,FOR PRV-1",
+    "DISC,SAFETY VALVE,TYPE SJ41,SS304",
+    "DISC,SAFETY VALVE,DWG.210-7876,FOR PRV-1"
+   ]
+  },
+  {
+   "id": "ring",
+   "component": "Ring",
+   "category": "rotating",
+   "priority": "P2",
+   "hint": "Pump wear ring: plain ring with small L-section (casing/impeller wear ring).",
+   "materials": 170,
+   "stockItems": 55,
+   "consumedIn17m": 33,
+   "funclocs": 179,
+   "criticalSA": 101,
+   "units": [
+    "EA"
+   ],
+   "usedIn": [
+    "centrifugal-pump"
+   ],
+   "examples": [
+    "RING,WEAR,SIZE DW276,INCOLOY",
+    "RING,WEAR,TYPE II531,MONEL",
+    "RING,WEAR,MODEL IY331,SS304",
+    "RING,WEAR,MODEL BL990,MONEL"
+   ]
+  },
+  {
+   "id": "studbolt",
+   "component": "Studbolt",
+   "category": "fastener",
+   "priority": "P2",
+   "hint": "Stud bolt: threaded rod with two hex nuts.",
+   "materials": 166,
+   "stockItems": 161,
+   "consumedIn17m": 87,
+   "funclocs": 988,
+   "criticalSA": 145,
+   "units": [
+    "EA"
+   ],
+   "usedIn": [
+    "control-valve",
+    "shell-tube-exchanger",
+    "centrifugal-pump",
+    "steam-turbine",
+    "centrifugal-compressor",
+    "safety-valve"
+   ],
+   "examples": [
+    "STUDBOLT,5/8INX115MM,B8M/8M",
+    "STUDBOLT,5/8INX85MM,B7/2H",
+    "STUDBOLT,7/8INX60MM,B8M/8M",
+    "STUDBOLT,1INX30MM,B8M/8M"
+   ]
+  },
+  {
+   "id": "nozzle",
+   "component": "Nozzle",
+   "category": "valve-internal",
+   "priority": "P2",
+   "hint": "Safety valve nozzle: flanged short tube with contoured bore and seat face on top.",
+   "materials": 152,
+   "stockItems": 41,
+   "consumedIn17m": 44,
+   "funclocs": 146,
+   "criticalSA": 129,
+   "units": [
+    "EA"
+   ],
+   "usedIn": [
+    "safety-valve"
+   ],
+   "examples": [
+    "NOZZLE,SAFETY VALVE,MODEL AJ880,SS304",
+    "NOZZLE,SAFETY VALVE,DWG.481-9362,FOR PRV",
+    "NOZZLE,SAFETY VALVE,TYPE JU298,PTFE",
+    "NOZZLE,SAFETY VALVE,DWG.690-5638,FOR PRV"
+   ]
+  },
+  {
+   "id": "o-ring",
+   "component": "ORing",
+   "category": "sealing",
+   "priority": "P2",
+   "hint": "O-ring: torus.",
+   "materials": 150,
+   "stockItems": 112,
+   "consumedIn17m": 51,
+   "funclocs": 309,
+   "criticalSA": 136,
+   "units": [
+    "EA"
+   ],
+   "usedIn": [
+    "centrifugal-compressor",
+    "steam-turbine",
+    "centrifugal-pump",
+    "on-off-valve"
+   ],
+   "examples": [
+    "O-RING,NBR,139MM ID,2.5MM CS",
+    "O-RING,NBR,290MM ID,5.3MM CS",
+    "O-RING,NBR,154MM ID,3.5MM CS",
+    "O-RING,EPDM,182MM ID,2.5MM CS"
+   ]
+  },
+  {
+   "id": "thermowell",
+   "component": "Thermowell",
+   "category": "instrument",
+   "priority": "P2",
+   "hint": "Thermowell: tapered closed-end tube with flange at the top.",
+   "materials": 129,
+   "stockItems": 45,
+   "consumedIn17m": 29,
+   "funclocs": 141,
+   "criticalSA": 56,
+   "units": [
+    "EA"
+   ],
+   "usedIn": [
+    "temperature-element",
+    "cracking-furnace"
+   ],
+   "examples": [
+    "THERMOWELL,DWG.409-3668,FOR BF-101-QF04",
+    "THERMOWELL,DWG.876-3527,FOR BF-102-BRN24",
+    "THERMOWELL,MODEL IH758,MONEL",
+    "THERMOWELL,SIZE MM727,CS"
+   ]
+  },
+  {
+   "id": "fan",
+   "component": "Fan",
+   "category": "rotating",
+   "priority": "P2",
+   "hint": "Motor cooling fan: hub with 8-12 straight radial blades.",
+   "materials": 124,
+   "stockItems": 51,
+   "consumedIn17m": 27,
+   "funclocs": 128,
+   "criticalSA": 72,
+   "units": [
+    "EA"
+   ],
+   "usedIn": [
+    "centrifugal-pump",
+    "centrifugal-compressor"
+   ],
+   "examples": [
+    "FAN,COOLING MOTOR,TYPE LI523,CS",
+    "FAN,COOLING MOTOR,SIZE YS876,MONEL",
+    "FAN,COOLING MOTOR,MODEL JM498,VITON",
+    "FAN,COOLING MOTOR,DWG.598-6022,FOR KC-36"
+   ]
+  },
+  {
+   "id": "packing-set",
+   "component": "PackingSet",
+   "category": "sealing",
+   "priority": "P2",
+   "hint": "Valve stem packing set: stack of 5 square-section rings with spacer/lantern ring.",
+   "materials": 85,
+   "stockItems": 48,
+   "consumedIn17m": 48,
+   "funclocs": 576,
+   "criticalSA": 71,
+   "units": [
+    "SET"
+   ],
+   "usedIn": [
+    "control-valve",
+    "on-off-valve",
+    "motor-operated-valve"
+   ],
+   "examples": [
+    "PACKING SET,VALVE,MODEL YQ525,SS304",
+    "PACKING SET,VALVE,SIZE YW314,SS316",
+    "PACKING SET,VALVE,MODEL FV359,GRAPHITE",
+    "PACKING SET,VALVE,MODEL VM646,SS316"
+   ]
+  },
+  {
+   "id": "demister-pad",
+   "component": "DemisterPad",
+   "category": "internal",
+   "priority": "P2",
+   "hint": "Wire-mesh demister pad: flat circular slab with mesh texture/grid lines and support grid.",
+   "materials": 83,
+   "stockItems": 12,
+   "consumedIn17m": 23,
+   "funclocs": 94,
+   "criticalSA": 52,
+   "units": [
+    "EA"
+   ],
+   "usedIn": [
+    "vessel-drum",
+    "column"
+   ],
+   "examples": [
+    "DEMISTER PAD,SIZE MZ267,INCOLOY",
+    "DEMISTER PAD,MODEL WB275,A105",
+    "DEMISTER PAD,MODEL YU588,MONEL",
+    "DEMISTER PAD,TYPE SI739,CS"
+   ]
+  },
+  {
+   "id": "pipe",
+   "component": "Pipe",
+   "category": "piping",
+   "priority": "P2",
+   "hint": "Pipe spool: straight cylinder (tube) with bevelled ends.",
+   "materials": 76,
+   "stockItems": 75,
+   "consumedIn17m": 29,
+   "funclocs": 265,
+   "criticalSA": 51,
+   "units": [
+    "LG"
+   ],
+   "usedIn": [
+    "shell-tube-exchanger",
+    "piping-line",
+    "cracking-furnace"
+   ],
+   "examples": [
+    "PIPE,1IN,SCH40,P11,SMLS,6M LG",
+    "PIPE,1IN,SCH80,P11,SMLS,6M LG",
+    "PIPE,1/2IN,STD,P11,SMLS,6M LG",
+    "PIPE,3/4IN,SCH160,CS,SMLS,6M LG"
+   ]
+  },
+  {
+   "id": "diaphragm",
+   "component": "Diaphragm",
+   "category": "valve-internal",
+   "priority": "P2",
+   "hint": "Actuator diaphragm: thin flexible disc with a molded convolution (lathe geometry).",
+   "materials": 74,
+   "stockItems": 38,
+   "consumedIn17m": 34,
+   "funclocs": 398,
+   "criticalSA": 48,
+   "units": [
+    "EA"
+   ],
+   "usedIn": [
+    "control-valve"
+   ],
+   "examples": [
+    "DIAPHRAGM,ACTUATOR,MODEL LB982,VITON",
+    "DIAPHRAGM,ACTUATOR,MODEL ZF286,MONEL",
+    "DIAPHRAGM,ACTUATOR,TYPE VB425,SS316",
+    "DIAPHRAGM,ACTUATOR,TYPE VP55,CS"
+   ]
+  },
+  {
+   "id": "filter-element",
+   "component": "FilterElement",
+   "category": "rotating-aux",
+   "priority": "P2",
+   "hint": "Lube oil filter element: pleated cylindrical cartridge (star-shaped cross-section) with end caps.",
+   "materials": 70,
+   "stockItems": 62,
+   "consumedIn17m": 22,
+   "funclocs": 81,
+   "criticalSA": 70,
+   "units": [
+    "EA"
+   ],
+   "usedIn": [
+    "centrifugal-compressor",
+    "steam-turbine"
+   ],
+   "examples": [
+    "FILTER ELEMENT,SEAL GAS,10MICRON,P/N FE-",
+    "FILTER ELEMENT,LUBE OIL,3MICRON,P/N FE-6",
+    "FILTER ELEMENT,AIR INTAKE,25MICRON,P/N F",
+    "FILTER ELEMENT,SEAL GAS,5MICRON,P/N FE-9"
+   ]
+  },
+  {
+   "id": "solenoid-valve",
+   "component": "SolenoidValve",
+   "category": "instrument",
+   "priority": "P2",
+   "hint": "Solenoid valve: small valve body with coil housing cylinder on top and cable entry.",
+   "materials": 67,
+   "stockItems": 39,
+   "consumedIn17m": 20,
+   "funclocs": 152,
+   "criticalSA": 63,
+   "units": [
+    "EA"
+   ],
+   "usedIn": [
+    "on-off-valve",
+    "steam-turbine"
+   ],
+   "examples": [
+    "SOLENOID VALVE,TYPE ZX236,NBR",
+    "SOLENOID VALVE,MODEL ND561,VITON",
+    "SOLENOID VALVE,MODEL KO409,SS304",
+    "SOLENOID VALVE,SIZE ZO551,A182F11"
+   ]
+  },
+  {
+   "id": "valve-needle",
+   "component": "ValveNeedle",
+   "category": "valve",
+   "priority": "P2",
+   "hint": "Needle (instrument) valve: small hex bar-stock body, T-handle, tapered needle stem.",
+   "materials": 66,
+   "stockItems": 59,
+   "consumedIn17m": 27,
+   "funclocs": 260,
+   "criticalSA": 45,
+   "units": [
+    "EA"
+   ],
+   "usedIn": [
+    "transmitter",
+    "pressure-gauge"
+   ],
+   "examples": [
+    "VALVE,NEEDLE,1/4IN NPT,3000PSI,SS316",
+    "VALVE,NEEDLE,1/4IN NPT,6000PSI,SS316",
+    "VALVE,NEEDLE,3/4IN ODT,6000PSI,SS316",
+    "VALVE,NEEDLE,1/2IN ODT,6000PSI,SS316"
+   ]
+  },
+  {
+   "id": "flange",
+   "component": "Flange",
+   "category": "piping",
+   "priority": "P2",
+   "hint": "Weld-neck flange: disc with bolt-hole circle and hub.",
+   "materials": 60,
+   "stockItems": 56,
+   "consumedIn17m": 25,
+   "funclocs": 238,
+   "criticalSA": 25,
+   "units": [
+    "EA"
+   ],
+   "usedIn": [
+    "piping-line",
+    "shell-tube-exchanger",
+    "restriction-orifice"
+   ],
+   "examples": [
+    "FLANGE,BLIND,3IN,150#,A105,RF",
+    "FLANGE,SO,6IN,600#,SS316,RF",
+    "FLANGE,WN,10IN,600#,SS316,RF",
+    "FLANGE,WN,12IN,150#,A105,RF"
+   ]
+  },
+  {
+   "id": "switch",
+   "component": "Switch",
+   "category": "instrument",
+   "priority": "P2",
+   "hint": "Limit switch: rectangular body with roller-lever arm.",
+   "materials": 60,
+   "stockItems": 41,
+   "consumedIn17m": 25,
+   "funclocs": 201,
+   "criticalSA": 52,
+   "units": [
+    "EA"
+   ],
+   "usedIn": [
+    "on-off-valve",
+    "centrifugal-pump",
+    "motor-operated-valve"
+   ],
+   "examples": [
+    "SWITCH,LIMIT,MODEL EU665,SS304",
+    "SWITCH,LIMIT,MODEL LY687,GRAPHITE",
+    "SWITCH,LIMIT,MODEL XF109,SS304",
+    "SWITCH,LIMIT,TYPE KM477,INCOLOY"
+   ]
+  },
+  {
+   "id": "tray-valve",
+   "component": "TrayValve",
+   "category": "internal",
+   "priority": "P2",
+   "hint": "Column tray valve: round floating cap with 3 bent legs.",
+   "materials": 55,
+   "stockItems": 24,
+   "consumedIn17m": 10,
+   "funclocs": 39,
+   "criticalSA": 46,
+   "units": [
+    "EA"
+   ],
+   "usedIn": [
+    "column"
+   ],
+   "examples": [
+    "TRAY VALVE,SIZE RL876,SS316",
+    "TRAY VALVE,TYPE YF253,SS304",
+    "TRAY VALVE,DWG.661-4133,FOR CL-1165",
+    "TRAY VALVE,TYPE KN748,NBR"
+   ]
+  },
+  {
+   "id": "tube-plug",
+   "component": "TubePlug",
+   "category": "internal",
+   "priority": "P2",
+   "hint": "Heat exchanger tube plug: tapered pin.",
+   "materials": 53,
+   "stockItems": 30,
+   "consumedIn17m": 21,
+   "funclocs": 161,
+   "criticalSA": 31,
+   "units": [
+    "EA"
+   ],
+   "usedIn": [
+    "shell-tube-exchanger"
+   ],
+   "examples": [
+    "TUBE PLUG,EXCHANGER,MODEL YT163,INCOLOY",
+    "TUBE PLUG,EXCHANGER,TYPE KA133,A105",
+    "TUBE PLUG,EXCHANGER,MODEL AV897,SS316",
+    "TUBE PLUG,EXCHANGER,MODEL AT252,NBR"
+   ]
+  },
+  {
+   "id": "anchor",
+   "component": "Anchor",
+   "category": "furnace",
+   "priority": "P2",
+   "hint": "Refractory anchor: V-shaped steel anchor (two bent rods) welded on a plate.",
+   "materials": 48,
+   "stockItems": 31,
+   "consumedIn17m": 14,
+   "funclocs": 12,
+   "criticalSA": 48,
+   "units": [
+    "EA"
+   ],
+   "usedIn": [
+    "cracking-furnace"
+   ],
+   "examples": [
+    "ANCHOR,REFRACTORY,SIZE TY222,A182F11",
+    "ANCHOR,REFRACTORY,MODEL JJ735,VITON",
+    "ANCHOR,REFRACTORY,MODEL WD458,SS304",
+    "ANCHOR,REFRACTORY,TYPE UL206,SS304"
+   ]
+  },
+  {
+   "id": "gauge",
+   "component": "Gauge",
+   "category": "instrument",
+   "priority": "P2",
+   "hint": "Pressure gauge: round dial face with needle and bottom connection.",
+   "materials": 46,
+   "stockItems": 42,
+   "consumedIn17m": 20,
+   "funclocs": 91,
+   "criticalSA": 7,
+   "units": [
+    "EA"
+   ],
+   "usedIn": [
+    "pressure-gauge"
+   ],
+   "examples": [
+    "GAUGE,PRESSURE,0-100KG/CM2,6IN DIAL",
+    "GAUGE,PRESSURE,0-100KG/CM2,6IN DIAL",
+    "GAUGE,PRESSURE,0-16KG/CM2,4IN DIAL",
+    "GAUGE,PRESSURE,0-10KG/CM2,4IN DIAL"
+   ]
+  },
+  {
+   "id": "connector",
+   "component": "Connector",
+   "category": "instrument",
+   "priority": "P3",
+   "hint": "Tube fitting connector (male): hex body + threaded end + ferrule nut.",
+   "materials": 70,
+   "stockItems": 66,
+   "consumedIn17m": 34,
+   "funclocs": 296,
+   "criticalSA": 46,
+   "units": [
+    "EA"
+   ],
+   "usedIn": [
+    "transmitter",
+    "temperature-element",
+    "pressure-gauge"
+   ],
+   "examples": [
+    "CONNECTOR,MALE,1/4IN ODT,1/4IN NPT,SS316",
+    "CONNECTOR,MALE,1/2IN ODT,1/4IN NPT,SS316",
+    "CONNECTOR,MALE,1/4IN ODT,1/2IN NPT,SS316",
+    "CONNECTOR,MALE,1/2IN ODT,1/4IN NPT,SS316"
+   ]
+  },
+  {
+   "id": "gland",
+   "component": "Gland",
+   "category": "instrument",
+   "priority": "P3",
+   "hint": "Cable gland: hex body + dome cap with cable hole.",
+   "materials": 67,
+   "stockItems": 62,
+   "consumedIn17m": 24,
+   "funclocs": 337,
+   "criticalSA": 40,
+   "units": [
+    "EA"
+   ],
+   "usedIn": [
+    "centrifugal-pump",
+    "transmitter",
+    "temperature-element",
+    "junction-box",
+    "centrifugal-compressor"
+   ],
+   "examples": [
+    "GLAND,CABLE,MODEL EB364,INCOLOY",
+    "GLAND,CABLE,SIZE UC872,A105",
+    "GLAND,CABLE,SIZE HZ226,NBR",
+    "GLAND,CABLE,SIZE LK857,INCOLOY"
+   ]
+  },
+  {
+   "id": "oil",
+   "component": "Oil",
+   "category": "consumable",
+   "priority": "P3",
+   "hint": "Lube oil: 20 L pail or oil sump level block (translucent amber).",
+   "materials": 65,
+   "stockItems": 65,
+   "consumedIn17m": 23,
+   "funclocs": 178,
+   "criticalSA": 57,
+   "units": [
+    "L"
+   ],
+   "usedIn": [
+    "centrifugal-compressor",
+    "centrifugal-pump"
+   ],
+   "examples": [
+    "OIL,LUBRICANT,ISO VG 32,MINERAL,5L",
+    "OIL,LUBRICANT,ISO VG 100,SYNTHETIC,5L",
+    "OIL,LUBRICANT,ISO VG 100,MINERAL,5L",
+    "OIL,LUBRICANT,ISO VG 150,MINERAL,1L"
+   ]
+  },
+  {
+   "id": "tubing",
+   "component": "Tubing",
+   "category": "piping",
+   "priority": "P3",
+   "hint": "Instrument tubing: thin tube bent with 2 elbows.",
+   "materials": 54,
+   "stockItems": 46,
+   "consumedIn17m": 20,
+   "funclocs": 157,
+   "criticalSA": 33,
+   "units": [
+    "M"
+   ],
+   "usedIn": [
+    "transmitter"
+   ],
+   "examples": [
+    "TUBING,TYPE HS18,NBR",
+    "TUBING,TYPE KV230,A182F11",
+    "TUBING,MODEL KO708,SS316",
+    "TUBING,TYPE IM115,A105"
+   ]
+  },
+  {
+   "id": "elbow",
+   "component": "Elbow",
+   "category": "piping",
+   "priority": "P3",
+   "hint": "Pipe elbow 45/90 deg (torus segment).",
+   "materials": 48,
+   "stockItems": 48,
+   "consumedIn17m": 15,
+   "funclocs": 132,
+   "criticalSA": 24,
+   "units": [
+    "EA"
+   ],
+   "usedIn": [
+    "piping-line",
+    "cracking-furnace"
+   ],
+   "examples": [
+    "ELBOW,90DEG,1-1/2IN,SCH80,SS316,SW",
+    "ELBOW,90DEG,4IN,3000#,A234WPB,BW",
+    "ELBOW,90DEG,1/4IN,3000#,A234WPB,BW",
+    "ELBOW,90DEG,3/4IN,SCH40,A234WPB,BW"
+   ]
+  },
+  {
+   "id": "tee",
+   "component": "Tee",
+   "category": "piping",
+   "priority": "P3",
+   "hint": "Pipe tee: two intersecting cylinders.",
+   "materials": 47,
+   "stockItems": 46,
+   "consumedIn17m": 23,
+   "funclocs": 119,
+   "criticalSA": 7,
+   "units": [
+    "EA"
+   ],
+   "usedIn": [
+    "piping-line"
+   ],
+   "examples": [
+    "TEE,1-1/2IN,SCH40,A234WPB,SW",
+    "TEE,3IN,SCH40,A105,SW",
+    "TEE,2IN,3000#,A105,SW",
+    "TEE,8IN,SCH40,A105,BW"
+   ]
+  },
+  {
+   "id": "terminal",
+   "component": "Terminal",
+   "category": "electrical",
+   "priority": "P3",
+   "hint": "Crimp terminal lug: small ring/fork tongue + barrel.",
+   "materials": 44,
+   "stockItems": 38,
+   "consumedIn17m": 27,
+   "funclocs": 210,
+   "criticalSA": 23,
+   "units": [
+    "EA"
+   ],
+   "usedIn": [
+    "centrifugal-pump",
+    "junction-box",
+    "centrifugal-compressor"
+   ],
+   "examples": [
+    "TERMINAL,LUG,RING,1.25X3MM,CRIMP",
+    "TERMINAL,LUG,PIN,8X6MM,CRIMP",
+    "TERMINAL,LUG,PIN,2X6MM,CRIMP",
+    "TERMINAL,LUG,PIN,1.25X4MM,CRIMP"
+   ]
+  },
+  {
+   "id": "screw",
+   "component": "Screw",
+   "category": "fastener",
+   "priority": "P3",
+   "hint": "Screw: head + threaded shank.",
+   "materials": 41,
+   "stockItems": 41,
+   "consumedIn17m": 15,
+   "funclocs": 34,
+   "criticalSA": 37,
+   "units": [
+    "EA"
+   ],
+   "usedIn": [
+    "cracking-furnace",
+    "junction-box"
+   ],
+   "examples": [
+    "SCREW,TAPPING,M3X10MM,SS304",
+    "SCREW,TAPPING,M3X20MM,SS304",
+    "SCREW,TAPPING,M6X20MM,CS ZN",
+    "SCREW,TAPPING,M3X16MM,SS304"
+   ]
+  },
+  {
+   "id": "grease",
+   "component": "Grease",
+   "category": "consumable",
+   "priority": "P3",
+   "hint": "Grease cartridge/keg: cylinder with lid.",
+   "materials": 40,
+   "stockItems": 39,
+   "consumedIn17m": 14,
+   "funclocs": 89,
+   "criticalSA": 31,
+   "units": [
+    "KG"
+   ],
+   "usedIn": [
+    "centrifugal-pump",
+    "motor-operated-valve",
+    "centrifugal-compressor"
+   ],
+   "examples": [
+    "GREASE,POLYUREA,NLGI 1,180KG",
+    "GREASE,COMPLEX,NLGI 1,0.4KG",
+    "GREASE,LITHIUM,NLGI 3,16KG",
+    "GREASE,COMPLEX,NLGI 2,180KG"
+   ]
+  },
+  {
+   "id": "bolt",
+   "component": "Bolt",
+   "category": "fastener",
+   "priority": "P3",
+   "hint": "Anchor bolt: rod with L-bend and nut.",
+   "materials": 36,
+   "stockItems": 34,
+   "consumedIn17m": 8,
+   "funclocs": 24,
+   "criticalSA": 33,
+   "units": [
+    "EA"
+   ],
+   "usedIn": [
+    "cracking-furnace",
+    "centrifugal-pump"
+   ],
+   "examples": [
+    "BOLT,ANCHOR,MODEL FE831,PTFE",
+    "BOLT,ANCHOR,MODEL FY385,VITON",
+    "BOLT,ANCHOR,MODEL MJ902,PTFE",
+    "BOLT,ANCHOR,SIZE GV664,SS304"
+   ]
+  },
+  {
+   "id": "antirust",
+   "component": "Antirust",
+   "category": "consumable",
+   "priority": "P3",
+   "hint": "Antirust spray can: cylinder with dome and nozzle cap.",
+   "materials": 35,
+   "stockItems": 35,
+   "consumedIn17m": 13,
+   "funclocs": 51,
+   "criticalSA": 2,
+   "units": [
+    "CAN"
+   ],
+   "usedIn": [
+    "piping-line"
+   ],
+   "examples": [
+    "ANTIRUST,SPRAY TYPE,400ML/CAN,TYPE-A",
+    "ANTIRUST,SPRAY TYPE,350ML/CAN,TYPE-B",
+    "ANTIRUST,SPRAY TYPE,400ML/CAN,TYPE-B",
+    "ANTIRUST,SPRAY TYPE,500ML/CAN,TYPE-A"
+   ]
+  },
+  {
+   "id": "lamp",
+   "component": "Lamp",
+   "category": "electrical",
+   "priority": "P3",
+   "hint": "LED lamp: bulb on E27 base.",
+   "materials": 34,
+   "stockItems": 29,
+   "consumedIn17m": 13,
+   "funclocs": 67,
+   "criticalSA": 10,
+   "units": [
+    "EA"
+   ],
+   "usedIn": [
+    "centrifugal-pump"
+   ],
+   "examples": [
+    "LAMP,LED,36W,220VAC,T8",
+    "LAMP,LED,18W,220VAC,E27",
+    "LAMP,LED,9W,220VAC,FLOOD",
+    "LAMP,LED,9W,24VDC,T8"
+   ]
+  },
+  {
+   "id": "terminal-block",
+   "component": "TerminalBlock",
+   "category": "electrical",
+   "priority": "P3",
+   "hint": "DIN terminal block: thin stacked slices with screw tops on a rail.",
+   "materials": 33,
+   "stockItems": 29,
+   "consumedIn17m": 8,
+   "funclocs": 49,
+   "criticalSA": 6,
+   "units": [
+    "EA"
+   ],
+   "usedIn": [
+    "junction-box"
+   ],
+   "examples": [
+    "TERMINAL BLOCK,MODEL FH830,A182F11",
+    "TERMINAL BLOCK,MODEL WC326,A182F11",
+    "TERMINAL BLOCK,TYPE HF975,SS304",
+    "TERMINAL BLOCK,MODEL WM648,A182F11"
+   ]
+  },
+  {
+   "id": "screen",
+   "component": "Screen",
+   "category": "internal",
+   "priority": "P3",
+   "hint": "Vessel/column inlet screen: perforated cylinder or flat mesh panel.",
+   "materials": 30,
+   "stockItems": 24,
+   "consumedIn17m": 9,
+   "funclocs": 55,
+   "criticalSA": 21,
+   "units": [
+    "SHT"
+   ],
+   "usedIn": [
+    "column",
+    "vessel-drum"
+   ],
+   "examples": [
+    "SCREEN,WIRE,SIZE JG151,PTFE",
+    "SCREEN,WIRE,TYPE BF417,GRAPHITE",
+    "SCREEN,WIRE,TYPE CF689,NBR",
+    "SCREEN,WIRE,SIZE BW802,SS304"
+   ]
+  },
+  {
+   "id": "tape",
+   "component": "Tape",
+   "category": "consumable",
+   "priority": "P3",
+   "hint": "PTFE/anti-corrosion tape roll: short wide torus/tube.",
+   "materials": 24,
+   "stockItems": 24,
+   "consumedIn17m": 12,
+   "funclocs": 55,
+   "criticalSA": 3,
+   "units": [
+    "RL"
+   ],
+   "usedIn": [
+    "piping-line"
+   ],
+   "examples": [
+    "TAPE,PTFE,25MMX15M",
+    "TAPE,PTFE,19MMX10M",
+    "TAPE,PTFE,12MMX10M",
+    "TAPE,PTFE,12MMX15M"
+   ]
+  },
+  {
+   "id": "cable",
+   "component": "Cable",
+   "category": "electrical",
+   "priority": "P3",
+   "hint": "Cable: bent tube with jacket.",
+   "materials": 17,
+   "stockItems": 15,
+   "consumedIn17m": 7,
+   "funclocs": 29,
+   "criticalSA": 4,
+   "units": [
+    "M"
+   ],
+   "usedIn": [
+    "junction-box"
+   ],
+   "examples": [
+    "CABLE,INSTRUMENT,1PR X 1.5MM2,ARMOURED",
+    "CABLE,INSTRUMENT,1PR X 0.75MM2,ARMOURED",
+    "CABLE,INSTRUMENT,1PR X 1.5MM2,ARMOURED",
+    "CABLE,INSTRUMENT,4PR X 1.5MM2,ARMOURED"
+   ]
+  }
+ ],
+ "equipment": [
+  {
+   "id": "cracking-furnace",
+   "component": "CrackingFurnace",
+   "name": "Cracking furnace (BF)",
+   "tagTypes": [
+    "BF"
+   ],
+   "sizeM": [
+    14,
+    30,
+    8
+   ],
+   "shells": "Refractory-lined firebox box, convection section above, stack on top, side peep doors; walls split for exploded view",
+   "instances": 12,
+   "slots": [
+    {
+     "id": "burner-tips",
+     "part": "burner-tip",
+     "name": "Floor burners",
+     "placement": "row of 6-8 on firebox floor"
+    },
+    {
+     "id": "radiant-coil",
+     "part": "pipe",
+     "name": "Radiant coil",
+     "placement": "vertical U-tubes in firebox"
+    },
+    {
+     "id": "lining-castable",
+     "part": "castable",
+     "name": "Castable lining",
+     "placement": "inner wall layer"
+    },
+    {
+     "id": "lining-fiber",
+     "part": "ceramic-fiber",
+     "name": "Ceramic fiber layer",
+     "placement": "behind castable"
+    },
+    {
+     "id": "firebrick",
+     "part": "firebrick",
+     "name": "Firebrick floor",
+     "placement": "floor tiles"
+    },
+    {
+     "id": "anchors",
+     "part": "anchor",
+     "name": "Refractory anchors",
+     "placement": "on wall plate"
+    },
+    {
+     "id": "coil-outlet-tc",
+     "part": "thermocouple",
+     "name": "Coil outlet thermocouple",
+     "placement": "on outlet pipe"
+    },
+    {
+     "id": "outlet-gasket",
+     "part": "gasket",
+     "name": "Outlet flange gasket",
+     "placement": "coil outlet flange"
+    },
+    {
+     "id": "fuel-gas-valve",
+     "part": "valve-gate",
+     "name": "Fuel gas header gate valve",
+     "placement": "burner header"
+    }
+   ]
+  },
+  {
+   "id": "centrifugal-compressor",
+   "component": "CentrifugalCompressor",
+   "name": "Centrifugal compressor / blower (KC)",
+   "tagTypes": [
+    "KC"
+   ],
+   "sizeM": [
+    6,
+    3,
+    3
+   ],
+   "shells": "Horizontally split casing (top half lifts in explode), suction/discharge nozzles, base skid",
+   "instances": 118,
+   "slots": [
+    {
+     "id": "bearing-de",
+     "part": "bearing-journal",
+     "name": "Journal bearing DE",
+     "placement": "shaft x=-1"
+    },
+    {
+     "id": "bearing-nde",
+     "part": "bearing-journal",
+     "name": "Journal bearing NDE",
+     "placement": "shaft x=+1"
+    },
+    {
+     "id": "thrust",
+     "part": "bearing-thrust-pad",
+     "name": "Thrust bearing",
+     "placement": "NDE end"
+    },
+    {
+     "id": "impellers",
+     "part": "impeller",
+     "name": "Impeller stages",
+     "placement": "on shaft"
+    },
+    {
+     "id": "lab-seal",
+     "part": "seal-labyrinth",
+     "name": "Labyrinth seals",
+     "placement": "between stages"
+    },
+    {
+     "id": "dry-seal",
+     "part": "seal-mechanical",
+     "name": "Shaft end seal",
+     "placement": "both ends"
+    },
+    {
+     "id": "coupling",
+     "part": "coupling",
+     "name": "Coupling to driver",
+     "placement": "drive end"
+    },
+    {
+     "id": "lube-filter",
+     "part": "filter-element",
+     "name": "Lube oil filter",
+     "placement": "on skid console"
+    },
+    {
+     "id": "lube-oil",
+     "part": "oil",
+     "name": "Lube oil sump",
+     "placement": "skid"
+    }
+   ]
+  },
+  {
+   "id": "steam-turbine",
+   "component": "SteamTurbine",
+   "name": "Steam turbine driver (KT)",
+   "tagTypes": [
+    "KT"
+   ],
+   "sizeM": [
+    5,
+    3,
+    3
+   ],
+   "shells": "Split casing with steam chest on top; governor valve rack; exhaust hood",
+   "instances": 14,
+   "slots": [
+    {
+     "id": "rotor-blades",
+     "part": "blade",
+     "name": "Rotor blade rows",
+     "placement": "3-5 discs on shaft"
+    },
+    {
+     "id": "journal-de",
+     "part": "bearing-journal",
+     "name": "Journal bearing",
+     "placement": "each end"
+    },
+    {
+     "id": "thrust",
+     "part": "bearing-thrust-pad",
+     "name": "Thrust bearing",
+     "placement": "front pedestal"
+    },
+    {
+     "id": "gov-valve",
+     "part": "valve-governor",
+     "name": "Governor valve",
+     "placement": "steam chest"
+    },
+    {
+     "id": "gland-seal",
+     "part": "seal-labyrinth",
+     "name": "Gland labyrinth seals",
+     "placement": "shaft ends"
+    },
+    {
+     "id": "trip-spring",
+     "part": "spring",
+     "name": "Trip valve spring",
+     "placement": "trip valve"
+    },
+    {
+     "id": "solenoid",
+     "part": "solenoid-valve",
+     "name": "Trip solenoid",
+     "placement": "on trip block"
+    },
+    {
+     "id": "speed-tx",
+     "part": "transmitter",
+     "name": "Speed/pressure transmitter",
+     "placement": "front"
+    },
+    {
+     "id": "casing-gasket",
+     "part": "gasket",
+     "name": "Casing joint gasket",
+     "placement": "split line"
+    }
+   ]
+  },
+  {
+   "id": "centrifugal-pump",
+   "component": "CentrifugalPump",
+   "name": "Centrifugal pump + motor (PP)",
+   "tagTypes": [
+    "PP"
+   ],
+   "sizeM": [
+    3,
+    1.5,
+    1
+   ],
+   "shells": "Volute casing (front cover explodes forward), bearing housing, motor with fan cover",
+   "instances": 497,
+   "slots": [
+    {
+     "id": "impeller",
+     "part": "impeller",
+     "name": "Impeller",
+     "placement": "in volute"
+    },
+    {
+     "id": "wear-ring",
+     "part": "ring",
+     "name": "Wear rings",
+     "placement": "impeller eye"
+    },
+    {
+     "id": "shaft-sleeve",
+     "part": "sleeve",
+     "name": "Shaft sleeve",
+     "placement": "under seal"
+    },
+    {
+     "id": "mech-seal",
+     "part": "seal-mechanical",
+     "name": "Mechanical seal",
+     "placement": "stuffing box"
+    },
+    {
+     "id": "bearing-de",
+     "part": "bearing-ball",
+     "name": "Ball bearing",
+     "placement": "bearing housing"
+    },
+    {
+     "id": "bearing-roller",
+     "part": "bearing-roller",
+     "name": "Roller bearing",
+     "placement": "bearing housing"
+    },
+    {
+     "id": "coupling",
+     "part": "coupling",
+     "name": "Coupling",
+     "placement": "pump-motor"
+    },
+    {
+     "id": "motor-fan",
+     "part": "fan",
+     "name": "Motor cooling fan",
+     "placement": "motor NDE"
+    },
+    {
+     "id": "casing-gasket",
+     "part": "gasket",
+     "name": "Casing gasket",
+     "placement": "volute cover"
+    }
+   ]
+  },
+  {
+   "id": "shell-tube-exchanger",
+   "component": "ShellTubeExchanger",
+   "name": "Shell & tube heat exchanger (HE)",
+   "tagTypes": [
+    "HE"
+   ],
+   "sizeM": [
+    8,
+    2,
+    2
+   ],
+   "shells": "Shell cylinder (fades in x-ray), channel head + cover explode along axis",
+   "instances": 457,
+   "slots": [
+    {
+     "id": "tube-bundle",
+     "part": "pipe",
+     "name": "Tube bundle",
+     "placement": "inside shell"
+    },
+    {
+     "id": "tube-plugs",
+     "part": "tube-plug",
+     "name": "Tube plugs",
+     "placement": "tubesheet"
+    },
+    {
+     "id": "channel-gasket",
+     "part": "gasket",
+     "name": "Channel gasket",
+     "placement": "channel flange"
+    },
+    {
+     "id": "studbolts",
+     "part": "studbolt",
+     "name": "Studbolts",
+     "placement": "flange bolt circle"
+    },
+    {
+     "id": "nozzle-flange",
+     "part": "flange",
+     "name": "Nozzle flanges",
+     "placement": "nozzles"
+    }
+   ]
+  },
+  {
+   "id": "vessel-drum",
+   "component": "VesselDrum",
+   "name": "Vessel / KO drum (VD)",
+   "tagTypes": [
+    "VD"
+   ],
+   "sizeM": [
+    3,
+    6,
+    3
+   ],
+   "shells": "Vertical vessel with 2:1 heads, top head explodes up",
+   "instances": 266,
+   "slots": [
+    {
+     "id": "demister",
+     "part": "demister-pad",
+     "name": "Demister pad",
+     "placement": "near top"
+    },
+    {
+     "id": "inlet-screen",
+     "part": "screen",
+     "name": "Inlet screen",
+     "placement": "inlet nozzle"
+    },
+    {
+     "id": "manway-gasket",
+     "part": "gasket",
+     "name": "Manway gasket",
+     "placement": "manway"
+    },
+    {
+     "id": "studbolts",
+     "part": "studbolt",
+     "name": "Manway studbolts",
+     "placement": "manway"
+    },
+    {
+     "id": "drain-valve",
+     "part": "valve-gate",
+     "name": "Drain gate valve",
+     "placement": "bottom"
+    }
+   ]
+  },
+  {
+   "id": "column",
+   "component": "Column",
+   "name": "Distillation column / stripper (CL)",
+   "tagTypes": [
+    "CL"
+   ],
+   "sizeM": [
+    3,
+    25,
+    3
+   ],
+   "shells": "Tall cylinder, shell sections explode apart vertically to show trays",
+   "instances": 68,
+   "slots": [
+    {
+     "id": "trays",
+     "part": "tray-valve",
+     "name": "Valve trays",
+     "placement": "every 2 m"
+    },
+    {
+     "id": "demister",
+     "part": "demister-pad",
+     "name": "Top demister",
+     "placement": "top"
+    },
+    {
+     "id": "screen",
+     "part": "screen",
+     "name": "Distributor screen",
+     "placement": "feed"
+    },
+    {
+     "id": "manway-gasket",
+     "part": "gasket",
+     "name": "Manway gaskets",
+     "placement": "manways"
+    },
+    {
+     "id": "studbolts",
+     "part": "studbolt",
+     "name": "Studbolts",
+     "placement": "manways"
+    }
+   ]
+  },
+  {
+   "id": "control-valve",
+   "component": "ControlValve",
+   "name": "Control valve (FCV/LCV/PCV/TCV)",
+   "tagTypes": [
+    "FCV",
+    "LCV",
+    "PCV",
+    "TCV"
+   ],
+   "sizeM": [
+    0.8,
+    1.4,
+    0.6
+   ],
+   "shells": "Globe body + bonnet (body fades), diaphragm actuator housing splits upward",
+   "instances": 1379,
+   "slots": [
+    {
+     "id": "trim",
+     "part": "trim-set",
+     "name": "Trim set (cage/plug)",
+     "placement": "inside body"
+    },
+    {
+     "id": "seat",
+     "part": "seat-ring",
+     "name": "Seat ring",
+     "placement": "body"
+    },
+    {
+     "id": "packing",
+     "part": "packing-set",
+     "name": "Stem packing",
+     "placement": "bonnet"
+    },
+    {
+     "id": "diaphragm",
+     "part": "diaphragm",
+     "name": "Actuator diaphragm",
+     "placement": "actuator"
+    },
+    {
+     "id": "spring",
+     "part": "spring",
+     "name": "Actuator spring",
+     "placement": "actuator"
+    },
+    {
+     "id": "positioner",
+     "part": "positioner",
+     "name": "Positioner",
+     "placement": "yoke side"
+    },
+    {
+     "id": "gasket",
+     "part": "gasket",
+     "name": "Body gasket",
+     "placement": "body-bonnet"
+    },
+    {
+     "id": "studbolts",
+     "part": "studbolt",
+     "name": "Body studbolts",
+     "placement": "flanges"
+    }
+   ]
+  },
+  {
+   "id": "on-off-valve",
+   "component": "OnOffValve",
+   "name": "On-off / shutdown valve (SDV)",
+   "tagTypes": [
+    "SDV"
+   ],
+   "sizeM": [
+    0.8,
+    1.2,
+    0.6
+   ],
+   "shells": "Ball/gate valve with pneumatic actuator box",
+   "instances": 414,
+   "slots": [
+    {
+     "id": "solenoid",
+     "part": "solenoid-valve",
+     "name": "Solenoid valve",
+     "placement": "actuator"
+    },
+    {
+     "id": "limit-switch",
+     "part": "switch",
+     "name": "Limit switch box",
+     "placement": "top"
+    },
+    {
+     "id": "o-rings",
+     "part": "o-ring",
+     "name": "Actuator O-rings",
+     "placement": "actuator"
+    },
+    {
+     "id": "packing",
+     "part": "packing-set",
+     "name": "Stem packing",
+     "placement": "bonnet"
+    },
+    {
+     "id": "gasket",
+     "part": "gasket",
+     "name": "Body gasket",
+     "placement": "flanges"
+    }
+   ]
+  },
+  {
+   "id": "motor-operated-valve",
+   "component": "MotorOperatedValve",
+   "name": "Motor-operated gate valve (MOV)",
+   "tagTypes": [
+    "MOV"
+   ],
+   "sizeM": [
+    0.8,
+    1.8,
+    0.6
+   ],
+   "shells": "Gate valve with electric actuator gearbox on top",
+   "instances": 80,
+   "slots": [
+    {
+     "id": "limit-switch",
+     "part": "switch",
+     "name": "Limit/torque switch",
+     "placement": "actuator"
+    },
+    {
+     "id": "packing",
+     "part": "packing-set",
+     "name": "Stem packing",
+     "placement": "bonnet"
+    },
+    {
+     "id": "grease",
+     "part": "grease",
+     "name": "Gearbox grease",
+     "placement": "actuator"
+    },
+    {
+     "id": "gasket",
+     "part": "gasket",
+     "name": "Bonnet gasket",
+     "placement": "bonnet"
+    }
+   ]
+  },
+  {
+   "id": "safety-valve",
+   "component": "SafetyValve",
+   "name": "Pressure safety valve (PRV)",
+   "tagTypes": [
+    "PRV"
+   ],
+   "sizeM": [
+    0.5,
+    1.2,
+    0.5
+   ],
+   "shells": "Angle body + bonnet + cap; bonnet fades to show spring",
+   "instances": 615,
+   "slots": [
+    {
+     "id": "spring",
+     "part": "spring",
+     "name": "Set-pressure spring",
+     "placement": "bonnet"
+    },
+    {
+     "id": "disc",
+     "part": "disc",
+     "name": "Disc",
+     "placement": "on nozzle"
+    },
+    {
+     "id": "nozzle",
+     "part": "nozzle",
+     "name": "Nozzle",
+     "placement": "inlet"
+    },
+    {
+     "id": "gasket",
+     "part": "gasket",
+     "name": "Inlet gasket",
+     "placement": "inlet flange"
+    },
+    {
+     "id": "studbolts",
+     "part": "studbolt",
+     "name": "Studbolts",
+     "placement": "flanges"
+    }
+   ]
+  },
+  {
+   "id": "transmitter",
+   "component": "Transmitter",
+   "name": "Transmitter (PIT/FIT/LIT/TIT/DPT)",
+   "tagTypes": [
+    "PIT",
+    "FIT",
+    "LIT",
+    "TIT",
+    "DPT"
+   ],
+   "sizeM": [
+    0.3,
+    0.4,
+    0.3
+   ],
+   "shells": "Electronics head cover unscrews outward in explode",
+   "instances": 2281,
+   "slots": [
+    {
+     "id": "transmitter",
+     "part": "transmitter",
+     "name": "Transmitter",
+     "placement": "main"
+    },
+    {
+     "id": "manifold-valve",
+     "part": "valve-needle",
+     "name": "Manifold needle valve",
+     "placement": "below"
+    },
+    {
+     "id": "tubing",
+     "part": "tubing",
+     "name": "Impulse tubing",
+     "placement": "to process"
+    },
+    {
+     "id": "connector",
+     "part": "connector",
+     "name": "Tube connector",
+     "placement": "tubing ends"
+    },
+    {
+     "id": "gland",
+     "part": "gland",
+     "name": "Cable gland",
+     "placement": "conduit entry"
+    }
+   ]
+  },
+  {
+   "id": "temperature-element",
+   "component": "TemperatureElement",
+   "name": "Temperature element (TEL)",
+   "tagTypes": [
+    "TEL"
+   ],
+   "sizeM": [
+    0.2,
+    0.8,
+    0.2
+   ],
+   "shells": "Head cover lifts; thermowell fades to show sheath",
+   "instances": 1305,
+   "slots": [
+    {
+     "id": "thermowell",
+     "part": "thermowell",
+     "name": "Thermowell",
+     "placement": "in pipe"
+    },
+    {
+     "id": "thermocouple",
+     "part": "thermocouple",
+     "name": "Thermocouple",
+     "placement": "inside well"
+    },
+    {
+     "id": "connector",
+     "part": "connector",
+     "name": "Connector",
+     "placement": "head"
+    },
+    {
+     "id": "gland",
+     "part": "gland",
+     "name": "Cable gland",
+     "placement": "head"
+    }
+   ]
+  },
+  {
+   "id": "pressure-gauge",
+   "component": "PressureGauge",
+   "name": "Pressure gauge (PGI)",
+   "tagTypes": [
+    "PGI"
+   ],
+   "sizeM": [
+    0.2,
+    0.4,
+    0.15
+   ],
+   "shells": "Front glass + bezel explode forward",
+   "instances": 1062,
+   "slots": [
+    {
+     "id": "gauge",
+     "part": "gauge",
+     "name": "Gauge",
+     "placement": "main"
+    },
+    {
+     "id": "root-valve",
+     "part": "valve-needle",
+     "name": "Root needle valve",
+     "placement": "below"
+    },
+    {
+     "id": "connector",
+     "part": "connector",
+     "name": "Connector",
+     "placement": "thread"
+    }
+   ]
+  },
+  {
+   "id": "restriction-orifice",
+   "component": "RestrictionOrifice",
+   "name": "Restriction orifice (ROF)",
+   "tagTypes": [
+    "ROF"
+   ],
+   "sizeM": [
+    0.6,
+    0.6,
+    0.6
+   ],
+   "shells": "Flange pair splits apart to show orifice plate",
+   "instances": 319,
+   "slots": [
+    {
+     "id": "gasket",
+     "part": "gasket",
+     "name": "Orifice gaskets",
+     "placement": "both faces"
+    },
+    {
+     "id": "flange",
+     "part": "flange",
+     "name": "Orifice flanges",
+     "placement": "both sides"
+    },
+    {
+     "id": "studbolts",
+     "part": "studbolt",
+     "name": "Studbolts",
+     "placement": "bolt circle"
+    }
+   ]
+  },
+  {
+   "id": "piping-line",
+   "component": "PipingLine",
+   "name": "Piping line (LINE)",
+   "tagTypes": [
+    "LINE"
+   ],
+   "sizeM": [
+    6,
+    1,
+    1
+   ],
+   "shells": "Insulation jacket fades in x-ray",
+   "instances": 2900,
+   "slots": [
+    {
+     "id": "pipe",
+     "part": "pipe",
+     "name": "Pipe spool",
+     "placement": "run"
+    },
+    {
+     "id": "elbow",
+     "part": "elbow",
+     "name": "Elbows",
+     "placement": "bends"
+    },
+    {
+     "id": "tee",
+     "part": "tee",
+     "name": "Tee",
+     "placement": "branch"
+    },
+    {
+     "id": "flange",
+     "part": "flange",
+     "name": "Flanges",
+     "placement": "joints"
+    },
+    {
+     "id": "gasket",
+     "part": "gasket",
+     "name": "Gaskets",
+     "placement": "joints"
+    },
+    {
+     "id": "studbolts",
+     "part": "studbolt",
+     "name": "Studbolts",
+     "placement": "joints"
+    },
+    {
+     "id": "block-valve",
+     "part": "valve-gate",
+     "name": "Block gate valve",
+     "placement": "inline"
+    },
+    {
+     "id": "antirust",
+     "part": "antirust",
+     "name": "Antirust coating",
+     "placement": "external"
+    },
+    {
+     "id": "tape",
+     "part": "tape",
+     "name": "Wrapping tape",
+     "placement": "external"
+    }
+   ]
+  },
+  {
+   "id": "junction-box",
+   "component": "JunctionBox",
+   "name": "Junction box (JBX)",
+   "tagTypes": [
+    "JBX"
+   ],
+   "sizeM": [
+    0.6,
+    0.6,
+    0.25
+   ],
+   "shells": "Door/cover swings open / fades",
+   "instances": 300,
+   "slots": [
+    {
+     "id": "terminal-block",
+     "part": "terminal-block",
+     "name": "Terminal blocks",
+     "placement": "DIN rail"
+    },
+    {
+     "id": "terminal",
+     "part": "terminal",
+     "name": "Cable lugs",
+     "placement": "on terminals"
+    },
+    {
+     "id": "gland",
+     "part": "gland",
+     "name": "Cable glands",
+     "placement": "bottom"
+    },
+    {
+     "id": "cable",
+     "part": "cable",
+     "name": "Cables",
+     "placement": "entries"
+    },
+    {
+     "id": "screw",
+     "part": "screw",
+     "name": "Screws",
+     "placement": "cover"
+    }
+   ]
+  }
+ ]
+}

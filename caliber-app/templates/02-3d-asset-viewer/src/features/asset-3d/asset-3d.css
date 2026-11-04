@@ -1,0 +1,462 @@
+/* =========================================
+   Gaya modul asset-3d
+   -----------------------------------------
+   - Semua kelas berawalan a3d- → tidak bentrok dengan CSS project utama
+   - Tidak ada reset global; warna lewat variabel --a3d-* yang bisa
+     di-override dari luar, contoh:
+       .a3d-root, .a3d-panel { --a3d-primary: #e11d48; }
+========================================= */
+
+.a3d-root,
+.a3d-panel {
+  --a3d-bg: #0b1120;
+  --a3d-panel: #0f172a;
+  --a3d-surface: #162033;
+  --a3d-surface-hover: #1c2a42;
+  --a3d-border: #23314a;
+  --a3d-text: #e2e8f0;
+  --a3d-muted: #8193b2;
+  --a3d-primary: #3b82f6;
+  --a3d-normal: #22c55e;
+  --a3d-warning: #f59e0b;
+  --a3d-critical: #ef4444;
+  --a3d-radius: 12px;
+
+  color: var(--a3d-text);
+  font-family: inherit;
+}
+
+.a3d-root *,
+.a3d-panel * {
+  box-sizing: border-box;
+}
+
+.a3d-root :where(h1, h2, p, ul),
+.a3d-panel :where(h1, h2, p, ul) {
+  margin: 0;
+  padding: 0;
+}
+
+.a3d-root :where(button, input),
+.a3d-panel :where(button, input),
+.a3d-tag {
+  font: inherit;
+  color: inherit;
+}
+
+.a3d-root :where(button),
+.a3d-panel :where(button),
+.a3d-tag {
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+.a3d-root {
+  container: a3d / inline-size;
+  position: relative;
+  min-height: 240px;
+  overflow: hidden;
+  background: var(--a3d-bg);
+  border-radius: inherit;
+}
+
+/* ---------- Panel ---------- */
+.a3d-panel {
+  background: var(--a3d-panel);
+  border-right: 1px solid var(--a3d-border);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.a3d-panel__header {
+  padding: 24px 20px 18px;
+  border-bottom: 1px solid var(--a3d-border);
+}
+
+.a3d-panel__header h1 {
+  font-size: 22px;
+  letter-spacing: -0.02em;
+  margin: 2px 0 16px;
+}
+
+.a3d-eyebrow {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--a3d-muted);
+  font-weight: 600;
+}
+
+.a3d-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.a3d-summary__item {
+  background: var(--a3d-surface);
+  border: 1px solid var(--a3d-border);
+  border-radius: 10px;
+  padding: 10px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  column-gap: 6px;
+  font-size: 12px;
+  color: var(--a3d-muted);
+}
+
+.a3d-summary__item strong {
+  font-size: 20px;
+  color: var(--a3d-text);
+  line-height: 1;
+}
+
+.a3d-summary__item span:last-child {
+  grid-column: 1 / -1;
+  margin-top: 4px;
+}
+
+.a3d-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.a3d-panel__body {
+  padding: 18px 20px 24px;
+}
+
+.a3d-hint {
+  font-size: 13px;
+  color: var(--a3d-muted);
+  margin-bottom: 12px;
+}
+
+.a3d-part-list {
+  list-style: none;
+  display: grid;
+  gap: 6px;
+}
+
+.a3d-part-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 10px;
+  background: var(--a3d-surface);
+  border: 1px solid var(--a3d-border);
+  text-align: left;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.a3d-part-row:hover {
+  background: var(--a3d-surface-hover);
+  border-color: #33476a;
+}
+
+.a3d-part-row__name {
+  flex: 1;
+  font-weight: 500;
+}
+
+.a3d-part-row__code {
+  font-size: 12px;
+  color: var(--a3d-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.a3d-back {
+  font-size: 13px;
+  color: var(--a3d-muted);
+  margin-bottom: 14px;
+}
+
+.a3d-back:hover {
+  color: var(--a3d-text);
+}
+
+.a3d-detail__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.a3d-detail__head h2 {
+  font-size: 20px;
+  letter-spacing: -0.01em;
+  margin-top: 2px;
+}
+
+.a3d-detail__desc {
+  font-size: 13px;
+  color: var(--a3d-muted);
+  line-height: 1.55;
+  margin: 10px 0 18px;
+}
+
+.a3d-badge {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.a3d-badge--normal {
+  color: var(--a3d-normal);
+  background: rgb(34 197 94 / 0.12);
+}
+
+.a3d-badge--warning {
+  color: var(--a3d-warning);
+  background: rgb(245 158 11 / 0.12);
+}
+
+.a3d-badge--critical {
+  color: var(--a3d-critical);
+  background: rgb(239 68 68 / 0.12);
+}
+
+.a3d-sensors {
+  display: grid;
+  gap: 10px;
+}
+
+.a3d-sensor {
+  background: var(--a3d-surface);
+  border: 1px solid var(--a3d-border);
+  border-radius: var(--a3d-radius);
+  padding: 14px;
+}
+
+.a3d-sensor__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.a3d-sensor__label {
+  font-size: 13px;
+  color: var(--a3d-muted);
+}
+
+.a3d-sensor__value {
+  font-size: 24px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.a3d-sensor__value small {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--a3d-muted);
+  margin-left: 4px;
+}
+
+.a3d-spark {
+  display: block;
+  width: 100%;
+  height: 36px;
+  margin: 8px 0 6px;
+}
+
+.a3d-spark__warn {
+  stroke: var(--a3d-warning);
+  stroke-dasharray: 3 3;
+  stroke-width: 1;
+  opacity: 0.45;
+  vector-effect: non-scaling-stroke;
+}
+
+.a3d-sensor__limits {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--a3d-muted);
+}
+
+.a3d-canvas,
+.a3d-label-layer {
+  position: absolute;
+  inset: 0;
+}
+
+.a3d-label-layer {
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.a3d-label-layer .a3d-tag {
+  pointer-events: auto;
+}
+
+/* ---------- Overlay di atas kanvas ---------- */
+.a3d-toolbar {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  right: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.a3d-toolbar__group {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  background: rgb(15 23 42 / 0.82);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--a3d-border);
+  border-radius: 10px;
+}
+
+.a3d-chip {
+  padding: 6px 12px;
+  border-radius: 7px;
+  font-size: 13px;
+  color: var(--a3d-muted);
+  transition: background 0.15s, color 0.15s;
+}
+
+.a3d-chip:hover {
+  background: var(--a3d-surface-hover);
+  color: var(--a3d-text);
+}
+
+.a3d-chip--on {
+  background: var(--a3d-surface-hover);
+  color: var(--a3d-text);
+}
+
+.a3d-slider {
+  padding: 4px 12px;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--a3d-muted);
+}
+
+.a3d-slider input {
+  width: 120px;
+  accent-color: var(--a3d-primary);
+}
+
+.a3d-legend {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  font-size: 12px;
+  color: var(--a3d-muted);
+  pointer-events: none;
+}
+
+.a3d-legend span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.a3d-legend__hint {
+  opacity: 0.7;
+}
+
+.a3d-live {
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--a3d-muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.a3d-live::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--a3d-muted);
+}
+
+.a3d-live--on {
+  color: var(--a3d-normal);
+}
+
+.a3d-live--on::before {
+  background: var(--a3d-normal);
+  animation: a3d-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes a3d-pulse {
+  50% {
+    opacity: 0.25;
+  }
+}
+
+/* ---------- Label 3D (drei <Html>) ---------- */
+.a3d-tag {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  padding: 5px 10px 5px 8px;
+  border-radius: 999px;
+  background: rgb(15 23 42 / 0.88);
+  border: 1px solid var(--a3d-border);
+  font-size: 12px;
+  color: var(--a3d-text);
+  user-select: none;
+  transition: border-color 0.15s, transform 0.15s;
+}
+
+.a3d-tag:hover,
+.a3d-tag--active {
+  border-color: #4b6390;
+  transform: translateY(-1px);
+}
+
+.a3d-tag__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  box-shadow: 0 0 8px currentColor;
+}
+
+.a3d-tag__code {
+  color: var(--a3d-muted);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.a3d-tag__name {
+  font-weight: 500;
+}
+
+/* Responsif berdasarkan lebar KOTAK modul (container query), bukan lebar layar,
+   jadi tetap rapi saat ditaruh di card kecil pada dashboard */
+@container a3d (max-width: 640px) {
+  .a3d-legend .a3d-legend__hint {
+    display: none;
+  }
+
+  .a3d-slider input {
+    width: 80px;
+  }
+}

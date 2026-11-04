@@ -1,0 +1,206 @@
+/* Gaya modul sankey — semua class ber-prefix sk- (tanpa reset global) */
+
+.sk-root {
+  --sk-bg: #0b1120;
+  --sk-line: #1e293b;
+  --sk-text: #e2e8f0;
+  --sk-muted: #94a3b8;
+  --sk-accent: #38bdf8;
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+  border-radius: 14px;
+  background: var(--sk-bg);
+  border: 1px solid var(--sk-line);
+  color: var(--sk-text);
+  font-family: inherit;
+}
+
+/* legenda */
+.sk-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 12px;
+  color: var(--sk-muted);
+}
+.sk-legend li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.sk-swatch {
+  width: 14px;
+  height: 6px;
+  border-radius: 3px;
+}
+.sk-legend-note {
+  margin-left: auto;
+  font-style: italic;
+}
+
+/* kanvas */
+.sk-scroll {
+  overflow-x: auto;
+}
+.sk-svg {
+  display: block;
+  width: 100%;
+  min-width: 720px;
+  height: auto;
+  user-select: none;
+}
+
+/* aliran */
+.sk-link {
+  cursor: pointer;
+  transition: opacity 0.25s;
+}
+.sk-ribbon {
+  fill: none;
+  stroke-opacity: 0.42;
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 1;
+  animation: sk-draw 0.9s cubic-bezier(0.3, 0.7, 0.3, 1) forwards;
+  transition: stroke-opacity 0.25s;
+}
+.sk-flow {
+  fill: none;
+  stroke: #fff;
+  stroke-opacity: 0;
+  pointer-events: none;
+  animation-name: sk-flow, sk-fade;
+  animation-timing-function: linear, ease-out;
+  animation-iteration-count: infinite, 1;
+  animation-fill-mode: none, forwards;
+}
+.sk-link.is-lit .sk-ribbon {
+  stroke-opacity: 0.72;
+}
+.sk-link.is-dim {
+  opacity: 0.12;
+}
+.sk-root.is-paused .sk-flow {
+  animation-play-state: paused;
+}
+
+@keyframes sk-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes sk-flow {
+  to {
+    stroke-dashoffset: -26px; /* = PERIOD di EnergySankey.jsx */
+  }
+}
+@keyframes sk-fade {
+  to {
+    stroke-opacity: 0.3;
+  }
+}
+
+/* node */
+.sk-node {
+  cursor: pointer;
+  outline: none;
+  opacity: 0;
+  animation: sk-node-in 0.5s ease-out forwards;
+}
+.sk-node > * {
+  transition: opacity 0.25s;
+}
+.sk-node.is-dim > * {
+  opacity: 0.3;
+}
+.sk-node:focus-visible rect:first-child,
+.sk-node.is-pinned rect:first-child {
+  stroke: #fff;
+  stroke-width: 2;
+}
+.sk-hit {
+  fill: transparent;
+}
+.sk-label,
+.sk-value {
+  paint-order: stroke;
+  stroke: var(--sk-bg);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+.sk-label {
+  fill: var(--sk-text);
+  font-size: 13px;
+  font-weight: 600;
+}
+.sk-value {
+  fill: var(--sk-muted);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.sk-unit {
+  font-size: 10px;
+}
+
+@keyframes sk-node-in {
+  to {
+    opacity: 1;
+  }
+}
+
+/* tooltip */
+.sk-tip {
+  position: absolute;
+  z-index: 2;
+  min-width: 190px;
+  max-width: 260px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(15, 23, 42, 0.96);
+  border: 1px solid #334155;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+  font-size: 12px;
+  pointer-events: none;
+}
+.sk-tip strong {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+}
+.sk-tip dl {
+  display: grid;
+  gap: 3px;
+  margin: 0;
+}
+.sk-tip dl div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+.sk-tip dt {
+  color: var(--sk-muted);
+}
+.sk-tip dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sk-ribbon,
+  .sk-node {
+    animation: none;
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  .sk-flow {
+    animation: none;
+  }
+}

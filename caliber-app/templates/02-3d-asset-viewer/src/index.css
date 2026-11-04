@@ -1,0 +1,44 @@
+/* Gaya halaman DEMO saja — gaya modul ada di src/features/asset-3d/asset-3d.css */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  background: #0b1120;
+  color: #e2e8f0;
+  -webkit-font-smoothing: antialiased;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  height: 100%;
+}
+
+@media (max-width: 820px) {
+  .layout {
+    grid-template-columns: 1fr;
+    grid-template-rows: 58vh auto;
+    height: auto;
+    min-height: 100%;
+  }
+
+  .layout > .a3d-root {
+    order: -1;
+  }
+
+  .layout > .a3d-panel {
+    border-right: none;
+    border-top: 1px solid #23314a;
+  }
+}

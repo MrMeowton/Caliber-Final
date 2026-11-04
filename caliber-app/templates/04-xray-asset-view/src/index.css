@@ -1,0 +1,39 @@
+/* Gaya halaman DEMO saja — gaya modul ada di src/features/xray/xray.css */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  background: #020617;
+  color: #e2e8f0;
+}
+
+.page {
+  position: relative;
+  height: 100%;
+  padding: 16px;
+}
+
+.info {
+  position: absolute;
+  top: 28px;
+  right: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid #334155;
+  font-size: 13px;
+}

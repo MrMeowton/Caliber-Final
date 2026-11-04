@@ -1,0 +1,82 @@
+/* Gaya modul onboarding — semua class ber-prefix ob- */
+
+.ob-root {
+  --ob-bg: #0b1120;
+  --ob-line: #1e293b;
+  --ob-text: #e2e8f0;
+  --ob-muted: #94a3b8;
+  --ob-base: #94a3b8;
+  --ob-cmp: #38bdf8;
+  --ob-good: #4ade80;
+
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 16px;
+  border-radius: 14px;
+  background: var(--ob-bg);
+  border: 1px solid var(--ob-line);
+  color: var(--ob-text);
+}
+
+.ob-kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px; }
+.ob-kpi {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: #020617;
+  border: 1px solid var(--ob-line);
+}
+.ob-kpi span { font-size: 12px; color: var(--ob-muted); }
+.ob-kpi b { font-size: 26px; font-variant-numeric: tabular-nums; }
+.ob-kpi b small { font-size: 13px; font-weight: 400; color: var(--ob-muted); }
+.ob-kpi em { font-style: normal; font-size: 11px; color: #64748b; }
+.ob-kpi b.is-base { color: var(--ob-base); }
+.ob-kpi b.is-cmp { color: var(--ob-cmp); }
+.ob-kpi.is-hero { border-color: rgba(74, 222, 128, 0.4); background: rgba(74, 222, 128, 0.06); }
+.ob-kpi.is-hero b { color: var(--ob-good); }
+.ob-kpi.is-usd b { color: #fbbf24; }
+
+.ob-chart { width: 100%; height: auto; display: block; }
+.ob-grid { stroke: var(--ob-line); }
+.ob-mid { stroke: #334155; stroke-dasharray: 4 4; }
+.ob-ax { fill: var(--ob-muted); font-size: 12px; }
+.ob-line { fill: none; stroke-width: 2.5; transition: d 0.4s; }
+.is-base .ob-line, .is-base .ob-dot { stroke: var(--ob-base); }
+.is-cmp .ob-line, .is-cmp .ob-dot { stroke: var(--ob-cmp); }
+.ob-dot { fill: var(--ob-bg); stroke-width: 2.5; }
+.ob-drop { stroke: #475569; stroke-dasharray: 2 3; }
+.ob-lbl { font-size: 12px; font-weight: 600; }
+.is-base .ob-lbl { fill: var(--ob-base); }
+.is-cmp .ob-lbl { fill: var(--ob-cmp); }
+
+.ob-skills { display: flex; flex-direction: column; gap: 6px; }
+.ob-skills h4 { font-size: 13px; font-weight: 600; }
+.ob-skills h4 small { font-weight: 400; color: var(--ob-muted); margin-left: 6px; }
+.ob-sk { display: grid; grid-template-columns: 230px 1fr 70px; gap: 12px; align-items: center; font-size: 13px; }
+.ob-sk-track { position: relative; height: 16px; border-radius: 99px; background: #020617; }
+.ob-sk-bar {
+  position: absolute;
+  top: 7px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--ob-cmp), var(--ob-base));
+  transition: left 0.4s, width 0.4s;
+}
+.ob-sk-dot {
+  position: absolute;
+  top: 3px;
+  width: 10px;
+  height: 10px;
+  margin-left: -5px;
+  border-radius: 50%;
+  transition: left 0.4s;
+}
+.ob-sk-dot.is-base { background: var(--ob-base); }
+.ob-sk-dot.is-cmp { background: var(--ob-cmp); }
+.ob-sk b { text-align: right; font-variant-numeric: tabular-nums; color: var(--ob-muted); }
+.ob-sk b.is-good { color: var(--ob-good); }
+
+@media (max-width: 640px) { .ob-sk { grid-template-columns: 1fr 60px; } .ob-sk-track { display: none; } }
+@media (prefers-reduced-motion: reduce) { .ob-root * { transition: none !important; } }

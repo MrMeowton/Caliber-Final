@@ -1,0 +1,73 @@
+/* Gaya modul energy-pnl — semua class ber-prefix ep- */
+
+.ep-root {
+  --ep-bg: #0b1120;
+  --ep-line: #1e293b;
+  --ep-text: #e2e8f0;
+  --ep-muted: #94a3b8;
+  --ep-co2: #64748b;
+  --ep-bad: #f87171;
+  --ep-accent: #38bdf8;
+
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 16px;
+  border-radius: 14px;
+  background: var(--ep-bg);
+  border: 1px solid var(--ep-line);
+  color: var(--ep-text);
+}
+
+.ep-kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 8px; }
+.ep-kpi { display: flex; flex-direction: column; padding: 10px 12px; border-radius: 10px; background: #020617; border: 1px solid var(--ep-line); }
+.ep-kpi b { font-size: 22px; font-variant-numeric: tabular-nums; }
+.ep-kpi span { font-size: 12px; color: var(--ep-muted); }
+.ep-kpi.is-co2 b { color: #cbd5e1; }
+.ep-kpi.is-bad b { color: var(--ep-bad); }
+
+.ep-bars { display: flex; flex-direction: column; gap: 6px; }
+.ep-bar {
+  display: grid;
+  grid-template-columns: 170px 1fr 90px;
+  gap: 10px;
+  align-items: center;
+  padding: 4px 8px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+}
+.ep-bar:hover { background: rgba(56, 189, 248, 0.05); }
+.ep-bar.is-sel { border-color: var(--ep-accent); }
+.ep-bar-track { display: flex; height: 18px; border-radius: 6px; overflow: hidden; background: #020617; }
+.ep-bar-track i { display: block; height: 100%; transition: width 0.42s cubic-bezier(0.2, 0.7, 0.2, 1); }
+.ep-bar-track i + i { box-shadow: inset 1px 0 0 rgba(2, 6, 23, 0.6); }
+.ep-bar-track .is-co2,
+.ep-sw.is-co2 {
+  background: repeating-linear-gradient(135deg, var(--ep-co2) 0 4px, #334155 4px 8px);
+}
+.ep-bar b { text-align: right; font-variant-numeric: tabular-nums; }
+
+.ep-scroll { overflow-x: auto; }
+.ep-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.ep-table th { padding: 6px 10px; text-align: right; font-weight: 600; font-size: 12px; border-bottom: 1px solid var(--ep-line); cursor: pointer; white-space: nowrap; }
+.ep-table th:first-child { text-align: left; font-weight: 500; color: var(--ep-muted); cursor: default; }
+.ep-table th small { display: block; font-weight: 400; font-size: 11px; color: var(--ep-muted); }
+.ep-table th.is-sel { color: var(--ep-accent); }
+.ep-table td { padding: 6px 10px; text-align: right; font-variant-numeric: tabular-nums; border-bottom: 1px solid rgba(30, 41, 59, 0.5); white-space: nowrap; }
+.ep-table td small { display: block; font-size: 10px; color: var(--ep-muted); }
+.ep-table td:first-child { text-align: left; color: var(--ep-muted); }
+.ep-table td.is-indent { padding-left: 22px; }
+.ep-table tr.is-strong td { font-weight: 600; color: var(--ep-text); }
+.ep-table tr.is-total td { border-top: 2px solid #334155; font-size: 14px; }
+.ep-table tr.is-bad td:not(:first-child) { color: var(--ep-bad); }
+.ep-table tr.is-muted td:not(:first-child) { color: var(--ep-muted); }
+.ep-sw { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+
+@media (max-width: 640px) { .ep-bar { grid-template-columns: 1fr 80px; } .ep-bar-track { grid-column: 1 / -1; } }
+@media (prefers-reduced-motion: reduce) { .ep-root * { transition: none !important; } }

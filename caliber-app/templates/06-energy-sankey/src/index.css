@@ -1,0 +1,153 @@
+/* Gaya halaman DEMO saja — gaya modul ada di src/features/sankey/sankey.css */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  background: #020617;
+  color: #e2e8f0;
+}
+
+.page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tabs button {
+  padding: 8px 14px;
+  border: 1px solid #334155;
+  border-radius: 99px;
+  background: transparent;
+  color: #94a3b8;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.tabs button.is-on {
+  border-color: #38bdf8;
+  color: #e0f2fe;
+  background: rgba(56, 189, 248, 0.12);
+}
+
+.hint {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.eyebrow {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+h1 {
+  font-size: 24px;
+  text-wrap: balance;
+}
+
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 10px;
+}
+.kpi {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: #0b1120;
+  border: 1px solid #1e293b;
+}
+.kpi span,
+.kpi small {
+  font-size: 12px;
+  color: #94a3b8;
+}
+.kpi b {
+  font-size: 20px;
+  font-variant-numeric: tabular-nums;
+}
+.kpi.is-ok b {
+  color: #4ade80;
+}
+.kpi.is-bad b {
+  color: #f87171;
+}
+
+.levers {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 10px;
+}
+.lever {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: #0b1120;
+  border: 1px solid #1e293b;
+  font-size: 13px;
+}
+.lever-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+.lever b {
+  font-variant-numeric: tabular-nums;
+  color: #38bdf8;
+}
+.lever small {
+  color: #64748b;
+  font-size: 11px;
+}
+.lever input {
+  accent-color: #38bdf8;
+  width: 100%;
+}
+.playback {
+  justify-content: center;
+  align-items: flex-start;
+}
+.playback > button {
+  padding: 8px 14px;
+  border: 1px solid #334155;
+  border-radius: 99px;
+  background: transparent;
+  color: #e2e8f0;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.issues {
+  list-style: none;
+  font-size: 12px;
+  color: #fbbf24;
+  display: grid;
+  gap: 4px;
+}

@@ -1,0 +1,67 @@
+/* Gaya modul root-cause — semua kelas berawalan rc- agar tidak bentrok saat diintegrasikan */
+
+.rc-node {
+  width: 200px;
+  min-height: 64px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #162033;
+  border: 1.5px solid #23314a;
+  border-left: 5px solid var(--rc-color);
+  color: #e2e8f0;
+  font-size: 13px;
+  transition: opacity 0.2s, box-shadow 0.2s;
+}
+.rc-node--ok { --rc-color: #22c55e; }
+.rc-node--warn { --rc-color: #f59e0b; }
+.rc-node--alarm { --rc-color: #ef4444; }
+.rc-node--cause { background: #111a2b; border-style: dashed; border-left-style: solid; }
+
+.rc-node__label { font-weight: 600; }
+.rc-node__value { color: #8193b2; font-size: 12px; margin-top: 2px; }
+.rc-node__badge {
+  display: inline-block;
+  margin-top: 6px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: #ef4444;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.rc-node.is-dim { opacity: 0.25; }
+.rc-node.is-root { box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.45); }
+.rc-node.is-selected { box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.7); }
+
+/* Panel */
+.rc-panel { display: flex; flex-direction: column; gap: 8px; padding: 20px; }
+.rc-panel h2 { font-size: 18px; }
+.rc-panel h3 { font-size: 14px; margin-top: 12px; }
+.rc-muted { color: #8193b2; font-size: 13px; }
+
+.rc-pill { align-self: flex-start; padding: 2px 10px; border-radius: 99px; font-size: 12px; font-weight: 600; }
+.rc-pill--ok { background: #14532d; color: #86efac; }
+.rc-pill--warn { background: #78350f; color: #fcd34d; }
+.rc-pill--alarm { background: #7f1d1d; color: #fca5a5; }
+
+.rc-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.rc-list button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #23314a;
+  background: #162033;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.rc-list button:hover { background: #1c2a42; }
+.rc-list small { margin-left: auto; color: #8193b2; }
+
+.rc-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.rc-dot--ok { background: #22c55e; }
+.rc-dot--warn { background: #f59e0b; }
+.rc-dot--alarm { background: #ef4444; }

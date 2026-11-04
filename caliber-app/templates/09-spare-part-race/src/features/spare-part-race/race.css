@@ -1,0 +1,375 @@
+/* Gaya modul spare-part-race — semua class ber-prefix sr- (tanpa reset global) */
+
+.sr-root {
+  --sr-bg: #0b1120;
+  --sr-line: #1e293b;
+  --sr-text: #e2e8f0;
+  --sr-muted: #94a3b8;
+  --sr-asset: #38bdf8;
+  --sr-part: #a78bfa;
+  --sr-late: #f87171;
+  --sr-tight: #fbbf24;
+  --sr-safe: #4ade80;
+  --sr-info-w: 250px;
+  --sr-ease: 420ms cubic-bezier(0.2, 0.7, 0.2, 1);
+
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 14px;
+  background: var(--sr-bg);
+  border: 1px solid var(--sr-line);
+  color: var(--sr-text);
+  font-family: inherit;
+}
+
+/* ---------- ringkasan ---------- */
+.sr-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 8px;
+}
+.sr-sum {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #020617;
+  border: 1px solid var(--sr-line);
+}
+.sr-sum b {
+  font-size: 22px;
+  font-variant-numeric: tabular-nums;
+}
+.sr-sum span {
+  font-size: 12px;
+  color: var(--sr-muted);
+}
+.sr-sum.is-late b { color: var(--sr-late); }
+.sr-sum.is-tight b { color: var(--sr-tight); }
+.sr-sum.is-safe b { color: var(--sr-safe); }
+
+/* ---------- legenda ---------- */
+.sr-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  font-size: 12px;
+  color: var(--sr-muted);
+}
+.sr-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.sr-legend i {
+  display: inline-block;
+  font-style: normal;
+}
+.sr-lg-asset, .sr-lg-part {
+  width: 22px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--sr-asset);
+}
+.sr-lg-part { background: var(--sr-part); }
+.sr-lg-band {
+  width: 22px;
+  height: 10px;
+  border-radius: 3px;
+  background: repeating-linear-gradient(135deg, rgba(251, 191, 36, 0.45) 0 3px, rgba(251, 191, 36, 0.12) 3px 6px);
+}
+.sr-lg-fail { color: #fb923c; font-weight: 700; }
+.sr-lg-arrive {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--sr-part);
+  box-shadow: 0 0 0 2px var(--sr-bg), 0 0 0 3px var(--sr-part);
+}
+.sr-lg-gap {
+  width: 22px;
+  height: 12px;
+  border-radius: 3px;
+  background: rgba(248, 113, 113, 0.3);
+  border: 1px solid var(--sr-late);
+}
+
+/* ---------- papan & baris ---------- */
+.sr-board {
+  display: flex;
+  flex-direction: column;
+}
+.sr-row {
+  display: grid;
+  grid-template-columns: var(--sr-info-w) 1fr;
+  gap: 16px;
+  align-items: center;
+}
+.sr-track {
+  position: relative;
+  min-width: 0;
+}
+.sr-empty {
+  padding: 24px 0;
+  font-size: 13px;
+  color: var(--sr-muted);
+}
+
+/* sumbu */
+.sr-axis .sr-track {
+  height: 44px;
+  border-bottom: 1px solid var(--sr-line);
+}
+.sr-tick {
+  position: absolute;
+  bottom: 6px;
+  transform: translateX(-50%);
+  font-size: 11px;
+  color: #64748b;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.sr-tick::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -7px;
+  height: 5px;
+  border-left: 1px solid #334155;
+}
+.sr-today-label {
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+  padding: 1px 6px;
+  border-radius: 99px;
+  background: #e2e8f0;
+  color: #020617;
+  font-size: 10px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* baris balapan */
+.sr-race {
+  padding: 10px 8px;
+  margin: 0 -8px;
+  border-radius: 10px;
+  border-bottom: 1px solid var(--sr-line);
+  cursor: pointer;
+  outline: none;
+  transition: background var(--sr-ease);
+}
+.sr-race:hover { background: rgba(148, 163, 184, 0.05); }
+.sr-race:focus-visible { box-shadow: inset 0 0 0 2px var(--sr-asset); }
+.sr-race.is-selected { background: rgba(56, 189, 248, 0.08); }
+.sr-race.is-late.is-selected { background: rgba(248, 113, 113, 0.08); }
+
+.sr-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+.sr-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+.sr-title b {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sr-sub {
+  font-size: 12px;
+  color: var(--sr-muted);
+}
+.sr-verdict {
+  font-size: 12px;
+  font-weight: 600;
+}
+.sr-verdict.is-late { color: var(--sr-late); }
+.sr-verdict.is-tight { color: var(--sr-tight); }
+.sr-verdict.is-safe { color: var(--sr-safe); }
+
+.sr-badge {
+  flex: none;
+  padding: 2px 7px;
+  border-radius: 99px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.sr-badge.is-late { background: rgba(248, 113, 113, 0.16); color: var(--sr-late); }
+.sr-badge.is-tight { background: rgba(251, 191, 36, 0.14); color: var(--sr-tight); }
+.sr-badge.is-safe { background: rgba(74, 222, 128, 0.12); color: var(--sr-safe); }
+
+/* ---------- dua garis waktu ---------- */
+.sr-race .sr-track {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 0 14px;
+}
+.sr-lane {
+  position: relative;
+  height: 26px;
+}
+.sr-lane::before {
+  /* rel tipis sebagai lintasan */
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  border-top: 1px dashed #1e293b;
+}
+.sr-lane-tag {
+  position: absolute;
+  left: -2px;
+  top: 50%;
+  transform: translate(-100%, -50%);
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.sr-bar,
+.sr-band,
+.sr-gap,
+.sr-mark,
+.sr-date,
+.sr-now,
+.sr-orderby {
+  position: absolute;
+  transition: left var(--sr-ease), width var(--sr-ease), background var(--sr-ease);
+}
+.sr-bar {
+  top: 50%;
+  height: 6px;
+  margin-top: -3px;
+  border-radius: 3px;
+}
+.sr-bar-asset {
+  background: linear-gradient(90deg, rgba(56, 189, 248, 0.35), var(--sr-asset));
+}
+.sr-bar-part {
+  background: linear-gradient(90deg, rgba(167, 139, 250, 0.35), var(--sr-part));
+}
+.sr-bar-part.is-planned {
+  background: repeating-linear-gradient(90deg, var(--sr-part) 0 6px, transparent 6px 10px);
+  opacity: 0.8;
+}
+.sr-band {
+  top: 3px;
+  bottom: 3px;
+  border-radius: 4px;
+  background: repeating-linear-gradient(135deg, rgba(251, 191, 36, 0.4) 0 3px, rgba(251, 191, 36, 0.1) 3px 6px);
+}
+.sr-mark {
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+.sr-fail {
+  color: #fb923c;
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1;
+  text-shadow: 0 0 6px rgba(251, 146, 60, 0.6);
+}
+.sr-arrive {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--sr-part);
+  box-shadow: 0 0 0 2px var(--sr-bg), 0 0 0 3px var(--sr-part);
+}
+.is-late .sr-arrive {
+  background: var(--sr-late);
+  box-shadow: 0 0 0 2px var(--sr-bg), 0 0 0 3px var(--sr-late), 0 0 12px var(--sr-late);
+}
+.is-tight .sr-arrive {
+  background: var(--sr-tight);
+  box-shadow: 0 0 0 2px var(--sr-bg), 0 0 0 3px var(--sr-tight);
+}
+.sr-date {
+  top: 50%;
+  transform: translate(12px, -50%);
+  font-size: 10px;
+  color: var(--sr-muted);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.sr-date-fail {
+  top: -9px;
+  transform: translateX(-50%);
+}
+.is-late .sr-date-arrive { color: var(--sr-late); font-weight: 600; }
+
+/* batas pesan (hanya untuk part yang belum dipesan) */
+.sr-orderby {
+  top: 2px;
+  bottom: 2px;
+  width: 0;
+  border-left: 2px solid var(--sr-safe);
+}
+.sr-orderby::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  border: 4px solid transparent;
+  border-left: 6px solid var(--sr-safe);
+}
+.sr-orderby.is-overdue { border-color: var(--sr-late); }
+.sr-orderby.is-overdue::after { border-left-color: var(--sr-late); }
+
+/* garis hari ini menembus kedua lane */
+.sr-now {
+  top: -10px;
+  bottom: -10px;
+  width: 0;
+  border-left: 1px solid rgba(226, 232, 240, 0.55);
+  z-index: 1;
+}
+
+/* celah merah: downtime menunggu part */
+.sr-gap {
+  top: 0;
+  bottom: 0;
+  border-radius: 5px;
+  background: rgba(248, 113, 113, 0.18);
+  border: 1px solid rgba(248, 113, 113, 0.75);
+  animation: sr-pulse 1.6s ease-in-out infinite;
+}
+.sr-gap em {
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  transform: translate(-50%, 2px);
+  font-style: normal;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--sr-late);
+  white-space: nowrap;
+}
+@keyframes sr-pulse {
+  50% { background: rgba(248, 113, 113, 0.34); box-shadow: 0 0 14px rgba(248, 113, 113, 0.35); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sr-root * { transition: none !important; animation: none !important; }
+}
+
+/* ---------- layar sempit: info di atas, lintasan di bawah ---------- */
+@media (max-width: 720px) {
+  .sr-row { grid-template-columns: 1fr; gap: 6px; }
+  .sr-axis .sr-info { display: none; }
+  .sr-race .sr-track { margin-left: 20px; }
+  .sr-axis .sr-track { margin-left: 20px; }
+}

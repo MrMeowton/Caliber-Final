@@ -1,0 +1,338 @@
+/* Gaya modul timemachine — semua class ber-prefix tm- (tanpa reset global).
+ * TEMA: timpa variabel di bawah dari CSS milik sendiri (selector apa pun menang,
+ * karena default dibungkus :where = specificity 0), mis.
+ *   .dashboard .tm-part { --tm-bg: #fff; --tm-text: #0f172a; --tm-accent: #7c3aed; }
+ * Default hanya dipasang di komponen tm- terluar; yang bersarang mewarisinya.
+ */
+
+:where(.tm-part:not(.tm-part *)) {
+  --tm-bg: #0b1120;
+  --tm-panel: #111a2e;
+  --tm-line: #1e293b;
+  --tm-text: #e2e8f0;
+  --tm-muted: #94a3b8;
+  --tm-ok: #22c55e;
+  --tm-ai: #f59e0b;
+  --tm-alarm: #ef4444;
+  --tm-accent: #38bdf8;
+}
+
+.tm-part {
+  color: var(--tm-text);
+  font-family: inherit;
+}
+
+.tm-root {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 18px;
+  border-radius: 14px;
+  background: var(--tm-bg);
+  outline: none;
+  border: 1px solid var(--tm-line);
+  transition: box-shadow 0.4s;
+}
+.tm-root:focus-visible {
+  box-shadow: 0 0 0 2px var(--tm-accent);
+}
+.tm-root.is-alarm {
+  box-shadow: inset 0 0 0 1px rgba(239, 68, 68, 0.45);
+}
+
+/* header */
+.tm-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 12px;
+}
+.tm-title {
+  margin: 0;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--tm-muted);
+}
+.tm-now {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 2px 0 0;
+  font-size: 26px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.tm-tag {
+  padding: 2px 8px;
+  border-radius: 99px;
+  background: rgba(56, 189, 248, 0.15);
+  color: var(--tm-accent);
+  font-size: 11px;
+  font-weight: 600;
+}
+.tm-score {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-size: 11px;
+  color: var(--tm-muted);
+}
+.tm-score strong {
+  font-size: 24px;
+  color: var(--c);
+  font-variant-numeric: tabular-nums;
+  transition: color 0.2s;
+}
+
+/* grafik */
+.tm-chart {
+  width: 100%;
+  cursor: ew-resize;
+  touch-action: none;
+  user-select: none;
+}
+.tm-chart svg {
+  display: block;
+}
+.tm-grid {
+  stroke: var(--tm-line);
+}
+.tm-axis {
+  fill: var(--tm-muted);
+  font-size: 11px;
+}
+.tm-hatch {
+  stroke: rgba(148, 163, 184, 0.08);
+  stroke-width: 3;
+}
+.tm-future {
+  fill: rgba(148, 163, 184, 0.45);
+  font-size: 11px;
+  font-style: italic;
+}
+.tm-threshold {
+  stroke: var(--tm-alarm);
+  stroke-dasharray: 6 5;
+  opacity: 0.8;
+}
+.tm-threshold-label {
+  fill: var(--tm-alarm);
+  font-size: 11px;
+  font-weight: 600;
+}
+.tm-raw {
+  fill: none;
+  stroke: rgba(148, 163, 184, 0.35);
+  stroke-width: 1;
+}
+.tm-smooth {
+  fill: none;
+  stroke-width: 2.6;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.tm-forecast {
+  fill: none;
+  stroke: var(--tm-ai);
+  stroke-width: 2;
+  stroke-dasharray: 3 5;
+  stroke-linecap: round;
+}
+.tm-forecast-dot {
+  fill: var(--tm-bg);
+  stroke: var(--tm-ai);
+  stroke-width: 2;
+  animation: tm-pulse 1.2s ease-in-out infinite;
+}
+.tm-forecast-label {
+  fill: var(--tm-ai);
+  font-size: 11px;
+  font-weight: 700;
+}
+.tm-marker line {
+  stroke-width: 1.5;
+  stroke-dasharray: 2 3;
+}
+.tm-marker text {
+  font-size: 11px;
+  font-weight: 600;
+}
+.tm-marker.is-ai line {
+  stroke: var(--tm-ai);
+}
+.tm-marker.is-ai text {
+  fill: var(--tm-ai);
+}
+.tm-marker.is-alarm line {
+  stroke: var(--tm-alarm);
+}
+.tm-marker.is-alarm text {
+  fill: var(--tm-alarm);
+}
+.tm-lead path {
+  fill: none;
+  stroke: var(--tm-ai);
+  stroke-width: 1.5;
+}
+.tm-lead text {
+  fill: var(--tm-ai);
+  font-size: 12px;
+  font-weight: 700;
+}
+.tm-event {
+  fill: var(--tm-accent);
+}
+.tm-cursor {
+  stroke: var(--tm-text);
+  stroke-width: 1;
+  opacity: 0.6;
+}
+.tm-cursor-dot {
+  stroke: var(--tm-bg);
+  stroke-width: 2;
+}
+
+@keyframes tm-pulse {
+  50% {
+    stroke-width: 5;
+  }
+}
+
+/* kontrol */
+.tm-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.tm-btn,
+.tm-chip {
+  padding: 7px 12px;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  background: var(--tm-panel);
+  color: var(--tm-text);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.tm-btn:hover:not(:disabled),
+.tm-chip:hover {
+  border-color: var(--tm-accent);
+}
+.tm-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.tm-play {
+  width: 40px;
+  border-color: var(--tm-accent);
+  color: var(--tm-accent);
+}
+.tm-speed {
+  display: flex;
+  gap: 4px;
+}
+.tm-chip {
+  padding: 5px 9px;
+  font-size: 12px;
+}
+.tm-chip.is-on {
+  background: var(--tm-accent);
+  border-color: var(--tm-accent);
+  color: #04121f;
+}
+.tm-slider {
+  flex: 1 1 200px;
+  min-width: 140px;
+  height: 6px;
+  appearance: none;
+  border-radius: 99px;
+  background: linear-gradient(90deg, var(--tm-accent) var(--p), #1e293b var(--p));
+  cursor: pointer;
+}
+.tm-slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #f8fafc;
+  border: 3px solid var(--tm-accent);
+}
+.tm-slider::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #f8fafc;
+  border: 3px solid var(--tm-accent);
+}
+
+/* panel cerita */
+.tm-footer {
+  display: grid;
+  grid-template-columns: minmax(0, 350px) 1fr;
+  gap: 10px;
+}
+.tm-statuses {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.tm-status {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--tm-panel);
+  border-left: 3px solid var(--s);
+  transition: border-color 0.3s;
+}
+.tm-status span {
+  font-size: 11px;
+  color: var(--tm-muted);
+}
+.tm-status strong {
+  font-size: 17px;
+  color: var(--s);
+  transition: color 0.3s;
+}
+.tm-status small {
+  font-size: 11px;
+  color: var(--tm-muted);
+  font-variant-numeric: tabular-nums;
+}
+.tm-status.is-normal {
+  --s: var(--tm-ok);
+}
+.tm-status.is-warning {
+  --s: var(--tm-ai);
+}
+.tm-status.is-alarm {
+  --s: var(--tm-alarm);
+}
+.tm-narrative {
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: var(--tm-panel);
+  font-size: 14px;
+  line-height: 1.5;
+}
+.tm-narrative b {
+  color: #fff;
+}
+.tm-event-note {
+  display: block;
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--tm-accent);
+}
+
+@media (max-width: 640px) {
+  .tm-footer {
+    grid-template-columns: 1fr;
+  }
+}

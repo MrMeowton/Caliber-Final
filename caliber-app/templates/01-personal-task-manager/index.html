@@ -1,0 +1,253 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="description" content="A simple personal task management application.">
+
+    <title>TaskFlow — Personal Task Manager</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- JavaScript -->
+    <script src="script.js" defer></script>
+</head>
+
+<body>
+
+    <div class="app-container">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+
+            <div class="brand">
+                <div class="brand-icon">T</div>
+                <span>TaskFlow</span>
+            </div>
+
+            <nav class="navigation">
+                <p class="nav-label">MENU</p>
+
+                <a href="#dashboard" class="nav-item active">
+                    <span>▦</span>
+                    Dashboard
+                </a>
+
+                <a href="#tasks" class="nav-item">
+                    <span>☑</span>
+                    My Tasks
+                </a>
+
+                <a href="#completed" class="nav-item">
+                    <span>✓</span>
+                    Completed
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <p>PERSONAL WORKSPACE</p>
+                <span>TaskFlow v1.0</span>
+            </div>
+
+        </aside>
+
+
+        <!-- MAIN CONTENT -->
+        <main class="main-content">
+
+            <!-- HEADER -->
+            <header class="topbar">
+
+                <div>
+                    <p class="breadcrumb">Workspace / Dashboard</p>
+                    <h1>My Dashboard</h1>
+                </div>
+
+                <div class="profile">
+                    <div class="profile-avatar">A</div>
+
+                    <div class="profile-info">
+                        <strong>My Workspace</strong>
+                        <span>Personal Account</span>
+                    </div>
+                </div>
+
+            </header>
+
+
+            <!-- DASHBOARD -->
+            <section id="dashboard" class="dashboard">
+
+                <div class="welcome-section">
+                    <div>
+                        <p class="eyebrow">PERSONAL WORKSPACE</p>
+                        <h2>Manage your day, one task at a time.</h2>
+                        <p class="subtitle">
+                            Stay organized and keep track of your progress.
+                        </p>
+                    </div>
+                </div>
+
+
+                <!-- STATISTICS -->
+                <section class="stats-grid">
+
+                    <article class="stat-card">
+                        <p>Total Tasks</p>
+                        <h3 id="total-tasks">0</h3>
+                        <span>All your tasks</span>
+                    </article>
+
+                    <article class="stat-card">
+                        <p>Completed</p>
+                        <h3 id="completed-tasks">0</h3>
+                        <span>Tasks finished</span>
+                    </article>
+
+                    <article class="stat-card">
+                        <p>Pending</p>
+                        <h3 id="pending-tasks">0</h3>
+                        <span>Tasks remaining</span>
+                    </article>
+
+                </section>
+
+
+                <!-- TASK MANAGEMENT -->
+                <section id="tasks" class="task-section">
+
+                    <div class="section-header">
+                        <div>
+                            <h2>My Tasks</h2>
+                            <p>Organize and manage your daily activities.</p>
+                        </div>
+                    </div>
+
+
+                    <!-- ADD TASK FORM -->
+                    <form id="task-form" class="task-form">
+
+                        <div class="input-group">
+                            <label for="task-input">Task Name</label>
+
+                            <input
+                                type="text"
+                                id="task-input"
+                                name="task"
+                                placeholder="What do you need to do?"
+                                required
+                                maxlength="120"
+                            >
+                        </div>
+
+                        <div class="input-group">
+                            <label for="task-date">Due Date</label>
+
+                            <input
+                                type="date"
+                                id="task-date"
+                                name="dueDate"
+                            >
+                        </div>
+
+                        <div class="input-group">
+                            <label for="task-priority">Priority</label>
+
+                            <select id="task-priority" name="priority">
+
+                                <option value="low">Low</option>
+                                <option value="medium" selected>Medium</option>
+                                <option value="high">High</option>
+
+                            </select>
+                        </div>
+
+                        <button type="submit" id="add-task-btn">
+                            + Add Task
+                        </button>
+
+                    </form>
+
+
+                    <!-- TASK FILTERS -->
+                    <div class="task-toolbar">
+
+                        <div class="filter-group">
+
+                            <button
+                                type="button"
+                                class="filter-btn active"
+                                data-filter="all"
+                            >
+                                All
+                            </button>
+
+                            <button
+                                type="button"
+                                class="filter-btn"
+                                data-filter="pending"
+                            >
+                                Pending
+                            </button>
+
+                            <button
+                                type="button"
+                                class="filter-btn"
+                                data-filter="completed"
+                            >
+                                Completed
+                            </button>
+
+                        </div>
+
+                        <div class="task-count">
+                            <span id="visible-task-count">0</span> tasks
+                        </div>
+
+                    </div>
+
+
+                    <!-- TASK LIST -->
+                    <div id="task-list" class="task-list">
+
+                        <!-- Tasks will be rendered here using JavaScript -->
+
+                        <div id="empty-state" class="empty-state">
+
+                            <div class="empty-icon">✓</div>
+
+                            <h3>No tasks yet</h3>
+
+                            <p>
+                                Add your first task to get started.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </section>
+
+
+            <!-- FOOTER -->
+            <footer class="app-footer">
+                <p>TaskFlow &copy; 2026. Built for productivity.</p>
+            </footer>
+
+        </main>
+
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,97 @@
+/* Gaya modul xray — semua class ber-prefix xr- (tanpa reset global) */
+
+.xr-root {
+  position: relative;
+  width: 100%;
+  min-height: 320px;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #0b1120;
+  font-family: inherit;
+}
+
+.xr-toolbar {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.xr-btn {
+  padding: 8px 16px;
+  border: 1px solid #38bdf8;
+  border-radius: 8px;
+  background: rgba(15, 23, 42, 0.85);
+  color: #e0f2fe;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.xr-btn:hover,
+.xr-btn.is-on {
+  background: #0369a1;
+}
+
+.xr-badge {
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.5);
+  color: #fecaca;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.xr-hint {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: calc(100% - 24px);
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: rgba(15, 23, 42, 0.8);
+  color: #94a3b8;
+  font-size: 12px;
+  text-align: center;
+  pointer-events: none;
+}
+
+/* Label HTML di atas komponen bermasalah */
+.xr-label {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  padding: 6px 10px;
+  border: 1px solid rgba(239, 68, 68, 0.7);
+  border-radius: 8px;
+  background: rgba(15, 23, 42, 0.92);
+  color: #fee2e2;
+  font-size: 12px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.xr-label span:last-child {
+  color: #fca5a5;
+  font-variant-numeric: tabular-nums;
+}
+
+.xr-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ef4444;
+  animation: xr-blink 0.9s ease-in-out infinite;
+}
+
+@keyframes xr-blink {
+  50% {
+    opacity: 0.25;
+  }
+}

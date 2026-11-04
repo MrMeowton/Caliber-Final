@@ -1,0 +1,191 @@
+/* Gaya halaman DEMO saja — gaya modul ada di src/features/spare-part-race/race.css */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  background: #020617;
+  color: #e2e8f0;
+}
+
+.page {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.eyebrow {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+h1 {
+  font-size: 24px;
+  text-wrap: balance;
+}
+
+.controls {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.controls button {
+  padding: 8px 14px;
+  border: 1px solid #334155;
+  border-radius: 99px;
+  background: transparent;
+  color: #94a3b8;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+.controls button.is-on {
+  border-color: #4ade80;
+  color: #dcfce7;
+  background: rgba(74, 222, 128, 0.1);
+}
+.controls button.is-bad {
+  border-color: #f87171;
+  color: #fee2e2;
+  background: rgba(248, 113, 113, 0.12);
+}
+
+.ctl {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  color: #94a3b8;
+  min-width: 190px;
+}
+.ctl b {
+  color: #e2e8f0;
+}
+.ctl input {
+  accent-color: #38bdf8;
+}
+
+.hint {
+  font-size: 13px;
+  color: #94a3b8;
+  line-height: 1.7;
+  max-width: 900px;
+}
+.hint b {
+  color: #e2e8f0;
+}
+.red,
+.hint b.red {
+  color: #f87171;
+}
+.muted {
+  color: #94a3b8;
+  font-size: 13px;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 14px;
+  align-items: start;
+}
+@media (max-width: 1000px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.panel {
+  position: sticky;
+  top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 14px;
+  background: #0b1120;
+  border: 1px solid #1e293b;
+}
+.panel-head {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+.panel h2 {
+  font-size: 18px;
+}
+.panel h3 {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #64748b;
+  margin-top: 4px;
+}
+.facts {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 6px 12px;
+  font-size: 13px;
+}
+.facts dt {
+  color: #94a3b8;
+}
+.facts dd {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.facts small {
+  color: #64748b;
+}
+.advice {
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 13px;
+  line-height: 1.55;
+  border-left: 3px solid #4ade80;
+  background: rgba(74, 222, 128, 0.07);
+}
+.advice.is-late {
+  border-color: #f87171;
+  background: rgba(248, 113, 113, 0.09);
+}
+.advice.is-tight {
+  border-color: #fbbf24;
+  background: rgba(251, 191, 36, 0.08);
+}
+.actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.actions button {
+  padding: 8px 14px;
+  border: 1px solid #38bdf8;
+  border-radius: 99px;
+  background: rgba(56, 189, 248, 0.1);
+  color: #e0f2fe;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+.actions button.ghost {
+  border-color: #334155;
+  background: transparent;
+  color: #94a3b8;
+}

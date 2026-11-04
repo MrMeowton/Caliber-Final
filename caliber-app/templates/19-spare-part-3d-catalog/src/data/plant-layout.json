@@ -1,0 +1,382 @@
+{
+ "plant": "Chandra Asri cracker complex (demo area, Plant PX)",
+ "units": "metres",
+ "equipment": [
+  {
+   "tag": "BF-105",
+   "equipment": "cracking-furnace",
+   "description": "CRACKING FURNACE BF-105",
+   "criticality": "A",
+   "notifications": 151,
+   "bomMaterials": 111,
+   "partFamilies": {
+    "firebrick": 17,
+    "burner-tip": 17,
+    "castable": 15,
+    "gasket": 15,
+    "thermocouple": 12,
+    "studbolt": 12,
+    "ceramic-fiber": 10,
+    "anchor": 8
+   },
+   "position": [
+    -14,
+    0,
+    -6
+   ]
+  },
+  {
+   "tag": "BF-112",
+   "equipment": "cracking-furnace",
+   "description": "CRACKING FURNACE BF-112",
+   "criticality": "A",
+   "notifications": 97,
+   "bomMaterials": 112,
+   "partFamilies": {
+    "ceramic-fiber": 16,
+    "firebrick": 15,
+    "burner-tip": 13,
+    "castable": 11,
+    "screw": 9,
+    "anchor": 9,
+    "bolt": 8,
+    "thermocouple": 8
+   },
+   "position": [
+    -9,
+    0,
+    -6
+   ]
+  },
+  {
+   "tag": "BF-111",
+   "equipment": "cracking-furnace",
+   "description": "CRACKING FURNACE BF-111",
+   "criticality": "A",
+   "notifications": 33,
+   "bomMaterials": 114,
+   "partFamilies": {
+    "burner-tip": 15,
+    "firebrick": 15,
+    "anchor": 12,
+    "castable": 10,
+    "thermocouple": 10,
+    "screw": 9,
+    "ceramic-fiber": 8,
+    "bolt": 8
+   },
+   "position": [
+    -4,
+    0,
+    -6
+   ]
+  },
+  {
+   "tag": "BF-106",
+   "equipment": "cracking-furnace",
+   "description": "CRACKING FURNACE BF-106",
+   "criticality": "A",
+   "notifications": 95,
+   "bomMaterials": 106,
+   "partFamilies": {
+    "thermocouple": 15,
+    "firebrick": 10,
+    "gasket": 10,
+    "pipe": 10,
+    "burner-tip": 10,
+    "valve-gate": 8,
+    "bolt": 8,
+    "studbolt": 8
+   },
+   "position": [
+    1,
+    0,
+    -6
+   ]
+  },
+  {
+   "tag": "KC-210D",
+   "equipment": "centrifugal-compressor",
+   "description": "ETHYLENE BLOWER",
+   "criticality": "S",
+   "notifications": 0,
+   "bomMaterials": 31,
+   "partFamilies": {
+    "bearing-journal": 6,
+    "bearing-ball": 4,
+    "seal-labyrinth": 4,
+    "bearing-thrust-pad": 3,
+    "gasket": 3,
+    "oil": 3,
+    "o-ring": 3,
+    "coupling": 2
+   },
+   "position": [
+    2,
+    0,
+    -1
+   ]
+  },
+  {
+   "tag": "KC-773A",
+   "equipment": "centrifugal-compressor",
+   "description": "REFLUX COMPRESSOR",
+   "criticality": "S",
+   "notifications": 28,
+   "bomMaterials": 33,
+   "partFamilies": {
+    "bearing-journal": 6,
+    "coupling": 5,
+    "seal-labyrinth": 5,
+    "bearing-thrust-pad": 4,
+    "bearing-ball": 3,
+    "o-ring": 3,
+    "gasket": 2,
+    "oil": 2
+   },
+   "position": [
+    5,
+    0,
+    -1
+   ]
+  },
+  {
+   "tag": "KT-856A",
+   "equipment": "steam-turbine",
+   "description": "TURBINE FOR KC-856A",
+   "criticality": "A",
+   "notifications": 7,
+   "bomMaterials": 221,
+   "partFamilies": {
+    "blade": 28,
+    "bearing-journal": 27,
+    "bearing-thrust-pad": 23,
+    "valve-governor": 23,
+    "seal-labyrinth": 21,
+    "gasket": 19,
+    "filter-element": 14,
+    "spring": 13
+   },
+   "position": [
+    2,
+    0,
+    -6
+   ]
+  },
+  {
+   "tag": "KT-447",
+   "equipment": "steam-turbine",
+   "description": "TURBINE FOR KC-447",
+   "criticality": "S",
+   "notifications": 13,
+   "bomMaterials": 194,
+   "partFamilies": {
+    "bearing-thrust-pad": 28,
+    "seal-labyrinth": 22,
+    "bearing-journal": 20,
+    "valve-governor": 18,
+    "gasket": 17,
+    "studbolt": 16,
+    "blade": 14,
+    "filter-element": 12
+   },
+   "position": [
+    5,
+    0,
+    -6
+   ]
+  },
+  {
+   "tag": "PP-1574B",
+   "equipment": "centrifugal-pump",
+   "description": "QUENCH WATER PUMP",
+   "criticality": "A",
+   "notifications": 8,
+   "bomMaterials": 9,
+   "partFamilies": {
+    "coupling": 2,
+    "bearing-ball": 2,
+    "ring": 1,
+    "impeller": 1,
+    "seal-mechanical": 1,
+    "oil": 1,
+    "terminal": 1
+   },
+   "position": [
+    -6,
+    0,
+    6
+   ]
+  },
+  {
+   "tag": "PP-506A",
+   "equipment": "centrifugal-pump",
+   "description": "COOLING WATER PUMP",
+   "criticality": "A",
+   "notifications": 23,
+   "bomMaterials": 11,
+   "partFamilies": {
+    "seal-mechanical": 3,
+    "grease": 2,
+    "coupling": 1,
+    "gasket": 1,
+    "ring": 1,
+    "sleeve": 1,
+    "gland": 1,
+    "terminal": 1
+   },
+   "position": [
+    -3,
+    0,
+    6
+   ]
+  },
+  {
+   "tag": "PP-1729A",
+   "equipment": "centrifugal-pump",
+   "description": "COOLING WATER PUMP",
+   "criticality": "A",
+   "notifications": 21,
+   "bomMaterials": 10,
+   "partFamilies": {
+    "seal-mechanical": 3,
+    "oil": 2,
+    "ring": 1,
+    "studbolt": 1,
+    "o-ring": 1,
+    "sleeve": 1,
+    "gasket": 1
+   },
+   "position": [
+    0,
+    0,
+    6
+   ]
+  },
+  {
+   "tag": "HE-1756B",
+   "equipment": "shell-tube-exchanger",
+   "description": "SLOP OIL CONDENSER",
+   "criticality": "B",
+   "notifications": 13,
+   "bomMaterials": 3,
+   "partFamilies": {
+    "gasket": 2,
+    "studbolt": 1
+   },
+   "position": [
+    8,
+    0,
+    6
+   ]
+  },
+  {
+   "tag": "HE-1423B",
+   "equipment": "shell-tube-exchanger",
+   "description": "WASH WATER TLE",
+   "criticality": "B",
+   "notifications": 11,
+   "bomMaterials": 2,
+   "partFamilies": {
+    "gasket": 1,
+    "pipe": 1
+   },
+   "position": [
+    11,
+    0,
+    6
+   ]
+  },
+  {
+   "tag": "VD-1069",
+   "equipment": "vessel-drum",
+   "description": "PROPYLENE DRUM",
+   "criticality": "B",
+   "notifications": 5,
+   "bomMaterials": 5,
+   "partFamilies": {
+    "gasket": 3,
+    "demister-pad": 2,
+    "studbolt": 1
+   },
+   "position": [
+    14,
+    0,
+    -4
+   ]
+  },
+  {
+   "tag": "CL-457",
+   "equipment": "column",
+   "description": "FEED SCRUBBER",
+   "criticality": "A",
+   "notifications": 11,
+   "bomMaterials": 4,
+   "partFamilies": {
+    "studbolt": 2,
+    "gasket": 1,
+    "demister-pad": 1
+   },
+   "position": [
+    14,
+    0,
+    4
+   ]
+  },
+  {
+   "tag": "LCV-1691A",
+   "equipment": "control-valve",
+   "description": "LEVEL CONTROL VALVE",
+   "criticality": "S",
+   "notifications": 9,
+   "bomMaterials": 6,
+   "partFamilies": {
+    "seat-ring": 2,
+    "packing-set": 1,
+    "gasket": 1,
+    "diaphragm": 1,
+    "trim-set": 1
+   },
+   "position": [
+    -2,
+    0,
+    10
+   ]
+  },
+  {
+   "tag": "FCV-529A",
+   "equipment": "control-valve",
+   "description": "RICH AMINE FLOW CONTROL",
+   "criticality": "A",
+   "notifications": 7,
+   "bomMaterials": 4,
+   "partFamilies": {
+    "seat-ring": 1,
+    "diaphragm": 1,
+    "positioner": 1,
+    "trim-set": 1
+   },
+   "position": [
+    1,
+    0,
+    10
+   ]
+  },
+  {
+   "tag": "PRV-489B",
+   "equipment": "safety-valve",
+   "description": "SAFETY VALVE PP-1106A",
+   "criticality": "S",
+   "notifications": 7,
+   "bomMaterials": 3,
+   "partFamilies": {
+    "nozzle": 3
+   },
+   "position": [
+    4,
+    0,
+    10
+   ]
+  }
+ ]
+}

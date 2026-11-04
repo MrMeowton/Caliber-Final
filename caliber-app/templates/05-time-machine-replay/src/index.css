@@ -1,0 +1,132 @@
+/* Gaya halaman DEMO saja — gaya modul ada di src/features/timemachine/timemachine.css */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  background: #020617;
+  color: #e2e8f0;
+}
+
+.page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tabs button {
+  padding: 8px 14px;
+  border: 1px solid #334155;
+  border-radius: 99px;
+  background: transparent;
+  color: #94a3b8;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.tabs button.is-on {
+  border-color: #38bdf8;
+  color: #e0f2fe;
+  background: rgba(56, 189, 248, 0.12);
+}
+
+.hint {
+  font-size: 12px;
+  color: #64748b;
+}
+
+/* contoh 2: dashboard komposisi */
+.toolbar {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.toolbar button,
+.card button {
+  padding: 7px 12px;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  background: #0f172a;
+  color: #e2e8f0;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.card button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.dash {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 14px;
+  align-items: start;
+}
+
+.dash-side {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: #0b1120;
+  border: 1px solid #1e293b;
+  font-size: 13px;
+}
+
+.card small {
+  color: #64748b;
+  font-size: 11px;
+}
+
+.card.is-warning {
+  border-color: #f59e0b;
+}
+
+.card.is-alarm {
+  border-color: #ef4444;
+}
+
+.log code {
+  font-size: 11px;
+  color: #7dd3fc;
+}
+
+.note {
+  font-size: 13px;
+  color: #94a3b8;
+}
+
+.note code {
+  color: #7dd3fc;
+}
+
+@media (max-width: 860px) {
+  .dash {
+    grid-template-columns: 1fr;
+  }
+}

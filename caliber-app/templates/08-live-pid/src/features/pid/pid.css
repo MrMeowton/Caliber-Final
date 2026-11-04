@@ -1,0 +1,486 @@
+/* Gaya modul P&ID hidup — semua kelas ber-prefix pid-, warna lewat variabel --pid-* */
+
+.pid-root {
+  --pid-bg: #0b1120;
+  --pid-line: #1e293b;
+  --pid-ink: #e2e8f0;
+  --pid-muted: #94a3b8;
+  --pid-faint: #475569;
+  --pid-steel: #cbd5e1;
+  --pid-body: #0f172a;
+  --pid-ok: #4ade80;
+  --pid-warn: #fbbf24;
+  --pid-alarm: #f87171;
+  --pid-accent: #38bdf8;
+
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  align-items: start;
+  gap: 12px;
+  color: var(--pid-ink);
+  font-variant-numeric: tabular-nums;
+}
+@media (max-width: 900px) {
+  .pid-root {
+    grid-template-columns: 1fr;
+  }
+}
+
+.pid-stage {
+  position: relative;
+  padding: 10px;
+  border-radius: 14px;
+  background: var(--pid-bg);
+  border: 1px solid var(--pid-line);
+  min-width: 0;
+}
+.pid-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  font-family: inherit;
+}
+
+/* ---------------- pipa ---------------- */
+.pid-pipe {
+  fill: none;
+  stroke: #1e293b;
+  stroke-width: 9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.pid-fluid {
+  fill: none;
+  stroke: var(--pid-c);
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.55;
+  transition: opacity 0.5s;
+}
+.pid-flow {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  mix-blend-mode: screen;
+  filter: drop-shadow(0 0 3px var(--pid-c));
+  transition: opacity 0.5s;
+  pointer-events: none;
+}
+.pid-line-utility .pid-pipe {
+  stroke-width: 7;
+}
+.pid-line-utility .pid-fluid {
+  stroke-width: 3;
+}
+.pid-line.is-idle .pid-fluid {
+  opacity: 0.18;
+}
+.pid-line.is-active .pid-pipe {
+  stroke: color-mix(in srgb, var(--pid-c) 35%, #1e293b);
+}
+.pid-line-label {
+  font-size: 10.5px;
+  fill: var(--pid-muted);
+}
+
+.pid-signal {
+  fill: none;
+  stroke: var(--pid-faint);
+  stroke-width: 1.2;
+  stroke-dasharray: 6 4;
+  transition: stroke 0.2s;
+}
+.pid-signal.is-active {
+  stroke: var(--pid-accent);
+  stroke-width: 1.8;
+}
+
+/* ---------------- peralatan ---------------- */
+.pid-body {
+  fill: var(--pid-body);
+}
+.pid-outline {
+  fill: none;
+  stroke: var(--pid-steel);
+  stroke-width: 1.6;
+  stroke-linejoin: round;
+}
+.pid-tick {
+  stroke: var(--pid-faint);
+}
+.pid-internal {
+  fill: none;
+  stroke: var(--pid-faint);
+  stroke-dasharray: 2 2;
+}
+.pid-level {
+  opacity: 0.35;
+  transition:
+    y 0.6s ease,
+    height 0.6s ease;
+}
+.pid-level-top {
+  transition: y 0.6s ease;
+}
+.pid-coil {
+  fill: none;
+  stroke: var(--pid-faint);
+  stroke-width: 1.4;
+}
+.pid-actuator {
+  fill: var(--pid-body);
+  stroke: var(--pid-steel);
+  stroke-width: 1.4;
+}
+.pid-valve {
+  fill: var(--pid-accent);
+  stroke: var(--pid-steel);
+  stroke-width: 1.6;
+  stroke-linejoin: round;
+  transition: fill-opacity 0.5s;
+}
+.pid-track {
+  stroke: #1e293b;
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+.pid-track-fill {
+  stroke: var(--pid-accent);
+  stroke-width: 3;
+  stroke-linecap: round;
+  transform-box: fill-box;
+  transform-origin: left center;
+  transition: transform 0.5s;
+}
+.pid-impeller path {
+  fill: none;
+  stroke: var(--pid-accent);
+  stroke-width: 2.2;
+  stroke-linecap: round;
+}
+.pid-impeller.is-running {
+  animation: pid-spin 0.9s linear infinite;
+}
+.pid-eq.is-stopped .pid-impeller path {
+  stroke: var(--pid-alarm);
+}
+.pid-eq-label {
+  font-size: 11px;
+  fill: var(--pid-muted);
+}
+.pid-eq-id {
+  font-weight: 600;
+  fill: var(--pid-ink);
+}
+.pid-eq-name {
+  font-size: 10px;
+}
+
+/* ---------------- instrumen ---------------- */
+.pid-inst {
+  cursor: pointer;
+  outline: none;
+  transition: opacity 0.2s;
+}
+.pid-inst.is-dim {
+  opacity: 0.35;
+}
+.pid-leader {
+  stroke: var(--pid-faint);
+  stroke-width: 1;
+}
+.pid-bubble {
+  fill: var(--pid-bg);
+  stroke: var(--pid-steel);
+  stroke-width: 1.4;
+  transition:
+    stroke 0.2s,
+    fill 0.2s;
+}
+.pid-bubble-box {
+  fill: var(--pid-bg);
+  stroke: var(--pid-faint);
+  stroke-width: 1.2;
+}
+.pid-bubble-line {
+  stroke: var(--pid-steel);
+  stroke-width: 1;
+}
+.pid-bubble-letters {
+  font-size: 9.5px;
+  font-weight: 700;
+  fill: var(--pid-ink);
+  pointer-events: none;
+}
+.pid-bubble-loop {
+  font-size: 8.5px;
+  fill: var(--pid-muted);
+  pointer-events: none;
+}
+.pid-inst.is-active .pid-bubble,
+.pid-inst:focus-visible .pid-bubble {
+  stroke: var(--pid-accent);
+  stroke-width: 2.4;
+  fill: #082f49;
+}
+.pid-chip rect {
+  fill: #0f172a;
+  stroke: #334155;
+  transition:
+    fill 0.3s,
+    stroke 0.3s;
+}
+.pid-chip text {
+  font-size: 11px;
+  font-weight: 600;
+  fill: var(--pid-ink);
+}
+.pid-inst.is-warn .pid-chip rect {
+  fill: #422006;
+  stroke: var(--pid-warn);
+}
+.pid-inst.is-warn .pid-chip text {
+  fill: #fde68a;
+}
+.pid-inst.is-alarm .pid-chip rect {
+  fill: #450a0a;
+  stroke: var(--pid-alarm);
+}
+.pid-inst.is-alarm .pid-chip text {
+  fill: #fecaca;
+}
+.pid-inst.is-alarm .pid-bubble {
+  stroke: var(--pid-alarm);
+}
+.pid-inst.is-active .pid-chip rect {
+  stroke: var(--pid-accent);
+}
+.pid-pulse {
+  fill: none;
+  stroke: var(--pid-alarm);
+  stroke-width: 2;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: pid-pulse 1.4s ease-out infinite;
+  pointer-events: none;
+}
+
+/* ---------------- legenda ---------------- */
+.pid-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  padding: 8px 4px 0;
+  list-style: none;
+  font-size: 12px;
+  color: var(--pid-muted);
+}
+.pid-legend li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.pid-legend i {
+  width: 18px;
+  height: 4px;
+  border-radius: 2px;
+}
+.pid-legend i.is-signal {
+  height: 0;
+  border-top: 1.5px dashed var(--pid-muted);
+}
+
+/* ---------------- panel tag ---------------- */
+.pid-panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  max-height: var(--pid-panel-h, 470px);
+  border-radius: 14px;
+  background: var(--pid-bg);
+  border: 1px solid var(--pid-line);
+}
+.pid-panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--pid-line);
+  font-size: 13px;
+  font-weight: 600;
+}
+.pid-panel-badges {
+  display: flex;
+  gap: 4px;
+}
+.pid-badge {
+  padding: 2px 8px;
+  border-radius: 99px;
+  font-size: 11px;
+  font-weight: 600;
+}
+.pid-badge.is-alarm {
+  background: rgba(248, 113, 113, 0.15);
+  color: var(--pid-alarm);
+}
+.pid-badge.is-warn {
+  background: rgba(251, 191, 36, 0.15);
+  color: var(--pid-warn);
+}
+.pid-badge.is-ok {
+  background: rgba(74, 222, 128, 0.12);
+  color: var(--pid-ok);
+}
+.pid-panel-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px;
+  overflow-y: auto;
+}
+
+.pid-card {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 9px 11px;
+  border: 1px solid var(--pid-line);
+  border-left: 3px solid var(--pid-ok);
+  border-radius: 10px;
+  background: #020617;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 0.2s,
+    background 0.2s;
+}
+.pid-card.is-warn {
+  border-left-color: var(--pid-warn);
+}
+.pid-card.is-alarm {
+  border-left-color: var(--pid-alarm);
+  background: #1c0a0a;
+}
+.pid-card.is-nodata {
+  border-left-color: var(--pid-faint);
+}
+.pid-card.is-active,
+.pid-card:focus-visible {
+  border-color: var(--pid-accent);
+  outline: none;
+}
+.pid-card.is-selected {
+  border-color: var(--pid-accent);
+  background: #082f49;
+}
+.pid-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 6px;
+}
+.pid-card-tag {
+  font-size: 13px;
+}
+.pid-card-status {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--pid-muted);
+}
+.pid-card-status.is-warn {
+  color: var(--pid-warn);
+}
+.pid-card-status.is-alarm {
+  color: var(--pid-alarm);
+  animation: pid-blink 1s steps(2, start) infinite;
+}
+.pid-card-label {
+  font-size: 11.5px;
+  color: var(--pid-muted);
+}
+.pid-card-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 8px;
+}
+.pid-card-value {
+  font-size: 19px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.pid-card-value small {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--pid-muted);
+}
+.pid-card-sp {
+  font-size: 11px;
+  color: var(--pid-accent);
+}
+.pid-spark {
+  width: 110px;
+  height: 28px;
+  flex-shrink: 0;
+}
+.pid-spark-line {
+  fill: none;
+  stroke: var(--pid-accent);
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+}
+.pid-card.is-alarm .pid-spark-line {
+  stroke: var(--pid-alarm);
+}
+.pid-card.is-warn .pid-spark-line {
+  stroke: var(--pid-warn);
+}
+.pid-spark-dot {
+  fill: var(--pid-ink);
+}
+.pid-spark-limit {
+  stroke: rgba(248, 113, 113, 0.45);
+  stroke-dasharray: 3 3;
+  vector-effect: non-scaling-stroke;
+}
+.pid-spark-sp {
+  stroke: rgba(56, 189, 248, 0.5);
+  stroke-dasharray: 1 3;
+  vector-effect: non-scaling-stroke;
+}
+
+@keyframes pid-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes pid-pulse {
+  from {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  to {
+    transform: scale(1.9);
+    opacity: 0;
+  }
+}
+@keyframes pid-blink {
+  to {
+    opacity: 0.35;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pid-impeller.is-running,
+  .pid-pulse,
+  .pid-card-status.is-alarm {
+    animation: none;
+  }
+}
