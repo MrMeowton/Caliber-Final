@@ -17,7 +17,7 @@ const plexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "MIND | Inventory Command",
+  title: "MIND-PARTS | Inventory Command",
   description: "Inventory health, maintenance risk, and replenishment planning.",
 };
 

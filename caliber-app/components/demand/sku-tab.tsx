@@ -168,7 +168,7 @@ function SkuDetailPanel({ id }: { id: string }) {
         { name: "Croston-SBA", v: Number(bt.clean_croston_sba), fill: "#94a3b8" },
         { name: "TSB", v: Number(bt.clean_tsb), fill: "#94a3b8" },
         { name: "Adaptive 3-mo", v: Number(bt.clean_moving_avg_3), fill: "#94a3b8" },
-        { name: "MIND", v: Number(bt.mind), fill: "#1257c7" },
+        { name: "MIND-PARTS", v: Number(bt.mind), fill: "#1257c7" },
       ]
     : [];
   const upcoming = data.pmNeed.slice(0, 8);
@@ -262,7 +262,7 @@ function SkuDetailPanel({ id }: { id: string }) {
           ) : (
             <p className="py-8 text-center text-sm text-[#718198]">No consumption history: this SKU is forecast from the maintenance plan only.</p>
           )}
-          <Source>Models fitted on May 2025–Apr 2026; challengers use event-cleaned history. MIND = event-cleaned adaptive mean.</Source>
+          <Source>Models fitted on May 2025–Apr 2026; challengers use event-cleaned history. MIND-PARTS = event-cleaned adaptive mean.</Source>
         </Card>
 
         <Card info="demand.sku.pm" title="Planned maintenance jobs that need this part" subtitle="From Mitem & Mplan → FuncLoc → BoM, next 12 months">

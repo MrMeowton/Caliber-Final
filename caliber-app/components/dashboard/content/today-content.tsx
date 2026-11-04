@@ -163,8 +163,8 @@ export function TodayContent({ onNavigate }: { onNavigate: Navigate }) {
         </>
       )}
 
-      <section aria-label="How MIND works">
-        <h2 className="text-lg font-semibold">How MIND works</h2>
+      <section aria-label="How MIND-PARTS works">
+        <h2 className="text-lg font-semibold">How MIND-PARTS works</h2>
         <ol className="mt-3 grid gap-3 md:grid-cols-3">
           {STEPS.map((s) => (
             <li key={s.n}>

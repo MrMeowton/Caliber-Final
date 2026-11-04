@@ -1,5 +1,5 @@
 // Ported from Learning-By-Building/15-repair-vs-replace (finance.js) — pure logic.
-// Re-used in MIND Spares as the "Stock vs Buy-on-demand" (MRP Type) advisor:
+// Re-used in MIND-PARTS as the "Stock vs Buy-on-demand" (MRP Type) advisor:
 //   option A ("keep")  = Non Stock: buy when a job needs it → rush premium + downtime while waiting
 //   option B ("swap")  = Stock Item: invest in S* units now → holding cost, residual downtime only
 // Both are annual COST streams (positive = cost); savings = A − B → NPV, IRR, payback, EAC.

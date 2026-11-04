@@ -49,7 +49,7 @@ export function DemandIntelligence({ initialTab, initialSku }: { initialTab?: st
       <PageHeader
         step={2}
         title="Demand forecast and timing"
-        subtitle="Spare-part demand is irregular. MIND splits it into everyday use, planned maintenance, equipment failures and one-off events, forecasts each one, and checks the forecast against months it had not seen."
+        subtitle="Spare-part demand is irregular. MIND-PARTS splits it into everyday use, planned maintenance, equipment failures and one-off events, forecasts each one, and checks the forecast against months it had not seen."
       />
 
       <nav className="flex gap-5 overflow-x-auto border-b border-[#e8eaec]" aria-label="Demand intelligence views">

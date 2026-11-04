@@ -12,7 +12,7 @@
 - JANGAN baca `node_modules/`, `.next/`, lockfile.
 
 ## Stack
-- Next.js + TypeScript + Tailwind (ikuti basis prototype MIND), deploy Vercel
+- Next.js + TypeScript + Tailwind (ikuti basis prototype MIND-PARTS), deploy Vercel
 - 3D: three + @react-three/fiber + @react-three/drei · diagram: @xyflow/react · chart: recharts
 - AI: `lib/ai.ts` (Claude API, fallback bila timeout / `AI_FALLBACK_ONLY=true`), prompt di `prompts/runtime/`
 - Data: JSON dummy di `data/` (aset & posisi 3D di `data/config.json`)

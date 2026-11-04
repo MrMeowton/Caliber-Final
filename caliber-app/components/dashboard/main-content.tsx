@@ -7,11 +7,13 @@ import { TodayContent } from "./content/today-content";
 import { OverviewContent } from "./content/overview-content";
 import { ActionCenterContent } from "./content/action-center-content";
 import { OrderDraftsContent } from "./content/order-drafts-content";
+import { WarehouseStockContent } from "./content/warehouse-stock-content";
 import { DemandIntelligence } from "@/components/demand/demand-intelligence";
 
 const pageTitles: Record<Section, string> = {
   today: "Today's decisions",
   monitor: "Monitor",
+  warehouse: "Warehouse Stock",
   forecast: "Forecast",
   act: "Action Center",
   orders: "Order Drafts",
@@ -36,6 +38,8 @@ export function MainContent({
         return <ActionCenterContent onNavigate={onNavigate} initialFocus={nav.tab} />;
       case "orders":
         return <OrderDraftsContent onNavigate={onNavigate} />;
+      case "warehouse":
+        return <WarehouseStockContent initialFilter={nav.tab} />;
       default:
         return <TodayContent onNavigate={onNavigate} />;
     }
@@ -53,7 +57,7 @@ export function MainContent({
             className="inline-flex min-h-9 shrink-0 items-center gap-2 rounded-md bg-[#1b6c80] px-3 text-sm font-semibold text-white hover:bg-[#155768] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1b6c80]"
           >
             <Bot className="h-4 w-4" aria-hidden="true" />
-            <span className="hidden sm:inline">Ask MIND AI</span>
+            <span className="hidden sm:inline">Ask MIND-PARTS AI</span>
             <span className="sm:hidden">AI</span>
           </button>
         </div>

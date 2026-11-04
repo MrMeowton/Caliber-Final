@@ -195,10 +195,10 @@ export const INFO = {
   },
   "demand.kpi.wape": {
     title: "Forecast error (WAPE)",
-    what: "How wrong the forecast was, as a percentage of what was actually used (Weighted Absolute Percentage Error). Shown for today's simple average versus the MIND forecast.",
+    what: "How wrong the forecast was, as a percentage of what was actually used (Weighted Absolute Percentage Error). Shown for today's simple average versus the MIND-PARTS forecast.",
     source: "A backtest: models were trained on May 2025 – Apr 2026 and tested on May – Sep 2026, months they had not seen.",
     why: "It proves the forecast is better before anyone relies on it. Bias shows whether a method tends to over- or under-buy.",
-    read: "Lower is better. The arrow shows the improvement from the static average to MIND.",
+    read: "Lower is better. The arrow shows the improvement from the static average to MIND-PARTS.",
   },
   "demand.kpi.pm": {
     title: "PM-driven demand, next 12 months",
@@ -417,8 +417,8 @@ export const INFO = {
     read: "Lower is better.",
   },
   "demand.bt.mind": {
-    title: "MIND Spares forecast",
-    what: "The forecast error of the MIND method, which was fixed before the test months were looked at.",
+    title: "MIND-PARTS forecast",
+    what: "The forecast error of the MIND-PARTS method, which was fixed before the test months were looked at.",
     source: "Same backtest.",
     why: "This is the honest comparison against the static average.",
     read: "Lower is better; compare it with the static average card.",

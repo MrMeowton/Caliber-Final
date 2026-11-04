@@ -55,7 +55,7 @@ const engineers = [{ id: 'e1', cohort: 'before', hiredAt: '2024-02-01', achieved
 
 <OnboardingCompetence engineers={engineers} skills={skills} asOf={new Date()}
   threshold={0.8} valuePerDay={250} hiresPerYear={15}
-  labels={{ before: 'Sebelum', after: 'Dengan MIND' }} />
+  labels={{ before: 'Sebelum', after: 'Dengan MIND-PARTS' }} />
 ```
 
 | Prop | Keterangan |

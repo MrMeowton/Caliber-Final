@@ -222,7 +222,7 @@ function computeBacktest() {
   const testBy = new Map<string, number>();
   for (const f of test) testBy.set(f.funcloc, (testBy.get(f.funcloc) ?? 0) + 1);
 
-  // Poisson log-loss per equipment (lower is better): MIND (shrunk) vs each equipment's own history only.
+  // Poisson log-loss per equipment (lower is better): MIND-PARTS (shrunk) vs each equipment's own history only.
   // The naive model predicts 0 for equipment that never failed before, which is punished when it then fails.
   const logFact = (k: number) => { let s = 0; for (let i = 2; i <= k; i++) s += Math.log(i); return s; };
   const loss = (mu: number, y: number) => { const m = Math.max(mu, 1e-9); return m - y * Math.log(m) + logFact(y); };

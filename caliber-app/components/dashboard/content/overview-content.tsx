@@ -442,7 +442,7 @@ export function OverviewContent({ initialTab, onNavigate }: { initialTab?: strin
           value={formatCount(kpis.nonMovingSkus)}
           verdict={kpis.nonMovingSkus > 0 ? "watch" : "ok"}
           meaning="Nobody took these out of the warehouse for a year. Candidates to redeploy, return or write off, unless they are critical insurance spares."
-          action={{ label: "See dead stock", onClick: () => setActiveTab("health") }}
+          action={onNavigate && { label: "See dead stock", onClick: openStopBuyList }}
         />
         <MetricCard
           label="Unplanned stock on the shelf"
@@ -450,7 +450,9 @@ export function OverviewContent({ initialTab, onNavigate }: { initialTab?: strin
           value={formatCount(kpis.nonStockWithPhysicalSkus)}
           verdict={kpis.nonStockWithPhysicalSkus > 0 ? "watch" : "ok"}
           meaning="Parts set to 'buy when needed' that still sit in the warehouse. The system does not plan them, so they get forgotten or bought twice."
-          action={{ label: "Review list", onClick: () => setActiveTab("health") }}
+          action={onNavigate
+            ? { label: "Review list", onClick: () => onNavigate({ section: "warehouse", tab: "non-stock-onhand" }) }
+            : { label: "Review list", onClick: () => setActiveTab("health") }}
         />
       </section>
 

@@ -76,7 +76,7 @@ export function OverviewTab({ data, onOpenTab }: { data: Summary; onOpenTab: (ta
         <Kpi
           label="Forecast error" info="demand.kpi.wape"
           value={<span>{fmtPct(kpi.wape_static)} <span className="text-base text-[#718198]">→</span> <span className="text-[#16865d]">{fmtPct(kpi.wape_mind)}</span></span>}
-          sub={`Static average vs MIND · bias ${fmtPct(kpi.bias_static, 0)} → ${fmtPct(kpi.bias_mind, 0)}`}
+          sub={`Static average vs MIND-PARTS · bias ${fmtPct(kpi.bias_static, 0)} → ${fmtPct(kpi.bias_mind, 0)}`}
         />
         <Kpi
           label="Planned maintenance jobs, next 12 months" info="demand.kpi.pm"

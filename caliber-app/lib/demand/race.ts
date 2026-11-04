@@ -1,5 +1,5 @@
 // Ported from Learning-By-Building/09-spare-part-race (race.js) — pure logic, no React.
-// In MIND Spares the "failure" line is the date the part is NEEDED (first PM job / demand
+// In MIND-PARTS the "failure" line is the date the part is NEEDED (first PM job / demand
 // that drives projected stock below zero), and the "part" line is when supply arrives.
 //   arrives after need date        → LATE  (job waits; gap = days without the part)
 //   arrives inside need window/buffer → TIGHT

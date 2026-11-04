@@ -38,7 +38,7 @@ export function BacktestTab({ data, onOpenSku }: { data: Summary; onOpenSku: (id
     <div className="space-y-5">
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <Kpi info="demand.bt.static" label="Error of today's average method" value={fmtPct(stat?.wape)} sub={`bias ${fmtPct(stat?.bias)}: buys for demand that does not come`} tone="bad" />
-        <Kpi info="demand.bt.mind" label="Error of the MIND forecast" value={fmtPct(mind?.wape)} sub={`bias ${fmtPct(mind?.bias, 1)} · fixed before the test`} tone="good" />
+        <Kpi info="demand.bt.mind" label="Error of the MIND-PARTS forecast" value={fmtPct(mind?.wape)} sub={`bias ${fmtPct(mind?.bias, 1)} · fixed before the test`} tone="good" />
         <Kpi info="demand.bt.perClass" label="Error, best method per demand type" value={fmtPct(perClass?.wape)} sub="model chosen per demand class (optimistic: chosen on this holdout)" tone="info" />
         <Kpi info="demand.bt.n" label="Parts tested" value={fmtNum(mind?.n)} sub={`train May 25–Apr 26 · test May–Sep 26 · ${fmtNum(data.kpi.new_in_test)} new-demand SKUs excluded`} />
       </div>
@@ -70,7 +70,7 @@ export function BacktestTab({ data, onOpenSku }: { data: Summary; onOpenSku: (id
                 <th className="py-2 pr-3">Demand class</th>
                 <th className="py-2 pr-3 text-right">SKUs</th>
                 <th className="py-2 pr-3 text-right">Static mean WAPE / bias</th>
-                <th className="py-2 pr-3 text-right">MIND WAPE / bias</th>
+                <th className="py-2 pr-3 text-right">MIND-PARTS WAPE / bias</th>
                 <th className="py-2 text-right">Model used going forward</th>
               </tr>
             </thead>

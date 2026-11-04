@@ -10,6 +10,7 @@ type Message = { role: "user" | "assistant"; content: string };
 const pageNames: Record<Section, string> = {
   today: "Today's decisions",
   monitor: "Step 1 · Monitor",
+  warehouse: "Warehouse Stock",
   forecast: "Step 2 · Forecast",
   act: "Step 3 · Act",
   orders: "Order Drafts",
@@ -89,14 +90,14 @@ export function AICopilot({
         className="fixed inset-0 z-40 bg-[#131416]/25 md:hidden"
       />
       <aside
-        aria-label="MIND AI assistant"
+        aria-label="MIND-PARTS AI assistant"
         className="fixed inset-y-0 right-0 z-50 flex w-full max-w-[420px] flex-col border-l border-[#e8eaec] bg-white shadow-xl md:static md:h-full md:w-[360px] md:max-w-none md:shrink-0 md:rounded-xl md:shadow-none"
       >
         <header className="flex min-h-14 items-center justify-between border-b border-[#e8eaec] px-4">
           <div className="flex items-center gap-2">
             <Bot className="h-5 w-5 text-[#1b6c80]" aria-hidden="true" />
             <div>
-              <h2 className="text-sm font-semibold">MIND AI Copilot</h2>
+              <h2 className="text-sm font-semibold">MIND-PARTS AI Copilot</h2>
               <p className="text-xs text-[#5d5f60]">Context: {pageNames[page]}</p>
             </div>
           </div>
@@ -147,7 +148,7 @@ export function AICopilot({
             value={input}
             onChange={(event) => setInput(event.target.value)}
             placeholder="Ask a question…"
-            aria-label="Message MIND AI"
+            aria-label="Message MIND-PARTS AI"
             className="min-h-10 min-w-0 flex-1 rounded-md border border-[#cdced1] px-3 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1b6c80]"
           />
           <button

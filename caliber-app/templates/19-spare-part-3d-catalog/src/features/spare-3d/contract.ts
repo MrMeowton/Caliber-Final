@@ -1,4 +1,4 @@
-// Shared contract for every 3D part / equipment / plant component (MIND Spares).
+// Shared contract for every 3D part / equipment / plant component (MIND-PARTS).
 // Generated models must import their types from here and must not change this file.
 export type Vec3 = [number, number, number];
 export type Detail = "low" | "high";

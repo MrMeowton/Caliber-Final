@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate the 3D template tree for MIND Spares from the case Supporting Data.
+"""Generate the 3D template tree for MIND-PARTS from the case Supporting Data.
 
 Usage: python3 scripts/gen_3d_catalog.py "<path to Supporting Data folder>"
 Writes: src/features/spare-3d/parts/<part>/{index.tsx,PROMPT.md}

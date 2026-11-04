@@ -4,8 +4,8 @@
 import { db } from "@/lib/db";
 
 export const AS_OF = "2026-09-30";
-const HISTORY_START = "2025-05-01";
-const LAST_12M = "2025-10-01";
+export const HISTORY_START = "2025-05-01";
+export const LAST_12M = "2025-10-01";
 const RECENT_6M = "2026-04-01";
 const DAY_MS = 86_400_000;
 const MONTH_DAYS = 30.44;

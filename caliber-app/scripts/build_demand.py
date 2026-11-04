@@ -236,7 +236,7 @@ def main():
     # Candidates are scored on the 5-month holdout. Two families:
     #   raw    = model fitted on full history (what a planner averaging past issues gets)
     #   clean  = same model on event-cleaned history (turnaround 203 / project 209 removed)
-    # "MIND" headline = event-cleaned adaptive 3-month mean, fixed BEFORE looking at the test.
+    # "MIND-PARTS" headline = event-cleaned adaptive 3-month mean, fixed BEFORE looking at the test.
     # The per-class winner among clean models on this most recent holdout is the method used
     # for the forward forecast (standard "select on latest holdout, then refit" practice).
     S = stat.values
@@ -268,7 +268,7 @@ def main():
                                 bias=bias(f[sel], act_test[sel]), n=int(sel.sum())))
     bt = pd.DataFrame(bt_rows)
     bt["label"] = bt.model.map({**MODEL_LABEL, **{"clean_" + k: v + " (event-cleaned)" for k, v in MODEL_LABEL.items()},
-                            "mind": "MIND Spares (event-cleaned adaptive)",
+                            "mind": "MIND-PARTS (event-cleaned adaptive)",
                             "mind_class": "Per-class best (selected on this holdout)"})
     print(bt[bt.scope.str.startswith("All")].to_string())
     new_in_test = int(((~trainmask) & (act_test > 0)).sum())

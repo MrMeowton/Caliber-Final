@@ -5,7 +5,7 @@ import { AppSidebar } from "@/components/dashboard/app-sidebar";
 import { AICopilot } from "@/components/dashboard/ai-copilot";
 import { MainContent } from "@/components/dashboard/main-content";
 
-export type Section = "today" | "monitor" | "forecast" | "act" | "orders";
+export type Section = "today" | "monitor" | "warehouse" | "forecast" | "act" | "orders";
 
 /** Where a button sends the user: a page, optionally a tab inside it and a part to open. */
 export type NavTarget = { section: Section; tab?: string; sku?: string };
