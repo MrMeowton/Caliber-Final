@@ -3,18 +3,21 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { CLASS_COLORS, CRIT_STYLE } from "@/lib/demand/format";
+import { InfoTip } from "@/components/ui/info-tip";
+import type { InfoId } from "@/lib/info-copy";
 
-export function Card({ title, subtitle, right, children, className }: {
+export function Card({ title, subtitle, right, info, children, className }: {
   title?: ReactNode;
   subtitle?: ReactNode;
   right?: ReactNode;
+  info?: InfoId;
   children: ReactNode;
   className?: string;
 }) {
   return (
-    <section className={cn("min-w-0 rounded-lg border border-[#e8eaec] bg-white p-5", className)}>
+    <section className={cn("relative min-w-0 rounded-lg border border-[#e8eaec] bg-white p-5", info && !(title || right) && "pr-10", className)}>
       {(title || right) && (
-        <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
+        <div className={cn("mb-4 flex flex-wrap items-start justify-between gap-3", info && "pr-7")}>
           <div className="min-w-0">
             {title && <h3 className="text-base font-semibold text-[#131416]">{title}</h3>}
             {subtitle && <p className="mt-0.5 text-sm text-[#5d5f60]">{subtitle}</p>}
@@ -22,16 +25,18 @@ export function Card({ title, subtitle, right, children, className }: {
           {right}
         </div>
       )}
+      {info && <InfoTip id={info} className="absolute right-2.5 top-2.5" />}
       {children}
     </section>
   );
 }
 
-export function Kpi({ label, value, sub, tone }: {
+export function Kpi({ label, value, sub, tone, info }: {
   label: string;
   value: ReactNode;
   sub?: ReactNode;
   tone?: "good" | "bad" | "warn" | "info";
+  info?: InfoId;
 }) {
   const toneCls = {
     good: "text-[#1e7b4f]",
@@ -40,8 +45,9 @@ export function Kpi({ label, value, sub, tone }: {
     info: "text-[#1b6c80]",
   };
   return (
-    <div className="min-w-0 rounded-lg border border-[#e8eaec] bg-white px-4 py-3.5">
-      <p className="text-xs font-medium text-[#5d5f60]">{label}</p>
+    <div className="relative min-w-0 rounded-lg border border-[#e8eaec] bg-white px-4 py-3.5">
+      {info && <InfoTip id={info} className="absolute right-1.5 top-1.5" />}
+      <p className={cn("text-xs font-medium text-[#5d5f60]", info && "pr-6")}>{label}</p>
       <p className={cn("mt-1 text-2xl font-semibold tabular-nums text-[#131416]", tone && toneCls[tone])}>{value}</p>
       {sub && <p className="mt-0.5 text-xs leading-5 text-[#5d5f60]">{sub}</p>}
     </div>

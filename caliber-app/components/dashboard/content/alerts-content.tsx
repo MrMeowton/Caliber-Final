@@ -12,6 +12,7 @@ import {
     Trash2,
     UserRound,
 } from "lucide-react";
+import { InfoTip } from "@/components/ui/info-tip";
 
 type Alert = {
     id: string;
@@ -358,9 +359,9 @@ export function AlertsContent() {
             </section>
 
             <section className="grid gap-4 sm:grid-cols-3">
-                <Stat label="Open alerts" value={openCount} icon={<Clock3 className="h-4 w-4" />} />
-                <Stat label="Critical" value={criticalCount} icon={<AlertTriangle className="h-4 w-4" />} />
-                <Stat label="Solved" value={solvedCount} icon={<CheckCircle2 className="h-4 w-4" />} />
+                <Stat label="Open alerts" value={openCount} icon={<Clock3 className="h-4 w-4" />} info />
+                <Stat label="Critical" value={criticalCount} icon={<AlertTriangle className="h-4 w-4" />} info />
+                <Stat label="Solved" value={solvedCount} icon={<CheckCircle2 className="h-4 w-4" />} info />
             </section>
 
             <section className="rounded-2xl border border-[#dce7f7] bg-white p-5 shadow-[0_10px_28px_rgba(8,47,128,0.06)]">
@@ -369,6 +370,7 @@ export function AlertsContent() {
                         <Filter className="h-4 w-4 text-[#1257c7]" />
                         Filter alerts
                     </div>
+                    <div className="flex items-center gap-2">
                     <p className="text-xs text-[#7890b2]">
                         {sourceError
                             ? `Could not load alerts: ${sourceError}`
@@ -376,6 +378,8 @@ export function AlertsContent() {
                                 ? "Loading alerts…"
                                 : "Synced with Supabase alerts"}
                     </p>
+                    <InfoTip id="alerts.table" />
+                    </div>
                 </div>
                 <div className="mt-4 grid gap-3 sm:grid-cols-2">
                     <select
@@ -571,13 +575,16 @@ function Stat({
     label,
     value,
     icon,
+    info,
 }: {
     label: string;
     value: number;
     icon: React.ReactNode;
+    info?: boolean;
 }) {
     return (
-        <div className="rounded-2xl border border-[#dce7f7] bg-white p-5 shadow-[0_10px_28px_rgba(8,47,128,0.05)]">
+        <div className="relative rounded-2xl border border-[#dce7f7] bg-white p-5 shadow-[0_10px_28px_rgba(8,47,128,0.05)]">
+            {info && <InfoTip id="alerts.stats" className="absolute right-3 top-3" />}
             <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.12em] text-[#7890b2]">
                 {icon}
                 {label}

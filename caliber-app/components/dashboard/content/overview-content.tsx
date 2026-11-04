@@ -17,6 +17,8 @@ import {
 } from "recharts";
 import { RefreshCw, Search } from "lucide-react";
 import type { PlantAsset } from "@/components/dashboard/plant-3d/faults";
+import { InfoTip } from "@/components/ui/info-tip";
+import type { InfoId } from "@/lib/info-copy";
 import {
   Card,
   CardContent,
@@ -482,8 +484,9 @@ export function OverviewContent() {
         className="grid grid-cols-2 divide-x divide-y divide-[#e8eaec] rounded-lg border border-[#e8eaec] bg-white lg:grid-cols-5 lg:divide-y-0"
         aria-label="Inventory health indicators"
       >
-        <div className="col-span-2 p-4 lg:col-span-1">
-          <p className="text-sm text-[#5d5f60]">Stock policy health</p>
+        <div className="relative col-span-2 p-4 lg:col-span-1">
+          <InfoTip id="overview.kpi.health" className="absolute right-2 top-2" />
+          <p className="pr-7 text-sm text-[#5d5f60]">Stock policy health</p>
           <p className="mt-1 text-[28px] font-medium leading-9 tabular-nums">
             {healthPercent === null ? "—" : `${healthPercent}%`}
           </p>
@@ -509,15 +512,18 @@ export function OverviewContent() {
           value={formatCount(kpis.criticalZeroPositions)}
           detail="S/A stock-item BOM positions"
           tone="negative"
+          info="overview.kpi.criticalZero"
         />
         <KpiCell
           label="Above maximum"
           value={formatCount(kpis.excessSkus)}
           detail={`${formatCurrency(kpis.excessCapitalIdr)} estimated · ${formatCount(kpis.pricedExcessSkus)} of ${formatCount(kpis.totalExcessSkus)} excess SKUs priced`}
           tone="warning"
+          info="overview.kpi.aboveMax"
         />
         <KpiCell
           label="Non-moving · 12 months"
+          info="overview.kpi.nonMoving"
           value={formatCount(kpis.nonMovingSkus)}
           detail={
             kpis.hasObsolescenceWindow
@@ -528,6 +534,7 @@ export function OverviewContent() {
         />
         <KpiCell
           label="Non-stock with on-hand"
+          info="overview.kpi.nonStock"
           value={formatCount(kpis.nonStockWithPhysicalSkus)}
           detail="Distinct non-stock SKUs with positive quantity"
           tone="neutral"
@@ -535,11 +542,14 @@ export function OverviewContent() {
       </section>
 
       <section className="space-y-3" aria-label="3D plant view">
-        <div className="flex flex-wrap items-baseline justify-between gap-2">
-          <h2 className="text-base font-semibold">Plant view</h2>
-          <p className="text-sm text-[#5d5f60]">
-            Stock risk on each equipment&apos;s BOM mapped to its 3D parts · click a tag, then X-Ray to locate the faulty part
-          </p>
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex min-w-0 flex-wrap items-baseline gap-x-4 gap-y-1">
+            <h2 className="text-base font-semibold">Plant view</h2>
+            <p className="text-sm text-[#5d5f60]">
+              Stock risk on each equipment&apos;s BOM mapped to its 3D parts · click a tag, then X-Ray to locate the faulty part
+            </p>
+          </div>
+          <InfoTip id="overview.plant" className="-mt-1" />
         </div>
         <PlantTwin
           assets={data.plantAssets ?? []}
@@ -587,8 +597,9 @@ export function OverviewContent() {
           aria-labelledby="inventory-tab-monitor"
         >
           <section>
-            <Card className="gap-0 rounded-lg border-[#e8eaec] py-0 shadow-none">
-              <CardHeader className="gap-1 px-5 py-4">
+            <Card className="relative gap-0 rounded-lg border-[#e8eaec] py-0 shadow-none">
+              <InfoTip id="overview.equipmentRisk" className="absolute right-3 top-3" />
+              <CardHeader className="gap-1 px-5 py-4 pr-12">
                 <CardTitle className="text-base font-semibold">
                   Equipment risk & linked BOM
                 </CardTitle>
@@ -728,8 +739,9 @@ export function OverviewContent() {
           </section>
 
           <section className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(320px,0.8fr)]">
-            <Card className="gap-0 rounded-lg border-[#e8eaec] py-0 shadow-none">
-              <CardHeader className="gap-1 px-5 py-4">
+            <Card className="relative gap-0 rounded-lg border-[#e8eaec] py-0 shadow-none">
+              <InfoTip id="overview.issueActivity" className="absolute right-3 top-3" />
+              <CardHeader className="gap-1 px-5 py-4 pr-12">
                 <CardTitle className="text-base font-semibold">
                   Issue activity
                 </CardTitle>
@@ -786,8 +798,9 @@ export function OverviewContent() {
               </CardContent>
             </Card>
 
-            <Card className="gap-0 rounded-lg border-[#e8eaec] py-0 shadow-none">
-              <CardHeader className="gap-1 px-5 py-4">
+            <Card className="relative gap-0 rounded-lg border-[#e8eaec] py-0 shadow-none">
+              <InfoTip id="overview.maintenanceOutlook" className="absolute right-3 top-3" />
+              <CardHeader className="gap-1 px-5 py-4 pr-12">
                 <CardTitle className="text-base font-semibold">
                   Maintenance plan outlook
                 </CardTitle>
@@ -841,8 +854,9 @@ export function OverviewContent() {
           </section>
 
           <section className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(320px,0.8fr)]">
-            <Card className="gap-0 rounded-lg border-[#e8eaec] py-0 shadow-none">
-              <CardHeader className="gap-1 px-5 py-4">
+            <Card className="relative gap-0 rounded-lg border-[#e8eaec] py-0 shadow-none">
+              <InfoTip id="overview.supplierPromise" className="absolute right-3 top-3" />
+              <CardHeader className="gap-1 px-5 py-4 pr-12">
                 <CardTitle className="text-base font-semibold">
                   Supplier promise performance
                 </CardTitle>
@@ -865,8 +879,9 @@ export function OverviewContent() {
               </CardContent>
             </Card>
 
-            <Card className="gap-0 rounded-lg border-[#e8eaec] py-0 shadow-none">
-              <CardHeader className="gap-1 px-5 py-4">
+            <Card className="relative gap-0 rounded-lg border-[#e8eaec] py-0 shadow-none">
+              <InfoTip id="overview.forecastInputs" className="absolute right-3 top-3" />
+              <CardHeader className="gap-1 px-5 py-4 pr-12">
                 <CardTitle className="text-base font-semibold">
                   Forecast inputs
                 </CardTitle>
@@ -911,28 +926,33 @@ export function OverviewContent() {
           <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             <SummaryMetric
               label="SKUs to reach 80% of valued stock"
+              info="overview.pareto.top80"
               value={formatCount(kpis.pareto80SkuCount)}
               detail={`of ${formatCount(kpis.paretoEligibleSkus)} priced Stock Item SKUs`}
             />
             <SummaryMetric
               label="Estimated valued stock"
+              info="overview.pareto.value"
               value={formatCurrency(kpis.inventoryValueIdr)}
               detail="On-hand × latest linked IDR PO unit price"
             />
             <SummaryMetric
               label="Over-max capital estimate"
+              info="overview.pareto.overMax"
               value={formatCurrency(kpis.excessCapitalIdr)}
               detail={`${formatCount(kpis.pricedExcessSkus)} of ${formatCount(kpis.totalExcessSkus)} excess SKUs priced`}
             />
             <SummaryMetric
               label="Price coverage"
+              info="overview.pareto.coverage"
               value={`${formatCount(kpis.pricedInventorySkus)} / ${formatCount(kpis.totalValuedSkus)}`}
               detail="Distinct Stock Item SKUs with IDR price / all"
             />
           </section>
 
-          <Card className="gap-0 rounded-lg border-[#e8eaec] py-0 shadow-none">
-            <CardHeader className="gap-1 px-5 py-4">
+          <Card className="relative gap-0 rounded-lg border-[#e8eaec] py-0 shadow-none">
+            <InfoTip id="overview.pareto.chart" className="absolute right-3 top-3" />
+            <CardHeader className="gap-1 px-5 py-4 pr-12">
               <CardTitle className="text-base font-semibold">
                 Pareto · estimated inventory value
               </CardTitle>
@@ -1051,8 +1071,9 @@ export function OverviewContent() {
             </CardContent>
           </Card>
 
-          <Card className="gap-0 rounded-lg border-[#e8eaec] py-0 shadow-none">
-            <CardHeader className="gap-1 px-5 py-4">
+          <Card className="relative gap-0 rounded-lg border-[#e8eaec] py-0 shadow-none">
+            <InfoTip id="overview.pareto.top" className="absolute right-3 top-3" />
+            <CardHeader className="gap-1 px-5 py-4 pr-12">
               <CardTitle className="text-base font-semibold">
                 Highest-value stock items
               </CardTitle>
@@ -1128,8 +1149,9 @@ export function OverviewContent() {
             </label>
           </section>
 
-          <Card className="gap-0 rounded-lg border-[#e8eaec] py-0 shadow-none">
-            <CardHeader className="gap-2 border-b border-[#f0f1f2] px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+          <Card className="relative gap-0 rounded-lg border-[#e8eaec] py-0 shadow-none">
+            <InfoTip id="overview.replenishment" className="absolute right-3 top-3" />
+            <CardHeader className="gap-2 border-b border-[#f0f1f2] px-5 py-4 sm:flex-row sm:items-center sm:justify-between pr-12">
               <div>
                 <CardTitle className="text-base font-semibold">
                   Below reorder point
@@ -1244,7 +1266,7 @@ export function OverviewContent() {
               aria-live="polite"
             >
               <div className="flex flex-wrap items-baseline justify-between gap-2">
-                <h3 className="font-semibold">Draft prepared for review</h3>
+                <h3 className="flex items-center gap-1 font-semibold">Draft prepared for review <InfoTip id="overview.draft" /></h3>
                 <span className="text-xs text-[#5d5f60]">
                   Local preview only · not submitted
                 </span>
@@ -1304,11 +1326,13 @@ function KpiCell({
   value,
   detail,
   tone,
+  info,
 }: {
   label: string;
   value: string;
   detail: string;
   tone: "negative" | "warning" | "neutral";
+  info: InfoId;
 }) {
   const valueColor = {
     negative: "text-[#c4242a]",
@@ -1317,8 +1341,9 @@ function KpiCell({
   }[tone];
 
   return (
-    <div className="min-w-0 p-4">
-      <p className="text-sm text-[#5d5f60]">{label}</p>
+    <div className="relative min-w-0 p-4">
+      <InfoTip id={info} className="absolute right-2 top-2" />
+      <p className="pr-7 text-sm text-[#5d5f60]">{label}</p>
       <p className={`mt-1 text-[28px] font-medium leading-9 tabular-nums ${valueColor}`}>
         {value}
       </p>
@@ -1331,14 +1356,17 @@ function SummaryMetric({
   label,
   value,
   detail,
+  info,
 }: {
   label: string;
   value: string;
   detail: string;
+  info: InfoId;
 }) {
   return (
-    <div className="rounded-lg border border-[#e8eaec] bg-white p-4">
-      <p className="text-sm text-[#5d5f60]">{label}</p>
+    <div className="relative rounded-lg border border-[#e8eaec] bg-white p-4">
+      <InfoTip id={info} className="absolute right-2 top-2" />
+      <p className="pr-7 text-sm text-[#5d5f60]">{label}</p>
       <p className="mt-2 break-words text-xl font-medium leading-7 tabular-nums">
         {value}
       </p>

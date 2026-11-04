@@ -68,24 +68,24 @@ export function OverviewTab({ data, onOpenTab }: { data: Summary; onOpenTab: (ta
     <div className="space-y-5">
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <Kpi
-          label="Non-smooth demand"
+          label="Non-smooth demand" info="demand.kpi.nonSmooth"
           value={fmtPct(kpi.non_smooth_share)}
           sub={`${fmtNum(consumed)} SKUs consumed in 17 months · ${fmtNum(kpi.zero_consumption)} never moved`}
           tone="warn"
         />
         <Kpi
-          label="Forecast error (WAPE)"
+          label="Forecast error (WAPE)" info="demand.kpi.wape"
           value={<span>{fmtPct(kpi.wape_static)} <span className="text-base text-[#718198]">→</span> <span className="text-[#16865d]">{fmtPct(kpi.wape_mind)}</span></span>}
           sub={`Static average vs MIND · bias ${fmtPct(kpi.bias_static, 0)} → ${fmtPct(kpi.bias_mind, 0)}`}
         />
         <Kpi
-          label="PM-driven demand, next 12 months"
+          label="PM-driven demand, next 12 months" info="demand.kpi.pm"
           value={fmtNum(kpi.pm_items_12m)}
           sub={`PM items on ${fmtNum(kpi.pm_funclocs_12m)} FuncLocs · ${fmtNum(kpi.pm_part_items_12m)} draw parts (${fmtNum(kpi.pm_materials_12m)} SKUs)`}
           tone="info"
         />
         <Kpi
-          label="Abnormal consumption"
+          label="Abnormal consumption" info="demand.kpi.abnormal"
           value={fmtNum(kpi.abnormal_lines)}
           sub={`issue lines > 5× item median · ${fmtPct(kpi.abnormal_share, 1)} of all lines`}
           tone="bad"
@@ -93,7 +93,7 @@ export function OverviewTab({ data, onOpenTab }: { data: Summary; onOpenTab: (ta
       </div>
 
       <Card
-        title="Demand decomposition: what drives spare-part consumption"
+        title="Demand decomposition: what drives spare-part consumption" info="demand.decomposition"
         subtitle="Issued value per month split by driver, then a 12-month forecast from the baseline model plus the maintenance plan"
         right={
           <Segmented
@@ -140,7 +140,7 @@ export function OverviewTab({ data, onOpenTab }: { data: Summary; onOpenTab: (ta
 
       <div className="grid gap-5 xl:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
         <Card
-          title="Demand classes (Syntetos–Boylan)"
+          title="Demand classes (Syntetos–Boylan)" info="demand.classes"
           subtitle="Average demand interval (ADI) vs variability of demand size (CV²), one dot per consumed SKU"
         >
           <div className="h-[300px]">
@@ -165,7 +165,7 @@ export function OverviewTab({ data, onOpenTab }: { data: Summary; onOpenTab: (ta
           <Source>Cut-offs ADI 1.32 and CV² 0.49 (Syntetos, Boylan &amp; Croston, 2005). CV² above 3 is drawn at 3.</Source>
         </Card>
 
-        <Card title="One model per demand class" subtitle="The forecaster is chosen automatically for each class by its holdout error">
+        <Card info="demand.models" title="One model per demand class" subtitle="The forecaster is chosen automatically for each class by its holdout error">
           <div className="space-y-2.5">
             {classes.map((c) => (
               <div key={c.cls} className="flex items-center gap-3 rounded-xl border border-[#e3e8ef] px-3 py-2.5">

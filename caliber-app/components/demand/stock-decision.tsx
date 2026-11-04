@@ -70,7 +70,7 @@ export function StockDecision({ material: m }: { material: Material }) {
 
   if (lambda <= 0) {
     return (
-      <Card title="Forecast → stock decision" subtitle="Spare-part economics and stock vs buy-on-demand">
+      <Card title="Forecast → stock decision" info="demand.stock" subtitle="Spare-part economics and stock vs buy-on-demand">
         <p className="rounded-xl bg-[#f4f6fa] px-4 py-3 text-sm text-[#45576f]">
           No consumption in 17 months and no part-consuming PM job planned, so the forecast is zero.
           {m.criticality === "S" || m.criticality === "A"
@@ -96,7 +96,7 @@ export function StockDecision({ material: m }: { material: Material }) {
 
   return (
     <Card
-      title="Forecast → stock decision"
+      title="Forecast → stock decision" info="demand.stock"
       subtitle={`Lead-time demand ~ Poisson(${fmtNum((lambda * m.lt_p50) / 365, 2)} ${m.unit}) from ${fmtNum(lambda, 1)} ${m.unit}/yr forecast and ${fmtNum(m.lt_p50)} days lead time`}
     >
       <div className="flex flex-wrap gap-x-6 gap-y-3 rounded-xl bg-[#f4f6fa] px-4 py-3">
@@ -118,10 +118,10 @@ export function StockDecision({ material: m }: { material: Material }) {
             Keep <b>{best.S}</b> {m.unit}, reorder when stock falls to <b>{econ.reorderPoint}</b>. Current stock {fmtNum(m.stock)}, current Min {fmtNum(m.min_qty)}.
           </p>
           <div className="mt-3 grid grid-cols-2 gap-2">
-            <Kpi label="Fill rate at S*" value={fmtPct(best.fillRate, 1)} sub={cur ? `now ${fmtPct(cur.fillRate, 1)}` : undefined} tone="good" />
-            <Kpi label="Downtime waiting / yr" value={`${fmtNum(best.downtimeHours, 1)} h`} sub={cur ? `now ${fmtNum(cur.downtimeHours, 1)} h` : undefined} />
-            <Kpi label="Total cost / yr" value={fmtIDR(best.totalCost)} sub={cur ? `now ${fmtIDR(cur.totalCost)}` : undefined} />
-            <Kpi label="Working capital" value={fmtIDR(best.capital)} sub={econ.capitalDelta != null ? `${fmtIDR(econ.capitalDelta, { sign: true })} vs now` : undefined}
+            <Kpi info="demand.stock.fill" label="Fill rate at S*" value={fmtPct(best.fillRate, 1)} sub={cur ? `now ${fmtPct(cur.fillRate, 1)}` : undefined} tone="good" />
+            <Kpi info="demand.stock.downtime" label="Downtime waiting / yr" value={`${fmtNum(best.downtimeHours, 1)} h`} sub={cur ? `now ${fmtNum(cur.downtimeHours, 1)} h` : undefined} />
+            <Kpi info="demand.stock.total" label="Total cost / yr" value={fmtIDR(best.totalCost)} sub={cur ? `now ${fmtIDR(cur.totalCost)}` : undefined} />
+            <Kpi info="demand.stock.capital" label="Working capital" value={fmtIDR(best.capital)} sub={econ.capitalDelta != null ? `${fmtIDR(econ.capitalDelta, { sign: true })} vs now` : undefined}
               tone={econ.capitalDelta != null && econ.capitalDelta < 0 ? "good" : undefined} />
           </div>
           <div className="mt-3 h-[220px]">
@@ -166,10 +166,10 @@ export function StockDecision({ material: m }: { material: Material }) {
             </p>
           </div>
           <div className="mt-3 grid grid-cols-2 gap-2">
-            <Kpi label="NPV of stocking" value={fmtIDR(fin.npv, { sign: true })} tone={fin.npv > 0 ? "good" : "bad"} />
-            <Kpi label="Discounted payback" value={fin.discountedPayback == null ? "not reached" : `${fin.discountedPayback.toFixed(1)} yr`} />
-            <Kpi label="Annual cost · buy on demand" value={fmtIDR(fin.eacKeep)} sub="equivalent annual cost" />
-            <Kpi label="Annual cost · stock" value={fmtIDR(fin.eacSwap)} sub="equivalent annual cost" />
+            <Kpi info="demand.stock.npv" label="NPV of stocking" value={fmtIDR(fin.npv, { sign: true })} tone={fin.npv > 0 ? "good" : "bad"} />
+            <Kpi info="demand.stock.payback" label="Discounted payback" value={fin.discountedPayback == null ? "not reached" : `${fin.discountedPayback.toFixed(1)} yr`} />
+            <Kpi info="demand.stock.eacKeep" label="Annual cost · buy on demand" value={fmtIDR(fin.eacKeep)} sub="equivalent annual cost" />
+            <Kpi info="demand.stock.eacSwap" label="Annual cost · stock" value={fmtIDR(fin.eacSwap)} sub="equivalent annual cost" />
           </div>
           <div className="mt-3 h-[200px]">
             <ResponsiveContainer width="100%" height="100%">

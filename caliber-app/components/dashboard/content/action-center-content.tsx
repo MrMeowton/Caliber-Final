@@ -12,6 +12,7 @@ import {
   YAxis,
 } from "recharts";
 import { Check, RefreshCw, Sparkles, X } from "lucide-react";
+import { InfoTip } from "@/components/ui/info-tip";
 
 type Action = "Reorder Now" | "Maintain" | "Reduce / Stop-Buy" | "Monitor";
 type Candidate = {
@@ -553,20 +554,23 @@ export function ActionCenterContent() {
       </section>
 
       <section className="grid gap-4 sm:grid-cols-3">
-        <div className="border-y border-[#e8eaec] py-3">
-          <p className="text-sm text-[#5d5f60]">Critical zero-stock positions</p>
+        <div className="relative border-y border-[#e8eaec] py-3">
+          <InfoTip id="action.kpi.criticalZero" className="absolute right-0 top-2" />
+          <p className="pr-8 text-sm text-[#5d5f60]">Critical zero-stock positions</p>
           <p className="mt-1 text-2xl font-medium tabular-nums">
             {integerFormat.format(data.kpis.criticalZeroPositions)}
           </p>
         </div>
-        <div className="border-y border-[#e8eaec] py-3">
-          <p className="text-sm text-[#5d5f60]">Estimated above-max capital</p>
+        <div className="relative border-y border-[#e8eaec] py-3">
+          <InfoTip id="action.kpi.aboveMax" className="absolute right-0 top-2" />
+          <p className="pr-8 text-sm text-[#5d5f60]">Estimated above-max capital</p>
           <p className="mt-1 text-xl font-medium tabular-nums">
             {formatCurrency(data.kpis.excessCapitalIdr)}
           </p>
         </div>
-        <div className="border-y border-[#e8eaec] py-3">
-          <p className="text-sm text-[#5d5f60]">Maintenance plan items · 90 days</p>
+        <div className="relative border-y border-[#e8eaec] py-3">
+          <InfoTip id="action.kpi.plans" className="absolute right-0 top-2" />
+          <p className="pr-8 text-sm text-[#5d5f60]">Maintenance plan items · 90 days</p>
           <p className="mt-1 text-2xl font-medium tabular-nums">
             {integerFormat.format(data.kpis.maintenancePlansDue90d)}
           </p>
@@ -582,9 +586,12 @@ export function ActionCenterContent() {
                 Annual holding-cost proxy vs. inventory deficit to the scenario ROP.
               </p>
             </div>
-            <span className="text-xs text-[#5d5f60]">
-              {plottedCount} priced candidates plotted
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-[#5d5f60]">
+                {plottedCount} priced candidates plotted
+              </span>
+              <InfoTip id="action.matrix" className="-my-1" />
+            </div>
           </div>
           {plottedCount > 0 ? (
             <div className="mt-3 h-[280px]">
@@ -643,8 +650,9 @@ export function ActionCenterContent() {
           </p>
         </div>
 
-        <section className="rounded-lg border border-[#e8eaec] bg-white p-4 sm:p-5">
-          <h2 className="text-base font-semibold">Scenario controls</h2>
+        <section className="relative rounded-lg border border-[#e8eaec] bg-white p-4 sm:p-5">
+          <InfoTip id="action.controls" className="absolute right-3 top-3" />
+          <h2 className="pr-8 text-base font-semibold">Scenario controls</h2>
           <p className="mt-1 text-sm text-[#5d5f60]">
             Adjust policy assumptions; the BOM maximum remains a hard order cap.
           </p>
@@ -724,11 +732,14 @@ export function ActionCenterContent() {
               exceeds the BOM maximum.
             </p>
           </div>
+          <div className="flex items-center gap-2">
           <span className="text-xs text-[#5d5f60]">
             Planning lead time: {data.coverage.planningLeadTimeDays === null
               ? "unavailable"
               : `${numberFormat.format(data.coverage.planningLeadTimeDays)} days`}
           </span>
+          <InfoTip id="action.policy" className="-my-1" />
+          </div>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full min-w-[860px] text-left text-sm">
@@ -794,6 +805,7 @@ export function ActionCenterContent() {
               stay local and do not submit orders.
             </p>
           </div>
+          <div className="flex items-center gap-2">
           {queue && (
             <button
               type="button"
@@ -805,6 +817,8 @@ export function ActionCenterContent() {
               Regenerate
             </button>
           )}
+          <InfoTip id="action.queue" />
+          </div>
         </div>
         {aiError && (
           <p className="m-4 rounded-md bg-[#ffedea] p-3 text-sm text-[#831c1e]" role="alert">
@@ -934,8 +948,9 @@ export function ActionCenterContent() {
       </section>
 
       {(storageError || assignments.length > 0) && (
-        <section className="rounded-lg border border-[#e8eaec] bg-white p-4 sm:p-5">
-          <h2 className="text-base font-semibold">Assigned review tasks</h2>
+        <section className="relative rounded-lg border border-[#e8eaec] bg-white p-4 sm:p-5">
+          <InfoTip id="action.assignments" className="absolute right-3 top-3" />
+          <h2 className="pr-8 text-base font-semibold">Assigned review tasks</h2>
           {storageError && (
             <p className="mt-2 text-sm text-[#831c1e]" role="alert">{storageError}</p>
           )}

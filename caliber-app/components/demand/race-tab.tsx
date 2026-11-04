@@ -97,7 +97,7 @@ export function RaceTab() {
   return (
     <div className="space-y-5">
       <Card
-        title="Demand race: will the part be on the shelf before the job that needs it?"
+        title="Demand race: will the part be on the shelf before the job that needs it?" info="demand.race"
         subtitle="Forecast usage + planned PM kits are run against reconstructed stock and open POs from the chosen date"
         right={
           <button type="button" onClick={demo} className="inline-flex items-center gap-1.5 rounded-xl border border-[#bfd3f6] bg-[#eef4ff] px-3 py-2 text-xs font-semibold text-[#1257c7] hover:bg-[#e2ecfd]">
@@ -131,7 +131,7 @@ export function RaceTab() {
       </Card>
 
       <div className="grid gap-5 2xl:grid-cols-[minmax(0,1fr)_380px]">
-        <Card>
+        <Card info="demand.race.timeline">
           {error && <ErrorNote error={error} />}
           {!data && !error && <Loading text="Running the race…" />}
           {data && (
@@ -144,7 +144,7 @@ export function RaceTab() {
           </Source>
         </Card>
 
-        <Card className="2xl:sticky 2xl:top-0 2xl:self-start" title="Detail & what-if">
+        <Card className="2xl:sticky 2xl:top-0 2xl:self-start" title="Detail & what-if" info="demand.race.detail">
           {!race || !selected ? (
             <p className="py-6 text-sm text-[#718198]">Select a row to see why it is flagged and test ordering today or expediting.</p>
           ) : (

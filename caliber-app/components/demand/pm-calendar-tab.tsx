@@ -40,14 +40,14 @@ export function PmCalendarTab({ onOpenRace }: { onOpenRace: () => void }) {
   return (
     <div className="space-y-5">
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <Kpi label="PM job occurrences, Oct 26–Sep 27" value={fmtNum(totalJobs)} sub="from 10,153 maintenance items, cycles normalised to months" />
-        <Kpi label="Jobs that consume parts" value={fmtNum(partJobs)} sub="overhaul, consumable change, cleaning, internal inspection" tone="info" />
-        <Kpi label="Expected PM part demand" value={fmtIDR(totalExpected)} sub="known in advance: no statistics needed" tone="good" />
-        <Kpi label={`Critical kit gaps in ${MONTH_LABEL(data.month)}`} value={fmtNum(sel?.critical_short ?? 0)} sub="S/A Stock Items with stock below the job kit" tone="bad" />
+        <Kpi info="demand.pm.jobs" label="PM job occurrences, Oct 26–Sep 27" value={fmtNum(totalJobs)} sub="from 10,153 maintenance items, cycles normalised to months" />
+        <Kpi info="demand.pm.partJobs" label="Jobs that consume parts" value={fmtNum(partJobs)} sub="overhaul, consumable change, cleaning, internal inspection" tone="info" />
+        <Kpi info="demand.pm.expected" label="Expected PM part demand" value={fmtIDR(totalExpected)} sub="known in advance: no statistics needed" tone="good" />
+        <Kpi info="demand.pm.gaps" label={`Critical kit gaps in ${MONTH_LABEL(data.month)}`} value={fmtNum(sel?.critical_short ?? 0)} sub="S/A Stock Items with stock below the job kit" tone="bad" />
       </div>
 
       <Card
-        title="PM demand calendar: part requirements known 12 months ahead"
+        title="PM demand calendar: part requirements known 12 months ahead" info="demand.pm.calendar"
         subtitle="Click a month to list its jobs. Bars = expected part value; line = critical S/A Stock Items whose stock is below the kit for that month's jobs"
       >
         <div className="h-[300px]">
@@ -87,7 +87,7 @@ export function PmCalendarTab({ onOpenRace }: { onOpenRace: () => void }) {
       </Card>
 
       <Card
-        title={`Jobs due in ${MONTH_LABEL(data.month)}`}
+        title={`Jobs due in ${MONTH_LABEL(data.month)}`} info="demand.pm.month"
         subtitle="Part-consuming jobs, kit gaps first"
         right={<button type="button" onClick={onOpenRace} className="rounded-xl border border-[#d7dee9] px-3 py-2 text-xs font-medium text-[#1257c7] hover:bg-[#f4f6fa]">Run the demand race →</button>}
       >

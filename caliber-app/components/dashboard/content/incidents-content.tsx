@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { InfoTip } from "@/components/ui/info-tip";
 
 type RiskIncident = {
   id: string;
@@ -260,9 +261,9 @@ export function IncidentsContent() {
       </section>
 
       <section className="grid gap-3 sm:grid-cols-3">
-        <SummaryCard label="Cases on page" value={incidents.length} icon={<Database className="h-4 w-4" />} />
-        <SummaryCard label="Open cases" value={openCount} icon={<Clock3 className="h-4 w-4" />} />
-        <SummaryCard label="Cases with risk score" value={scoredCount} icon={<AlertTriangle className="h-4 w-4" />} />
+        <SummaryCard info label="Cases on page" value={incidents.length} icon={<Database className="h-4 w-4" />} />
+        <SummaryCard info label="Open cases" value={openCount} icon={<Clock3 className="h-4 w-4" />} />
+        <SummaryCard info label="Cases with risk score" value={scoredCount} icon={<AlertTriangle className="h-4 w-4" />} />
       </section>
 
       {error && (
@@ -283,7 +284,8 @@ export function IncidentsContent() {
 
       <section className="grid items-start gap-4 xl:grid-cols-[minmax(320px,0.8fr)_minmax(0,1.5fr)]">
         <div className="flex h-[min(60vh,640px)] min-h-[320px] flex-col overflow-hidden rounded-2xl border border-[#dce7f7] bg-white p-4 shadow-[0_8px_24px_rgba(8,47,128,0.06)]">
-          <div className="relative">
+          <div className="flex items-center gap-2">
+          <div className="relative min-w-0 flex-1">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#7890b2]" />
             <Input
               value={search}
@@ -292,6 +294,8 @@ export function IncidentsContent() {
               aria-label="Search incidents"
               className="border-[#dce7f7] bg-[#fbfcff] pl-9"
             />
+          </div>
+          <InfoTip id="incidents.list" />
           </div>
           <div className="mt-3 grid grid-cols-3 gap-2" aria-label="Filter incident status">
             {(["all", "open", "closed"] as const).map((status) => (
@@ -399,7 +403,8 @@ export function IncidentsContent() {
           </div>
         </div>
 
-        <div className="h-[min(60vh,640px)] min-h-[320px] min-w-0 overflow-y-auto overscroll-contain rounded-2xl border border-[#dce7f7] bg-white p-5 shadow-[0_8px_24px_rgba(8,47,128,0.06)] sm:p-6">
+        <div className="relative h-[min(60vh,640px)] min-h-[320px] min-w-0 overflow-y-auto overscroll-contain rounded-2xl border border-[#dce7f7] bg-white p-5 pr-12 shadow-[0_8px_24px_rgba(8,47,128,0.06)] sm:p-6 sm:pr-12">
+          <InfoTip id="incidents.detail" className="absolute right-3 top-3" />
           {selectedIncident ? (
             <>
               <div className="flex flex-wrap items-start justify-between gap-4 border-b border-[#edf2fa] pb-5">
@@ -502,13 +507,16 @@ function SummaryCard({
   label,
   value,
   icon,
+  info,
 }: {
   label: string;
   value: number;
   icon: ReactNode;
+  info?: boolean;
 }) {
   return (
-    <div className="rounded-xl border border-[#dce7f7] bg-white p-4 shadow-[0_8px_24px_rgba(8,47,128,0.04)]">
+    <div className="relative rounded-xl border border-[#dce7f7] bg-white p-4 shadow-[0_8px_24px_rgba(8,47,128,0.04)]">
+      {info && <InfoTip id="incidents.stats" className="absolute right-2 top-2" />}
       <div className="flex items-center gap-2 text-xs font-semibold text-[#7890b2]">
         {icon}
         {label}
