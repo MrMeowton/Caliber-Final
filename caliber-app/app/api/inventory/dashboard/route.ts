@@ -733,6 +733,46 @@ export async function GET() {
            AND date(pr_date) <= date('now')`
       )
       .get() as { eligibleLines: number; onTimePromises: number | null };
+    const supplierPromiseBySupplier = db
+      .prepare(
+        `SELECT
+           COALESCE(
+             NULLIF(TRIM(po_supplier_name), ''),
+             NULLIF(TRIM(po_supplier_code), ''),
+             'Unknown supplier'
+           ) AS supplierName,
+           NULLIF(TRIM(po_supplier_code), '') AS supplierCode,
+           COUNT(*) AS eligibleLines,
+           SUM(CASE
+             WHEN date(po_delivery_date) <= date(pr_delivery_date) THEN 1
+             ELSE 0
+           END) AS onTimeLines
+         FROM pr_po_clean
+         WHERE date(po_delivery_date) IS NOT NULL
+           AND date(pr_delivery_date) IS NOT NULL
+           AND date(pr_date) <= date('now')
+         GROUP BY supplierName, supplierCode
+         ORDER BY eligibleLines DESC, supplierName COLLATE NOCASE`
+      )
+      .all() as {
+      supplierName: string;
+      supplierCode: string | null;
+      eligibleLines: number;
+      onTimeLines: number;
+    }[];
+    const supplierPromiseTotals = supplierPromiseBySupplier.reduce(
+      (totals, supplier) => ({
+        eligibleLines: totals.eligibleLines + supplier.eligibleLines,
+        onTimeLines: totals.onTimeLines + supplier.onTimeLines,
+      }),
+      { eligibleLines: 0, onTimeLines: 0 }
+    );
+    if (
+      supplierPromiseTotals.eligibleLines !== promiseAttainment.eligibleLines ||
+      supplierPromiseTotals.onTimeLines !== finite(promiseAttainment.onTimePromises)
+    ) {
+      throw new Error("Supplier promise totals do not match the overall metric.");
+    }
 
     const historyCoverage = movementCoverage.firstDate
       ? db
@@ -836,7 +876,9 @@ export async function GET() {
                 promiseAttainment.eligibleLines)
             : null,
         supplierEligibleLines: promiseAttainment.eligibleLines,
+        supplierPromiseOnTimeLines: finite(promiseAttainment.onTimePromises),
       },
+      supplierPromiseBySupplier,
       issueTrend,
       maintenanceTrend,
       pareto: paretoItems.slice(0, 30),

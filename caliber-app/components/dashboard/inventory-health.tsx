@@ -6,7 +6,7 @@ import { AlertTriangle, Search } from "lucide-react";
 import { Card, CritBadge, ErrorNote, Loading, Source, getJSON } from "@/components/demand/ui";
 import { StatusBadge, VERDICT_ROW, type Verdict } from "@/components/ui/status";
 import { InfoTip } from "@/components/ui/info-tip";
-import { fmtIDR, fmtNum } from "@/lib/demand/format";
+import { fmtIDR, fmtNum, fmtPct } from "@/lib/demand/format";
 import { cn } from "@/lib/utils";
 import type { HealthCategory } from "@/lib/inventory/health";
 
@@ -17,8 +17,23 @@ type Row = {
 };
 type Health = {
   asOf: string;
+  historyStart: string;
   historyMonths: number;
   totals: { skus: number; value: number };
+  noIssue: {
+    skus: number;
+    value: number;
+    parts: {
+      material_no: string;
+      description: string;
+      unit: string;
+      stock: number;
+      unitPriceIdr: number;
+      value: number;
+      priceImputed: boolean;
+    }[];
+  };
+  pricing: { imputedSkus: number; imputedValue: number };
   categories: { key: HealthCategory; label: string; action: string; skus: number; value: number; atRisk: number }[];
   slowing: { skus: number; value: number };
   aging: { bucket: string; skus: number; value: number }[];
@@ -44,17 +59,21 @@ export function InventoryHealth({
 }) {
   const [data, setData] = useState<Health | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<Filter>(initialFilter);
   const [q, setQ] = useState("");
   const tableRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const ctrl = new AbortController();
-    getJSON<Health>("/api/inventory/health", ctrl.signal)
+    setLoading(true);
+    setError(null);
+    getJSON<Health>(`/api/inventory/health?filter=${filter}`, ctrl.signal)
       .then(setData)
-      .catch((e) => { if (!ctrl.signal.aborted) setError(String(e.message ?? e)); });
+      .catch((e) => { if (!ctrl.signal.aborted) setError(String(e.message ?? e)); })
+      .finally(() => { if (!ctrl.signal.aborted) setLoading(false); });
     return () => ctrl.abort();
-  }, []);
+  }, [filter]);
 
   useEffect(() => {
     if (data && focusTable) {
@@ -76,6 +95,17 @@ export function InventoryHealth({
 
   const releasable = data.categories.reduce((a, c) => a + c.atRisk, 0);
   const tiles = data.categories.filter((c) => c.key !== "healthy");
+  const tableTitle =
+    filter === "all"
+      ? "Parts to review"
+      : filter === "slowing"
+        ? "Becoming slow-moving"
+        : filter === "insurance"
+          ? "Insurance Spare"
+          : CATEGORY_LABEL[filter];
+  const historyRange = [data.historyStart, data.asOf]
+    .map((date) => new Intl.DateTimeFormat("en-US", { month: "short", year: "numeric", timeZone: "UTC" }).format(new Date(date)))
+    .join(" – ");
 
   return (
     <div className="space-y-6">
@@ -121,29 +151,72 @@ export function InventoryHealth({
       >
         <div className="h-[240px]">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={data.aging.map((a) => ({ ...a, bn: a.value / 1e9 }))} margin={{ top: 8, right: 12, left: 0, bottom: 0 }}>
+            <BarChart data={data.aging.map((a) => ({ ...a, billion: a.value / 1e9 }))} margin={{ top: 8, right: 12, left: 0, bottom: 0 }}>
               <CartesianGrid stroke="#eef2f6" vertical={false} />
               <XAxis dataKey="bucket" tick={{ fontSize: 12, fill: "#5f7189" }} />
-              <YAxis tick={{ fontSize: 12, fill: "#5f7189" }} width={56} tickFormatter={(v) => `${fmtNum(Number(v))} bn`} />
+              <YAxis
+                tick={{ fontSize: 12, fill: "#5f7189" }}
+                width={56}
+                tickFormatter={(v) => fmtNum(Number(v))}
+                label={{ value: "IDR billion", angle: -90, position: "insideLeft", fontSize: 11, fill: "#5f7189" }}
+              />
               <Tooltip
                 formatter={(_, __, item) => [`${fmtIDR(item.payload.value)} · ${fmtNum(item.payload.skus)} parts`, "Stock value"]}
                 contentStyle={{ borderRadius: 8, fontSize: 13 }}
               />
-              <Bar dataKey="bn" fill="#1b6c80" radius={[3, 3, 0, 0]} />
+              <Bar dataKey="billion" fill="#1b6c80" radius={[3, 3, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
         <Source>
-          Movement history covers {data.historyMonths} months (May 2025 – Sep 2026), so the 24-month obsolete rule cannot be measured yet.
-          &quot;Potentially obsolete&quot; is a proxy: no issue in all {data.historyMonths} months, no planned maintenance need in the next 12 months
-          and no open purchase order. Values use the median PO price; dummy data, illustrative magnitudes.
+          Movement history covers {data.historyMonths} months ({historyRange}); parts with no issue in that history are listed separately below.
+          &quot;Potentially obsolete&quot; is a proxy: no issue in the available history, no planned maintenance need in the next 12 months
+          and no open purchase order. {fmtPct(data.pricing.imputedSkus / data.totals.skus)} of stocked parts use family-median price estimates,
+          representing {fmtPct(data.pricing.imputedValue / data.totals.value)} of estimated stock value. These are illustrative estimates, not audited valuations.
         </Source>
+
+        <div className="mt-5 border-t border-[#e8eaec] pt-5">
+          <h3 className="text-base font-semibold">Over 17 months</h3>
+          <p className="mt-1 text-sm leading-6 text-[#353736]">
+            No issue was recorded for <b>{fmtNum(data.noIssue.skus)} parts</b> in the available {data.historyMonths}-month history
+            ({historyRange}); their estimated stock value is <b>{fmtIDR(data.noIssue.value)}</b>. Their last issue may predate the available history, so exact age is unknown.
+          </p>
+          <div className="mt-4 overflow-x-auto">
+            <table className="w-full min-w-[640px] text-left text-sm">
+              <thead className="bg-[#f4f6f8] text-xs text-[#5d5f60]">
+                <tr>
+                  <th className="px-3 py-2.5 font-medium">Part with no issue in available history</th>
+                  <th className="px-3 py-2.5 font-medium">On hand</th>
+                  <th className="px-3 py-2.5 font-medium">Unit price</th>
+                  <th className="px-3 py-2.5 font-medium">Stock value</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#e8eaec] tabular-nums">
+                {data.noIssue.parts.map((part) => (
+                  <tr key={part.material_no}>
+                    <td className="px-3 py-2.5">
+                      <p className="font-medium">{part.description}</p>
+                      <p className="font-mono text-xs text-[#5d5f60]">{part.material_no}</p>
+                    </td>
+                    <td className="px-3 py-2.5">{fmtNum(part.stock)} {part.unit}</td>
+                    <td className="px-3 py-2.5">
+                      {fmtIDR(part.unitPriceIdr)}
+                      {part.priceImputed && <span className="block text-xs text-[#5d5f60]">family-median estimate</span>}
+                    </td>
+                    <td className="px-3 py-2.5 font-semibold">{fmtIDR(part.value)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <Source>Highest estimated stock values among parts with no issue in the observed period; imputed unit prices are not verified SKU prices.</Source>
+        </div>
       </Card>
 
       <div ref={tableRef} className="scroll-mt-4">
         <Card
           info="overview.health.table"
-          title="Parts to review"
+          title={tableTitle}
           subtitle={filter === "all" ? "All flagged parts, largest releasable value first" : `Filtered: ${filter === "slowing" ? "Becoming slow-moving" : data.categories.find((c) => c.key === filter)?.label}`}
           right={
             <label className="relative block w-full sm:w-72">
@@ -174,7 +247,9 @@ export function InventoryHealth({
               </tr>
             </thead>
             <tbody className="divide-y divide-[#e8eaec] tabular-nums">
-              {rows.map((r) => (
+              {loading ? (
+                <tr><td colSpan={8} className="px-3 py-8 text-center text-[#5d5f60]">Loading parts…</td></tr>
+              ) : rows.map((r) => (
                 <tr key={r.material_no} className={`align-top ${VERDICT_ROW[VERDICT[r.category]]}`}>
                   <td className="max-w-[260px] px-3 py-2.5">
                     <p className="flex items-center gap-2 font-medium"><CritBadge crit={r.criticality} /><span className="truncate">{r.description}</span></p>
@@ -197,7 +272,7 @@ export function InventoryHealth({
                   <td className="max-w-[240px] px-3 py-2.5 text-[#353736]">{r.action}</td>
                 </tr>
               ))}
-              {rows.length === 0 && (
+              {!loading && rows.length === 0 && (
                 <tr><td colSpan={8} className="px-3 py-8 text-center text-[#5d5f60]">No parts match this filter.</td></tr>
               )}
             </tbody>

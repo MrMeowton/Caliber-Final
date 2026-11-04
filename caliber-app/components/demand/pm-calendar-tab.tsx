@@ -60,10 +60,10 @@ export function PmCalendarTab({ onOpenRace }: { onOpenRace: () => void }) {
               }}>
               <CartesianGrid stroke="#eef2f6" vertical={false} />
               <XAxis dataKey="month" tick={{ fontSize: 11, fill: "#5f7189" }} />
-              <YAxis yAxisId="v" tick={{ fontSize: 11, fill: "#5f7189" }} width={44} label={{ value: "IDR bn", angle: -90, position: "insideLeft", fontSize: 11, fill: "#5f7189" }} />
+              <YAxis yAxisId="v" tick={{ fontSize: 11, fill: "#5f7189" }} width={44} label={{ value: "IDR billion", angle: -90, position: "insideLeft", fontSize: 11, fill: "#5f7189" }} />
               <YAxis yAxisId="n" orientation="right" tick={{ fontSize: 11, fill: "#bf3d4b" }} width={36} />
               <Tooltip contentStyle={{ borderRadius: 12, fontSize: 12 }}
-                formatter={(v, name) => (name === "Critical kit gaps" ? `${v} SKUs` : `IDR ${Number(v).toFixed(1)} bn`)} />
+                formatter={(v, name) => (name === "Critical kit gaps" ? `${v} SKUs` : `IDR ${Number(v).toFixed(1)} billion`)} />
               <Legend wrapperStyle={{ fontSize: 12 }} />
               <Bar yAxisId="v" dataKey="expected" name="Expected part demand" radius={[6, 6, 0, 0]} cursor="pointer">
                 {chart.map((c) => <Cell key={c.key} fill={c.key === data.month ? "#082f80" : "#16a34a"} />)}

@@ -1,6 +1,5 @@
 // Inventory health: classify every part that holds stock, as of the data snapshot (30 Sep 2026).
-// Movement history covers May 2025 – Sep 2026 (17 months), so the 24-month obsolete rule cannot be measured;
-// "potentially obsolete" is a proxy: no issue in 17 months AND no planned PM need in 12 months AND no open PO.
+// Movement history covers May 2025 – Sep 2026 (17 months), so the 24-month obsolete rule cannot be measured.
 import { db } from "@/lib/db";
 
 export const AS_OF = "2026-09-30";
@@ -100,6 +99,7 @@ function compute() {
       mrpType: m.mrp_type,
       stock: m.stock,
       bomMax: max,
+      unitPriceIdr: price,
       value,
       priceImputed: m.price_imputed === 1,
       lastIssue: s?.last ?? null,
@@ -131,23 +131,42 @@ function compute() {
     { label: "≤ 3 months", test: (m: number | null) => m !== null && m <= 3 },
     { label: "3–6 months", test: (m: number | null) => m !== null && m > 3 && m <= 6 },
     { label: "6–12 months", test: (m: number | null) => m !== null && m > 6 && m <= 12 },
-    { label: "12–17 months", test: (m: number | null) => m !== null && m > 12 },
-    { label: "No issue in 17 months", test: (m: number | null) => m === null },
+    { label: "12–17 months", test: (m: number | null) => m !== null && m > 12 && m <= 17 },
   ];
   const aging = buckets.map((b) => {
     const list = rows.filter((r) => b.test(r.monthsSinceIssue));
     return { bucket: b.label, skus: list.length, value: list.reduce((a, r) => a + r.value, 0) };
   });
 
+  const noIssue = rows.filter((r) => r.monthsSinceIssue === null).sort((a, b) => b.value - a.value);
+  const imputed = rows.filter((r) => r.priceImputed);
   const flagged = rows.filter((r) => r.category !== "healthy" || r.slowing).sort((a, b) => b.atRisk - a.atRisk || b.value - a.value);
 
   return {
     asOf: AS_OF,
+    historyStart: HISTORY_START,
     historyMonths: Math.round(monthsBetween(HISTORY_START, AS_OF)),
     totals: { skus: rows.length, value: rows.reduce((a, r) => a + r.value, 0) },
+    noIssue: {
+      skus: noIssue.length,
+      value: noIssue.reduce((a, r) => a + r.value, 0),
+      parts: noIssue.slice(0, 5).map((r) => ({
+        material_no: r.material_no,
+        description: r.description,
+        unit: r.unit,
+        stock: r.stock,
+        unitPriceIdr: r.unitPriceIdr,
+        value: r.value,
+        priceImputed: r.priceImputed,
+      })),
+    },
+    pricing: {
+      imputedSkus: imputed.length,
+      imputedValue: imputed.reduce((a, r) => a + r.value, 0),
+    },
     categories,
     slowing: { skus: rows.filter((r) => r.slowing).length, value: rows.filter((r) => r.slowing).reduce((a, r) => a + r.value, 0) },
     aging,
-    rows: flagged.slice(0, 400),
+    rows: flagged,
   };
 }

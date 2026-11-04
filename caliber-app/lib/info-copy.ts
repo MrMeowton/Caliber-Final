@@ -114,7 +114,7 @@ export const INFO = {
   },
   "overview.health.categories": {
     title: "Inventory health categories",
-    what: "Every part that holds stock is put into one group: Excess (more than its Max), Slow-moving (still used, but stock lasts over a year), Non-moving (not used for 12 months), Potentially obsolete (never used in 17 months and nothing planned), Insurance spare (critical part kept on purpose) or Healthy. 'Becoming slow-moving' is an early alert for parts whose use dropped by more than 70% in the last 6 months.",
+    what: "Every part that holds stock is put into one group: Excess (more than its Max), Slow-moving (still used, but stock lasts over a year), Non-moving (not used for 12 months), Potentially obsolete (no issue in the available history and nothing planned), Insurance spare (critical part kept on purpose) or Healthy. 'Becoming slow-moving' is an early alert for parts whose use dropped by more than 70% in the last 6 months.",
     source: "Stock, Max and criticality from the BoM; every warehouse issue from Movement Material (May 2025 – Sep 2026); planned maintenance needs from Mitem & Mplan; open purchase orders and prices from PR/PO.",
     why: "Money stuck in parts nobody uses cannot be spent on parts that are missing. These groups show where capital can be released and which parts must stay even though they never move.",
     read: "Click a tile to filter the table below. 'Releasable' is the value a review could free up: the stock above Max for excess, the stock beyond one year of use for slow-moving, and the whole value for non-moving and obsolete parts.",
@@ -124,7 +124,7 @@ export const INFO = {
     what: "How much stock value sits in parts grouped by how long ago they were last taken out of the warehouse.",
     source: "Last issue date per part from Movement Material, stock × median purchase price from PR/PO.",
     why: "The older the last use, the more likely the stock is no longer needed. Aging shows how much money is getting old on the shelf.",
-    read: "Bars on the right are the oldest stock. 'No issue in 17 months' means the part was never used in the whole history; part of it is insurance stock for critical equipment and is kept on purpose.",
+    read: "The chart groups stock by its last recorded issue through 12–17 months. Parts with no issue in the available 17-month history are listed separately below; exact age is unknown, and some may be insurance stock kept on purpose.",
   },
   "overview.health.table": {
     title: "Parts to review",

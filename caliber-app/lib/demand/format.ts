@@ -4,8 +4,8 @@ export function fmtIDR(v: number | null | undefined, { sign = false } = {}) {
   if (v == null || !Number.isFinite(v)) return "—";
   const s = sign && v > 0 ? "+" : v < 0 ? "−" : "";
   const a = Math.abs(v);
-  if (a >= 1e12) return `${s}IDR ${(a / 1e12).toFixed(2)} tn`;
-  if (a >= 1e9) return `${s}IDR ${(a / 1e9).toFixed(a >= 1e11 ? 0 : 1)} bn`;
+  if (a >= 1e12) return `${s}IDR ${(a / 1e12).toFixed(2)} trillion`;
+  if (a >= 1e9) return `${s}IDR ${(a / 1e9).toFixed(a >= 1e11 ? 0 : 1)} billion`;
   if (a >= 1e6) return `${s}IDR ${(a / 1e6).toFixed(a >= 1e8 ? 0 : 1)} M`;
   if (a >= 1e3) return `${s}IDR ${(a / 1e3).toFixed(0)} k`;
   return `${s}IDR ${a.toFixed(0)}`;

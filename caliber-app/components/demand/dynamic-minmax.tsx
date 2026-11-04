@@ -159,7 +159,7 @@ export function DynamicMinMaxSummary() {
           <Kpi
             label="Average stock value"
             value={`${fmtIDR(bt.dynamic.avgValue)}`}
-            sub={`BoM Min/Max: ${fmtIDR(bt.static.avgValue)} (${delta(bt.static.avgValue / 1e9, bt.dynamic.avgValue / 1e9)} bn)`}
+            sub={`BoM Min/Max: ${fmtIDR(bt.static.avgValue)} (${delta(bt.static.avgValue / 1e9, bt.dynamic.avgValue / 1e9)} billion)`}
             tone={bt.dynamic.avgValue <= bt.static.avgValue ? "good" : "warn"}
           />
           <Kpi label="Orders placed" value={`${fmtNum(bt.static.orders)} → ${fmtNum(bt.dynamic.orders)}`} sub="more, smaller orders timed to demand" />

@@ -112,11 +112,11 @@ export function OverviewTab({ data, onOpenTab }: { data: Summary; onOpenTab: (ta
               <CartesianGrid stroke="#eef2f6" vertical={false} />
               <XAxis dataKey="month" tick={{ fontSize: 11, fill: "#5f7189" }} interval={1} />
               <YAxis tick={{ fontSize: 11, fill: "#5f7189" }} tickFormatter={(v) => `${v}`} width={44}
-                label={{ value: "IDR bn", angle: -90, position: "insideLeft", fontSize: 11, fill: "#5f7189" }} />
-              <Tooltip formatter={(v) => `IDR ${Number(v).toFixed(1)} bn`} contentStyle={{ borderRadius: 12, fontSize: 12 }} />
+                label={{ value: "IDR billion", angle: -90, position: "insideLeft", fontSize: 11, fill: "#5f7189" }} />
+              <Tooltip formatter={(v) => `IDR ${Number(v).toFixed(1)} billion`} contentStyle={{ borderRadius: 12, fontSize: 12 }} />
               <Legend wrapperStyle={{ fontSize: 12 }} />
               <ReferenceLine x={MONTH_LABEL("2026-10")} stroke="#94a3b8" strokeDasharray="4 4" label={{ value: "forecast →", position: "insideTopLeft", fontSize: 11, fill: "#5f7189" }} />
-              <ReferenceLine y={rows.staticAvg} stroke="#bf3d4b" strokeDasharray="6 4" label={{ value: `static 12-mo average ${rows.staticAvg.toFixed(1)} bn`, position: "insideTopRight", fontSize: 11, fill: "#bf3d4b" }} />
+              <ReferenceLine y={rows.staticAvg} stroke="#bf3d4b" strokeDasharray="6 4" label={{ value: `static 12-mo average ${rows.staticAvg.toFixed(1)} billion`, position: "insideTopRight", fontSize: 11, fill: "#bf3d4b" }} />
               <Bar dataKey="h_baseline" name={COMP.baseline.label} stackId="h" fill={COMP.baseline.color} />
               <Bar dataKey="h_pm" name={COMP.pm.label} stackId="h" fill={COMP.pm.color} />
               <Bar dataKey="h_event" name={COMP.event.label} stackId="h" fill={COMP.event.color} />

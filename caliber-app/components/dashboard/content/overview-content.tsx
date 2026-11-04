@@ -76,6 +76,12 @@ type Recommendation = InventoryPart & {
 
 type DashboardData = {
   generatedAt: string;
+  supplierPromiseBySupplier: Array<{
+    supplierName: string;
+    supplierCode: string | null;
+    eligibleLines: number;
+    onTimeLines: number;
+  }>;
   coverage: {
     movementStart: string | null;
     movementThrough: string | null;
@@ -119,6 +125,7 @@ type DashboardData = {
     maintenancePlansDue90d: number;
     supplierPromiseRate: number | null;
     supplierEligibleLines: number;
+    supplierPromiseOnTimeLines: number;
   };
   issueTrend: Array<{
     month: string;
@@ -189,6 +196,15 @@ function isDashboardData(value: unknown): value is DashboardData {
     isRecord(value) &&
     isRecord(value.kpis) &&
     isRecord(value.coverage) &&
+    Array.isArray(value.supplierPromiseBySupplier) &&
+    value.supplierPromiseBySupplier.every(
+      (supplier) =>
+        isRecord(supplier) &&
+        typeof supplier.supplierName === "string" &&
+        (supplier.supplierCode === null || typeof supplier.supplierCode === "string") &&
+        typeof supplier.eligibleLines === "number" &&
+        typeof supplier.onTimeLines === "number"
+    ) &&
     Array.isArray(value.issueTrend) &&
     Array.isArray(value.maintenanceTrend) &&
     Array.isArray(value.pareto) &&
@@ -759,15 +775,47 @@ export function OverviewContent({ initialTab, onNavigate }: { initialTab?: strin
                   Supplier promise performance
                 </CardTitle>
               </CardHeader>
-              <CardContent className="flex flex-wrap items-baseline gap-x-4 gap-y-1 px-5 pb-5">
-                <p className="text-[28px] font-medium leading-9 tabular-nums">
-                  {kpis.supplierPromiseRate === null
-                    ? "—"
-                    : `${Math.round(kpis.supplierPromiseRate * 100)}%`}
-                </p>
-                <p className="text-sm text-[#5d5f60]">
-                  {formatCount(kpis.supplierEligibleLines)} dated PR/PO lines
-                </p>
+              <CardContent className="space-y-4 px-5 pb-5">
+                <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+                  <p className="text-[28px] font-medium leading-9 tabular-nums">
+                    {kpis.supplierPromiseRate === null
+                      ? "—"
+                      : `${Math.round(kpis.supplierPromiseRate * 100)}%`}
+                  </p>
+                  <p className="text-sm text-[#5d5f60]">
+                    {formatCount(kpis.supplierPromiseOnTimeLines)} of{" "}
+                    {formatCount(kpis.supplierEligibleLines)} dated PR/PO lines on time
+                  </p>
+                </div>
+                <details className="border-t border-[#e8eaec] pt-3">
+                  <summary className="w-fit cursor-pointer text-sm font-medium text-[#1b6c80] underline-offset-2 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1b6c80]">
+                    {`Performance by supplier (${formatCount(data.supplierPromiseBySupplier.length)})`}
+                  </summary>
+                  <div className="mt-3 max-h-80 overflow-y-auto pr-2">
+                    {data.supplierPromiseBySupplier.map((supplier) => (
+                      <div
+                        key={`${supplier.supplierCode ?? ""}-${supplier.supplierName}`}
+                        className="flex items-center justify-between gap-4 border-b border-[#f0f1f2] py-2.5 last:border-b-0"
+                      >
+                        <div className="min-w-0">
+                          <p className="truncate text-sm font-medium text-[#131416]">
+                            {supplier.supplierName}
+                          </p>
+                          <p className="text-xs text-[#5d5f60]">
+                            {formatCount(supplier.onTimeLines)} of{" "}
+                            {formatCount(supplier.eligibleLines)} lines on time
+                            {supplier.supplierCode && ` · ${supplier.supplierCode}`}
+                          </p>
+                        </div>
+                        <p className="shrink-0 text-sm font-semibold tabular-nums text-[#131416]">
+                          {supplier.eligibleLines > 0
+                            ? `${((supplier.onTimeLines / supplier.eligibleLines) * 100).toFixed(1)}%`
+                            : "—"}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </details>
               </CardContent>
             </Card>
 
