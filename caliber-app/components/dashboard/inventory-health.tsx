@@ -3,7 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { AlertTriangle, Search } from "lucide-react";
-import { Card, CritBadge, ErrorNote, Loading, Pill, Source, getJSON } from "@/components/demand/ui";
+import { Card, CritBadge, ErrorNote, Loading, Source, getJSON } from "@/components/demand/ui";
+import { StatusBadge, VERDICT_ROW, type Verdict } from "@/components/ui/status";
 import { InfoTip } from "@/components/ui/info-tip";
 import { fmtIDR, fmtNum } from "@/lib/demand/format";
 import { cn } from "@/lib/utils";
@@ -26,17 +27,13 @@ type Health = {
 
 type Filter = HealthCategory | "slowing" | "all";
 
+const VERDICT: Record<HealthCategory, Verdict> = {
+  excess: "watch", slowMoving: "watch", nonMoving: "watch", obsolete: "watch", insurance: "ok", healthy: "ok",
+};
 const TONE: Record<HealthCategory, string> = {
-  excess: "#92400e",
-  slowMoving: "#a86f0c",
-  nonMoving: "#c4242a",
-  obsolete: "#831c1e",
-  insurance: "#1b6c80",
-  healthy: "#1e7b4f",
+  excess: "#8a5300", slowMoving: "#8a5300", nonMoving: "#8a5300", obsolete: "#8a5300", insurance: "#1e7b4f", healthy: "#1e7b4f",
 };
-const PILL: Record<HealthCategory, "amber" | "red" | "blue" | "green"> = {
-  excess: "amber", slowMoving: "amber", nonMoving: "red", obsolete: "red", insurance: "blue", healthy: "green",
-};
+
 
 export function InventoryHealth() {
   const [data, setData] = useState<Health | null>(null);
@@ -71,10 +68,9 @@ export function InventoryHealth() {
     <div className="space-y-6">
       <section className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h2 className="text-lg font-semibold">Inventory health</h2>
+          <h2 className="text-lg font-semibold">Which stock is overstocked, slow or dead?</h2>
           <p className="mt-1 text-sm text-[#5d5f60]">
-            {fmtNum(data.totals.skus)} parts holding stock worth {fmtIDR(data.totals.value)} · snapshot {data.asOf} ·{" "}
-            <b className="text-[#131416]">{fmtIDR(releasable)}</b> could be released by reviewing the flagged parts
+            <b className="text-[#131416]">{fmtIDR(releasable)}</b> could be released
           </p>
         </div>
         <InfoTip id="overview.health.categories" />
@@ -165,15 +161,15 @@ export function InventoryHealth() {
             </thead>
             <tbody className="divide-y divide-[#e8eaec] tabular-nums">
               {rows.map((r) => (
-                <tr key={r.material_no} className="align-top">
+                <tr key={r.material_no} className={`align-top ${VERDICT_ROW[VERDICT[r.category]]}`}>
                   <td className="max-w-[260px] px-3 py-2.5">
                     <p className="flex items-center gap-2 font-medium"><CritBadge crit={r.criticality} /><span className="truncate">{r.description}</span></p>
                     <p className="font-mono text-xs text-[#5d5f60]">{r.material_no} · {r.mrpType === "STOCK ITEM" ? "Stock Item" : "Non Stock"}</p>
                   </td>
                   <td className="px-3 py-2.5">
                     <div className="flex flex-col items-start gap-1">
-                      <Pill tone={PILL[r.category]}>{CATEGORY_LABEL[r.category]}</Pill>
-                      {r.slowing && <Pill tone="amber">slowing down</Pill>}
+                      <StatusBadge verdict={VERDICT[r.category]}>{CATEGORY_LABEL[r.category]}</StatusBadge>
+                      {r.slowing && <StatusBadge verdict="watch">Slowing down</StatusBadge>}
                     </div>
                   </td>
                   <td className="px-3 py-2.5">{fmtNum(r.stock)} {r.unit}<span className="block text-xs text-[#5d5f60]">Max {fmtNum(r.bomMax)}</span></td>

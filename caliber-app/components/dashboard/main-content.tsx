@@ -1,87 +1,62 @@
 "use client";
 
-import { useState } from "react";
 import { Bot } from "lucide-react";
-import type { Section } from "@/app/page";
+import type { NavTarget, Navigate, Section } from "@/app/page";
+import { DataNotes } from "@/components/ui/data-notes";
+import { TodayContent } from "./content/today-content";
 import { OverviewContent } from "./content/overview-content";
 import { ActionCenterContent } from "./content/action-center-content";
-import { IncidentsContent } from "./content/incidents-content";
-import { AlertsContent } from "./content/alerts-content";
 import { DemandIntelligence } from "@/components/demand/demand-intelligence";
 
-interface MainContentProps {
-  activeSection: Section;
-  onOpenAssistant: () => void;
-}
-
-const sectionTitles: Record<Section, string> = {
-  overview: "MIND · Inventory",
-  forecasting: "Demand Intelligence",
-  "action-center": "Action Center",
-  notifications: "Notifications",
+const crumbs: Record<Section, string> = {
+  today: "Today's decisions",
+  monitor: "Step 1 · Monitor",
+  forecast: "Step 2 · Forecast",
+  act: "Step 3 · Act",
 };
 
 export function MainContent({
-  activeSection,
+  nav,
+  onNavigate,
   onOpenAssistant,
-}: MainContentProps) {
-  const [notificationTab, setNotificationTab] = useState<"alerts" | "incidents">("alerts");
-
-  const renderContent = () => {
-    switch (activeSection) {
-      case "overview":
-        return <OverviewContent />;
-      case "forecasting":
-        return <DemandIntelligence />;
-      case "action-center":
-        return <ActionCenterContent />;
-      case "notifications":
-        return (
-          <div className="space-y-5">
-            <nav className="flex gap-5 border-b border-[#e8eaec]" aria-label="Notification views">
-              {(["alerts", "incidents"] as const).map((tab) => (
-                <button
-                  key={tab}
-                  type="button"
-                  aria-pressed={notificationTab === tab}
-                  onClick={() => setNotificationTab(tab)}
-                  className={`min-h-11 border-b-2 px-1 text-sm font-medium capitalize ${
-                    notificationTab === tab
-                      ? "border-[#1b6c80] text-[#131416]"
-                      : "border-transparent text-[#5d5f60] hover:text-[#131416]"
-                  }`}
-                >
-                  {tab}
-                </button>
-              ))}
-            </nav>
-            {notificationTab === "alerts" ? <AlertsContent /> : <IncidentsContent />}
-          </div>
-        );
+}: {
+  nav: NavTarget & { n: number };
+  onNavigate: Navigate;
+  onOpenAssistant: () => void;
+}) {
+  const content = () => {
+    switch (nav.section) {
+      case "monitor":
+        return <OverviewContent initialTab={nav.tab} onNavigate={onNavigate} />;
+      case "forecast":
+        return <DemandIntelligence initialTab={nav.tab} initialSku={nav.sku} />;
+      case "act":
+        return <ActionCenterContent onNavigate={onNavigate} initialFocus={nav.tab} />;
       default:
-        return <OverviewContent />;
+        return <TodayContent onNavigate={onNavigate} />;
     }
   };
 
   return (
     <div className="flex min-h-0 min-w-0 flex-1 flex-col">
       <header className="flex h-12 shrink-0 items-center justify-between gap-3 bg-[#f3f6f7] px-3 md:px-5">
-        <p className="text-sm font-medium text-[#353736]">
-          {sectionTitles[activeSection]}
-        </p>
-        <button
-          type="button"
-          onClick={onOpenAssistant}
-          className="inline-flex min-h-9 shrink-0 items-center gap-2 rounded-md border border-[#cdced1] bg-white px-3 text-sm font-medium text-[#131416] hover:bg-[#f4f6f8] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1b6c80]"
-        >
-          <Bot className="h-4 w-4 text-[#1b6c80]" aria-hidden="true" />
-          <span className="hidden sm:inline">Ask MIND AI</span>
-          <span className="sm:hidden">AI</span>
-        </button>
+        <p className="truncate text-sm font-medium text-[#353736]">{crumbs[nav.section]}</p>
+        <div className="flex items-center gap-2">
+          <DataNotes />
+          <button
+            type="button"
+            onClick={onOpenAssistant}
+            className="inline-flex min-h-9 shrink-0 items-center gap-2 rounded-md bg-[#1b6c80] px-3 text-sm font-semibold text-white hover:bg-[#155768] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1b6c80]"
+          >
+            <Bot className="h-4 w-4" aria-hidden="true" />
+            <span className="hidden sm:inline">Ask MIND AI</span>
+            <span className="sm:hidden">AI</span>
+          </button>
+        </div>
       </header>
       <main className="min-h-0 flex-1 overflow-y-auto rounded-[16px] border border-[#e8eaec] bg-white px-4 py-5 sm:px-6 sm:py-6 md:mb-2 md:mr-2">
-        <div key={activeSection} className="animate-fade-in">
-          {renderContent()}
+        <div key={`${nav.section}-${nav.n}`} className="animate-fade-in">
+          {content()}
         </div>
       </main>
     </div>

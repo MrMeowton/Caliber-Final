@@ -179,7 +179,8 @@ def main():
     pr = rd("select * from pr_po_clean")
     for c in ["pr_date", "pr_delivery_date", "po_delivery_date"]:
         pr[c] = fix_date(pr[c])
-    pr["price_idr"] = pr.po_item_amount * pr.po_currency.map(FX)
+    # po_item_amount is the LINE value (unit price × PR quantity), so divide by quantity to get a unit price.
+    pr["price_idr"] = pr.po_item_amount * pr.po_currency.map(FX) / pr.pr_quantity.where(pr.pr_quantity > 0)
     pr["lt"] = (pr.po_delivery_date - pr.pr_date).dt.days.clip(lower=0)
     pr["on_time"] = pr.po_delivery_date <= pr.pr_delivery_date
     g = pr.groupby("pr_material")

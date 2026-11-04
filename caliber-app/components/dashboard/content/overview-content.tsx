@@ -15,7 +15,11 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { RefreshCw, Search } from "lucide-react";
+import { RefreshCw } from "lucide-react";
+import type { Navigate } from "@/app/page";
+import { PageHeader } from "@/components/ui/page-header";
+import { MetricCard } from "@/components/ui/metric-card";
+import { StatusBadge } from "@/components/ui/status";
 import type { PlantAsset } from "@/components/dashboard/plant-3d/faults";
 import { InfoTip } from "@/components/ui/info-tip";
 import { InventoryHealth } from "@/components/dashboard/inventory-health";
@@ -27,7 +31,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-type DashboardTab = "monitor" | "health" | "pareto" | "actions";
+type DashboardTab = "monitor" | "health" | "pareto";
 type Status = "critical" | "watch" | "ready";
 
 type InventoryPart = {
@@ -231,23 +235,9 @@ function formatMonth(value: string): string {
 }
 
 function StatusTag({ status }: { status: Status }) {
-  const classes: Record<Status, string> = {
-    critical: "bg-[#ffedea] text-[#831c1e]",
-    watch: "bg-[#fffbeb] text-[#92400e]",
-    ready: "bg-[#dcfae5] text-[#14532d]",
-  };
-
-  const labels: Record<Status, string> = {
-    critical: "Zero part before work",
-    watch: "Below reorder point",
-    ready: "At policy",
-  };
-
-  return (
-    <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${classes[status]}`}>
-      {labels[status]}
-    </span>
-  );
+  if (status === "critical") return <StatusBadge verdict="act">Part missing before planned work</StatusBadge>;
+  if (status === "watch") return <StatusBadge verdict="watch">Below reorder level</StatusBadge>;
+  return <StatusBadge verdict="ok">Enough stock</StatusBadge>;
 }
 
 function LoadingPanel() {
@@ -270,20 +260,16 @@ function LoadingPanel() {
   );
 }
 
-export function OverviewContent() {
+export function OverviewContent({ initialTab, onNavigate }: { initialTab?: string; onNavigate?: Navigate } = {}) {
   const [data, setData] = useState<DashboardData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshKey, setRefreshKey] = useState(0);
-  const [activeTab, setActiveTab] = useState<DashboardTab>("monitor");
+  const [activeTab, setActiveTab] = useState<DashboardTab>(
+    initialTab === "health" || initialTab === "pareto" ? initialTab : "monitor"
+  );
   const [selectedAssetId, setSelectedAssetId] = useState("BF-112");
   const [plantTag, setPlantTag] = useState<string | null>(null);
-  const [search, setSearch] = useState("");
-  const [selectedRecommendations, setSelectedRecommendations] = useState<
-    Set<string>
-  >(() => new Set());
-  const [quantities, setQuantities] = useState<Record<string, number>>({});
-  const [draftLines, setDraftLines] = useState<DraftLine[]>([]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -327,22 +313,6 @@ export function OverviewContent() {
     data?.assets[0] ??
     null;
 
-  const filteredRecommendations = useMemo(() => {
-    const query = search.trim().toLowerCase();
-    if (!data || !query) return data?.recommendations ?? [];
-    return data.recommendations.filter((item) =>
-      [
-        item.materialNo,
-        item.description,
-        item.functionalLoc,
-        item.locationDescription,
-      ]
-        .join(" ")
-        .toLowerCase()
-        .includes(query)
-    );
-  }, [data, search]);
-
   // Opening equipment in 3D also selects it in the equipment risk list below.
   const openPlantTag = useCallback(
     (tag: string | null) => {
@@ -358,50 +328,6 @@ export function OverviewContent() {
     setError(null);
     setLoading(true);
     setRefreshKey((value) => value + 1);
-  };
-
-  const recommendationKey = (item: Recommendation) =>
-    `${item.functionalLoc}:${item.materialNo}`;
-  const stageableCount =
-    data?.recommendations.filter((item) => {
-      const key = recommendationKey(item);
-      return (
-        selectedRecommendations.has(key) &&
-        (quantities[key] ?? item.recommendedQty) > 0
-      );
-    }).length ?? 0;
-
-  const setRecommendationSelected = (key: string, checked: boolean) => {
-    setSelectedRecommendations((current) => {
-      const next = new Set(current);
-      if (checked) next.add(key);
-      else next.delete(key);
-      return next;
-    });
-  };
-
-  const stageDraft = () => {
-    const nextLines = (data?.recommendations ?? [])
-      .filter((item) => selectedRecommendations.has(recommendationKey(item)))
-      .map((item) => {
-        const quantity = Math.min(
-          item.orderCap,
-          Math.max(0, Math.floor(quantities[recommendationKey(item)] ?? item.recommendedQty))
-        );
-        return {
-          key: recommendationKey(item),
-          materialNo: item.materialNo,
-          description: item.description,
-          functionalLoc: item.functionalLoc,
-          quantity,
-          unit: item.unit,
-          maxStock: item.maxQty,
-          currentStock: item.stock,
-        };
-      })
-      .filter((item) => item.quantity > 0);
-
-    setDraftLines(nextLines);
   };
 
   if (loading && !data) return <LoadingPanel />;
@@ -435,17 +361,11 @@ export function OverviewContent() {
 
   return (
     <div className="space-y-6 text-[#131416]">
-      <section className="flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <h1 className="text-[22px] font-semibold leading-7">
-            Inventory command dashboard
-          </h1>
-          <p className="mt-1 text-sm text-[#5d5f60]">
-            Forecast · Optimize · Monitor · Recommend
-            <span className="mx-2 text-[#cdced1]">/</span>
-            Read-only database snapshot
-          </p>
-        </div>
+      <PageHeader
+        step={1}
+        title="What is happening to our spare parts right now?"
+        subtitle="Five health checks, a 3D map of where the risk sits in the plant, and the stock that is overstocked, slow or dead."
+        right={
         <div className="flex items-center gap-3">
           <p className="text-xs tabular-nums text-[#5d5f60]">
             Updated {new Intl.DateTimeFormat("en-US", {
@@ -463,7 +383,8 @@ export function OverviewContent() {
             Refresh
           </button>
         </div>
-      </section>
+        }
+      />
 
       {error && (
         <div
@@ -481,73 +402,56 @@ export function OverviewContent() {
         </div>
       )}
 
-      <section
-        className="grid grid-cols-2 divide-x divide-y divide-[#e8eaec] rounded-lg border border-[#e8eaec] bg-white lg:grid-cols-5 lg:divide-y-0"
-        aria-label="Inventory health indicators"
-      >
-        <div className="relative col-span-2 p-4 lg:col-span-1">
-          <InfoTip id="overview.kpi.health" className="absolute right-2 top-2" />
-          <p className="pr-7 text-sm text-[#5d5f60]">Stock policy health</p>
-          <p className="mt-1 text-[28px] font-medium leading-9 tabular-nums">
-            {healthPercent === null ? "—" : `${healthPercent}%`}
-          </p>
-          <p className="mt-1 text-xs leading-5 text-[#5d5f60]">
-            {formatCount(kpis.healthAtOrAboveMinimum)} of{" "}
-            {formatCount(kpis.healthEligiblePositions)} stock-item BOM positions at or above minimum
-          </p>
-          {healthPercent !== null && (
-            <div
-              className="mt-2 h-1.5 overflow-hidden rounded bg-[#ebedee]"
-              role="img"
-              aria-label={`Stock policy health ${healthPercent} percent`}
-            >
-              <div
-                className="h-full bg-[#1e7b4f]"
-                style={{ width: `${healthPercent}%` }}
-              />
-            </div>
-          )}
-        </div>
-        <KpiCell
-          label="Critical zero-stock"
-          value={formatCount(kpis.criticalZeroPositions)}
-          detail="S/A stock-item BOM positions"
-          tone="negative"
+      <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5" aria-label="Spare-part health checks">
+        <MetricCard
+          label="Parts with enough stock"
+          info="overview.kpi.health"
+          value={healthPercent === null ? "—" : `${healthPercent}%`}
+          verdict={healthPercent === null || healthPercent >= 90 ? "ok" : healthPercent >= 70 ? "watch" : "act"}
+          verdictLabel={healthPercent !== null && healthPercent < 70 ? "Too low" : undefined}
+          meaning={<>{formatCount(kpis.healthAtOrAboveMinimum)} of {formatCount(kpis.healthEligiblePositions)} stocked part positions are at or above their minimum. The rest may run out before a new order arrives. Target: 90% or more.</>}
+          action={onNavigate && { label: "See reorder list", onClick: () => onNavigate({ section: "act", tab: "reorder" }) }}
+        />
+        <MetricCard
+          label="Critical parts out of stock"
           info="overview.kpi.criticalZero"
+          value={formatCount(kpis.criticalZeroPositions)}
+          verdict={kpis.criticalZeroPositions > 0 ? "act" : "ok"}
+          meaning="Parts on critical (S/A) equipment with zero units. If that equipment fails, the job waits for the supplier. Target: 0."
+          action={onNavigate && { label: "Review & reorder", onClick: () => onNavigate({ section: "act", tab: "reorder" }) }}
         />
-        <KpiCell
-          label="Above maximum"
-          value={formatCount(kpis.excessSkus)}
-          detail={`${formatCurrency(kpis.excessCapitalIdr)} estimated · ${formatCount(kpis.pricedExcessSkus)} of ${formatCount(kpis.totalExcessSkus)} excess SKUs priced`}
-          tone="warning"
+        <MetricCard
+          label="Overstocked parts"
           info="overview.kpi.aboveMax"
+          value={formatCount(kpis.excessSkus)}
+          verdict={kpis.excessSkus > 0 ? "watch" : "ok"}
+          meaning={<>{formatCurrency(kpis.excessCapitalIdr)} of cash sits above the agreed Max. Stop buying these and move the surplus where it is needed.</>}
+          action={{ label: "See stop-buy list", onClick: () => setActiveTab("health") }}
         />
-        <KpiCell
-          label="Non-moving · 12 months"
+        <MetricCard
+          label="Parts unused for 12 months"
           info="overview.kpi.nonMoving"
           value={formatCount(kpis.nonMovingSkus)}
-          detail={
-            kpis.hasObsolescenceWindow
-              ? `${formatCount(kpis.obsoleteSkus)} potentially obsolete · 24-month rule`
-              : "24-month obsolete test unavailable; history is shorter"
-          }
-          tone="neutral"
+          verdict={kpis.nonMovingSkus > 0 ? "watch" : "ok"}
+          meaning="Nobody took these out of the warehouse for a year. Candidates to redeploy, return or write off, unless they are critical insurance spares."
+          action={{ label: "See dead stock", onClick: () => setActiveTab("health") }}
         />
-        <KpiCell
-          label="Non-stock with on-hand"
+        <MetricCard
+          label="Unplanned stock on the shelf"
           info="overview.kpi.nonStock"
           value={formatCount(kpis.nonStockWithPhysicalSkus)}
-          detail="Distinct non-stock SKUs with positive quantity"
-          tone="neutral"
+          verdict={kpis.nonStockWithPhysicalSkus > 0 ? "watch" : "ok"}
+          meaning="Parts set to 'buy when needed' that still sit in the warehouse. The system does not plan them, so they get forgotten or bought twice."
+          action={{ label: "Review list", onClick: () => setActiveTab("health") }}
         />
       </section>
 
       <section className="space-y-3" aria-label="3D plant view">
         <div className="flex items-start justify-between gap-2">
           <div className="flex min-w-0 flex-wrap items-baseline gap-x-4 gap-y-1">
-            <h2 className="text-base font-semibold">Plant view</h2>
+            <h2 className="text-lg font-semibold">Where in the plant is the risk?</h2>
             <p className="text-sm text-[#5d5f60]">
-              Stock risk on each equipment&apos;s BOM mapped to its 3D parts · click a tag, then X-Ray to locate the faulty part
+              Click a tag to zoom · X-Ray shows the missing part
             </p>
           </div>
           <InfoTip id="overview.plant" className="-mt-1" />
@@ -566,10 +470,9 @@ export function OverviewContent() {
       >
         {(
           [
-            ["monitor", "Monitor"],
-            ["health", "Inventory health"],
-            ["pareto", "Pareto & segmentation"],
-            ["actions", "Replenishment"],
+            ["monitor", "Which equipment is at risk?"],
+            ["health", "Overstocked, slow & dead stock"],
+            ["pareto", "Where is the money?"],
           ] as const
         ).map(([tab, label]) => (
           <button
@@ -605,9 +508,6 @@ export function OverviewContent() {
                 <CardTitle className="text-base font-semibold">
                   Equipment risk & linked BOM
                 </CardTitle>
-                <p className="text-sm text-[#5d5f60]">
-                  Select a real functional-location group to inspect stock status and upcoming work.
-                </p>
               </CardHeader>
               <CardContent className="px-5 pb-5">
                 {selectedAsset ? (
@@ -699,22 +599,20 @@ export function OverviewContent() {
                                 {part.materialNo} · {part.functionalLoc}
                               </p>
                             </div>
-                            <div className="text-right text-xs tabular-nums">
-                              <p>
-                                {formatNumber(part.stock)} / {formatNumber(part.minQty)} min
-                              </p>
-                              <p
-                                className={
-                                  part.stock <= 0
-                                      && ["S", "A"].includes(part.criticality)
-                                      && selectedAsset.upcomingPlans > 0
-                                      ? "text-[#c4242a]"
-                                      : part.stock <= part.reorderPoint
-                                      ? "text-[#92400e]"
-                                      : "text-[#1e7b4f]"
+                            <div className="flex flex-col items-end gap-1 text-right text-xs tabular-nums">
+                              <StatusBadge
+                                verdict={
+                                  part.stock <= 0 && ["S", "A"].includes(part.criticality)
+                                    ? "act"
+                                    : part.stock <= part.reorderPoint
+                                      ? "watch"
+                                      : "ok"
                                 }
                               >
-                                Max {formatNumber(part.maxQty)} {part.unit}
+                                {formatNumber(part.stock)} {part.unit} on hand
+                              </StatusBadge>
+                              <p className="text-[#45484a]">
+                                Min {formatNumber(part.minQty)} · Max {formatNumber(part.maxQty)}
                               </p>
                             </div>
                           </div>
@@ -725,9 +623,6 @@ export function OverviewContent() {
                           </p>
                         )}
                       </div>
-                      <p className="mt-2 text-xs text-[#5d5f60]">
-                        Downtime duration is not recorded in the source data; scheduled-work exposure is shown instead.
-                      </p>
                     </div>
                     </div>
                   </div>
@@ -747,9 +642,6 @@ export function OverviewContent() {
                 <CardTitle className="text-base font-semibold">
                   Issue activity
                 </CardTitle>
-                <p className="text-sm text-[#5d5f60]">
-                  Monthly ISSUE postings · complete months · data through {issueThrough}
-                </p>
               </CardHeader>
               <CardContent className="px-3 pb-4">
                 <div className="h-[220px] w-full">
@@ -794,9 +686,6 @@ export function OverviewContent() {
                     </AreaChart>
                   </ResponsiveContainer>
                 </div>
-                <p className="px-2 text-xs text-[#5d5f60]">
-                  Counts postings rather than summing unlike units (EA, kg, and others).
-                </p>
               </CardContent>
             </Card>
 
@@ -848,9 +737,6 @@ export function OverviewContent() {
                     </AreaChart>
                   </ResponsiveContainer>
                 </div>
-                <p className="px-2 text-xs leading-5 text-[#5d5f60]">
-                  Recurring dates are estimated from plan start and cycle. BOM installed quantities are not assumed to be replacement demand.
-                </p>
               </CardContent>
             </Card>
           </section>
@@ -862,9 +748,6 @@ export function OverviewContent() {
                 <CardTitle className="text-base font-semibold">
                   Supplier promise performance
                 </CardTitle>
-                <p className="text-sm text-[#5d5f60]">
-                  PO promised date on or before the PR requested date
-                </p>
               </CardHeader>
               <CardContent className="flex flex-wrap items-baseline gap-x-4 gap-y-1 px-5 pb-5">
                 <p className="text-[28px] font-medium leading-9 tabular-nums">
@@ -875,9 +758,6 @@ export function OverviewContent() {
                 <p className="text-sm text-[#5d5f60]">
                   {formatCount(kpis.supplierEligibleLines)} dated PR/PO lines
                 </p>
-                <p className="basis-full text-xs leading-5 text-[#5d5f60]">
-                  Promise-date attainment proxy, not actual supplier OTD: goods-receipt dates are not available in this database.
-                </p>
               </CardContent>
             </Card>
 
@@ -887,9 +767,6 @@ export function OverviewContent() {
                 <CardTitle className="text-base font-semibold">
                   Forecast inputs
                 </CardTitle>
-                <p className="text-sm text-[#5d5f60]">
-                  Data quality and coverage used by this snapshot
-                </p>
               </CardHeader>
               <CardContent className="space-y-2 px-5 pb-5 text-sm">
                 <FactRow
@@ -964,9 +841,6 @@ export function OverviewContent() {
               <CardTitle className="text-base font-semibold">
                 Pareto · estimated inventory value
               </CardTitle>
-              <p className="text-sm text-[#5d5f60]">
-                Ranked by on-hand quantity × latest linked IDR purchase price; cumulative line marks the 80% threshold.
-              </p>
             </CardHeader>
             <CardContent className="px-3 pb-5">
               {data.pareto.length > 0 ? (
@@ -1085,9 +959,6 @@ export function OverviewContent() {
               <CardTitle className="text-base font-semibold">
                 Highest-value stock items
               </CardTitle>
-              <p className="text-sm text-[#5d5f60]">
-                Estimated IDR value; unpriced SKUs are excluded from this ranking.
-              </p>
             </CardHeader>
             <CardContent className="px-5 pb-4">
               <div className="divide-y divide-[#f0f1f2] border-y border-[#f0f1f2]">
@@ -1121,210 +992,9 @@ export function OverviewContent() {
             </CardContent>
           </Card>
 
-          <p className="text-xs leading-5 text-[#5d5f60]">
-            Each material is valued once using the maximum repeated BOM on-hand quantity to avoid double-counting stock across locations. Values use the latest linked IDR PO amount divided by PR quantity; other currencies and missing prices are excluded. The database does not provide a current valuation ledger.
-          </p>
         </div>
       )}
 
-      {activeTab === "actions" && (
-        <div
-          id="inventory-panel-actions"
-          className="space-y-6"
-          role="tabpanel"
-          aria-labelledby="inventory-tab-actions"
-        >
-          <section className="flex flex-wrap items-end justify-between gap-4">
-            <div>
-              <h2 className="text-lg font-semibold">Replenishment review</h2>
-              <p className="mt-1 text-sm text-[#5d5f60]">
-                Explainable reorder proposals capped at each BOM maximum. Nothing is submitted to a control system.
-              </p>
-            </div>
-            <label className="relative block w-full sm:max-w-xs">
-              <Search
-                className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#5d5f60]"
-                aria-hidden="true"
-              />
-              <input
-                type="search"
-                value={search}
-                onChange={(event) => setSearch(event.target.value)}
-                placeholder="Search material or location"
-                aria-label="Search recommendations"
-                className="min-h-10 w-full rounded-md border border-[#cdced1] bg-white pl-9 pr-3 text-sm placeholder:text-[#5d5f60] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1b6c80]"
-              />
-            </label>
-          </section>
-
-          <Card className="relative gap-0 rounded-lg border-[#e8eaec] py-0 shadow-none">
-            <InfoTip id="overview.replenishment" className="absolute right-3 top-3" />
-            <CardHeader className="gap-2 border-b border-[#f0f1f2] px-5 py-4 sm:flex-row sm:items-center sm:justify-between pr-12">
-              <div>
-                <CardTitle className="text-base font-semibold">
-                  Below reorder point
-                </CardTitle>
-                <p className="mt-1 text-sm text-[#5d5f60]">
-                  {formatCount(filteredRecommendations.length)} candidate BOM positions · Stock Item only
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={stageDraft}
-                disabled={stageableCount === 0}
-                className="min-h-10 shrink-0 rounded-md bg-[#1b6c80] px-4 text-sm font-medium text-white hover:bg-[#155768] disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1b6c80]"
-              >
-                Stage {formatCount(stageableCount)} selected
-              </button>
-            </CardHeader>
-            <CardContent className="px-5 pb-5">
-              <div className="divide-y divide-[#f0f1f2]">
-                {filteredRecommendations.map((item) => {
-                  const key = recommendationKey(item);
-                  const quantity = quantities[key] ?? item.recommendedQty;
-                  return (
-                    <div
-                      key={key}
-                      className="grid gap-3 py-4 md:grid-cols-[auto_minmax(0,1fr)_minmax(200px,0.8fr)_minmax(112px,0.35fr)] md:items-center"
-                    >
-                      <input
-                        type="checkbox"
-                        checked={selectedRecommendations.has(key)}
-                        onChange={(event) =>
-                          setRecommendationSelected(key, event.target.checked)
-                        }
-                        aria-label={`Select ${item.materialNo} for draft`}
-                        className="h-4 w-4 accent-[#1b6c80] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1b6c80]"
-                      />
-                      <div className="min-w-0">
-                        <p className="truncate text-sm font-medium">
-                          {item.description}
-                        </p>
-                        <p className="font-mono text-xs text-[#5d5f60]">
-                          {item.materialNo} · {item.functionalLoc} · {item.criticality || "Unrated"}
-                        </p>
-                        <p className="mt-1 text-xs text-[#5d5f60]">
-                          {item.reason}
-                          {item.nextMaintenance
-                            ? ` · ${item.nextMaintenance} ${formatDate(item.nextMaintenanceDate)}`
-                            : ""}
-                        </p>
-                      </div>
-                      <div className="grid grid-cols-3 gap-2 text-xs tabular-nums md:text-sm">
-                        <span>
-                          On hand
-                          <strong className="mt-1 block font-medium">
-                            {formatNumber(item.stock)} {item.unit}
-                          </strong>
-                        </span>
-                        <span>
-                          ROP
-                          <strong className="mt-1 block font-medium">
-                            {formatNumber(item.reorderPoint)} {item.unit}
-                          </strong>
-                        </span>
-                        <span>
-                          Max
-                          <strong className="mt-1 block font-medium">
-                            {formatNumber(item.maxQty)} {item.unit}
-                          </strong>
-                        </span>
-                      </div>
-                      <label className="flex items-center justify-between gap-2 text-xs text-[#5d5f60]">
-                        Draft qty
-                        <input
-                          type="number"
-                          min={0}
-                          max={item.orderCap}
-                          step={1}
-                          value={quantity}
-                          onChange={(event) => {
-                            const parsed = Number(event.target.value);
-                            setQuantities((current) => ({
-                              ...current,
-                              [key]: Number.isFinite(parsed)
-                                ? Math.min(
-                                    item.orderCap,
-                                    Math.max(0, Math.floor(parsed))
-                                  )
-                                : 0,
-                            }));
-                          }}
-                          aria-label={`Draft quantity for ${item.materialNo}; maximum ${item.orderCap} ${item.unit}`}
-                          className="h-10 w-24 rounded-md border border-[#cdced1] px-2 text-right text-sm tabular-nums text-[#131416] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1b6c80]"
-                        />
-                      </label>
-                    </div>
-                  );
-                })}
-                {filteredRecommendations.length === 0 && (
-                  <p className="py-6 text-sm text-[#5d5f60]">
-                    {search
-                      ? "No recommendations match this search."
-                      : "No stock-item BOM positions currently fall below their reorder point and maximum-stock cap."}
-                  </p>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-
-          {draftLines.length > 0 && (
-            <section
-              className="rounded-lg border border-[#e8eaec] bg-[#f4f6f8] p-4"
-              aria-live="polite"
-            >
-              <div className="flex flex-wrap items-baseline justify-between gap-2">
-                <h3 className="flex items-center gap-1 font-semibold">Draft prepared for review <InfoTip id="overview.draft" /></h3>
-                <span className="text-xs text-[#5d5f60]">
-                  Local preview only · not submitted
-                </span>
-              </div>
-              <div className="mt-3 divide-y divide-[#e8eaec]">
-                {draftLines.map((line) => (
-                  <p
-                    key={line.key}
-                    className="flex flex-wrap justify-between gap-2 py-2 text-sm"
-                  >
-                    <span>
-                      <span className="font-mono">{line.materialNo}</span>
-                      {" · "}
-                      {line.functionalLoc}
-                    </span>
-                    <span className="tabular-nums">
-                      {formatNumber(line.currentStock)} + {formatNumber(line.quantity)}{" "}
-                      {line.unit} ={" "}
-                      {formatNumber(line.currentStock + line.quantity)} /{" "}
-                      {formatNumber(line.maxStock)} max
-                    </span>
-                  </p>
-                ))}
-              </div>
-            </section>
-          )}
-
-          <details className="rounded-lg border border-[#e8eaec] px-4 py-3">
-            <summary className="cursor-pointer text-sm font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1b6c80]">
-              Reorder formula and limits
-            </summary>
-            <div className="mt-3 space-y-2 text-sm leading-6 text-[#5d5f60]">
-              <p>
-                {data.methodology.reorderPoint}.
-              </p>
-              <p>
-                {data.methodology.serviceLevel}. The 1.65 × daily issue deviation × √lead-time term is safety stock. Lead time is the median PR-to-PO promised-date interval from valid 1–365 day records, not actual receipt lead time.
-              </p>
-              <p>
-                {data.methodology.orderQuantity}. The input is capped at this value, so a staged order cannot take stock above the BOM maximum. {data.methodology.maintenance}.
-              </p>
-              <p>
-                Source: {formatCount(kpis.inventoryPositions)} BOM positions,{" "}
-                {formatCount(kpis.skuCount)} Stock Item SKUs, and issue history from{" "}
-                {formatDate(data.coverage.movementStart)} through {issueThrough}.
-              </p>
-            </div>
-          </details>
-        </div>
-      )}
     </div>
   );
 }

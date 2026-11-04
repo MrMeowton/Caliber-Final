@@ -55,7 +55,7 @@ export function SkuTab({ initialId }: { initialId?: string }) {
 
   return (
     <div className="grid gap-5 xl:grid-cols-[340px_minmax(0,1fr)]">
-      <Card className="xl:sticky xl:top-0 xl:self-start" title="SKUs" info="demand.sku.list" subtitle="Consumed or planned in the next 12 months">
+      <Card className="xl:sticky xl:top-0 xl:self-start" title="Parts" info="demand.sku.list" subtitle="Consumed or planned in the next 12 months">
         <div className="relative">
           <Search className="pointer-events-none absolute left-3 top-2.5 h-4 w-4 text-[#8090a5]" />
           <input
@@ -201,7 +201,7 @@ function SkuDetailPanel({ id }: { id: string }) {
       </Card>
 
       <Card
-        title="Demand history and 12-month forecast" info="demand.sku.history"
+        title="Past use and the next 12 months" info="demand.sku.history"
         subtitle={`Baseline at ${fmtNum(m.fc_baseline_m, 2)} ${m.unit}/month from the ${MODEL_LABEL[m.model] ?? m.model} model, plus ${fmtNum(m.pm_planned_12m, 1)} ${m.unit} expected from ${fmtNum(m.pm_jobs_12m)} planned PM jobs`}
         right={<Segmented value={view} onChange={setView} options={[{ value: "qty", label: "Monthly" }, { value: "cum", label: "Cumulative" }]} />}
       >
@@ -216,12 +216,12 @@ function SkuDetailPanel({ id }: { id: string }) {
               <ReferenceLine x={MONTH_LABEL("2026-10")} stroke="#94a3b8" strokeDasharray="4 4" />
               {view === "qty" ? (
                 <>
-                  <Bar dataKey="h_baseline" name="Baseline (corrective)" stackId="a" fill="#1257c7" />
-                  <Bar dataKey="h_pm" name="PM orders" stackId="a" fill="#16a34a" />
+                  <Bar dataKey="h_baseline" name="Everyday use" stackId="a" fill="#1257c7" />
+                  <Bar dataKey="h_pm" name="Planned maintenance" stackId="a" fill="#16a34a" />
                   <Bar dataKey="h_event" name="Turnaround / project" stackId="a" fill="#f59e0b" />
-                  <Bar dataKey="f_baseline" name="Forecast · baseline" stackId="a" fill="#1257c7" fillOpacity={0.35} />
-                  <Bar dataKey="f_pm" name="Forecast · PM plan" stackId="a" fill="#16a34a" fillOpacity={0.4} />
-                  <Line dataKey="p90" name="Forecast P90" stroke="#082f80" strokeDasharray="3 3" dot={false} />
+                  <Bar dataKey="f_baseline" name="Forecast · everyday use" stackId="a" fill="#1257c7" fillOpacity={0.35} />
+                  <Bar dataKey="f_pm" name="Forecast · planned maintenance" stackId="a" fill="#16a34a" fillOpacity={0.4} />
+                  <Line dataKey="p90" name="Cautious high estimate (P90)" stroke="#082f80" strokeDasharray="3 3" dot={false} />
                 </>
               ) : (
                 <>
@@ -244,7 +244,7 @@ function SkuDetailPanel({ id }: { id: string }) {
       <DynamicMinMax id={m.material_no} />
 
       <div className="grid gap-5 2xl:grid-cols-2">
-        <Card info="demand.sku.tournament" title="Model tournament on this SKU" subtitle="Total forecast for the May–Sep 2026 holdout vs what was actually issued">
+        <Card info="demand.sku.tournament" title="Which forecasting method was closest for this part?" subtitle="Each method's forecast for May–Sep 2026 compared with what was really used">
           {bt ? (
             <div className="h-[220px]">
               <ResponsiveContainer width="100%" height="100%">
@@ -265,7 +265,7 @@ function SkuDetailPanel({ id }: { id: string }) {
           <Source>Models fitted on May 2025–Apr 2026; challengers use event-cleaned history. MIND = event-cleaned adaptive mean.</Source>
         </Card>
 
-        <Card info="demand.sku.pm" title="Upcoming PM jobs that need this part" subtitle="From Mitem & Mplan → FuncLoc → BoM, next 12 months">
+        <Card info="demand.sku.pm" title="Planned maintenance jobs that need this part" subtitle="From Mitem & Mplan → FuncLoc → BoM, next 12 months">
           {upcoming.length === 0 ? (
             <p className="py-8 text-center text-sm text-[#718198]">No part-consuming PM job planned for this SKU.</p>
           ) : (
@@ -293,7 +293,7 @@ function SkuDetailPanel({ id }: { id: string }) {
       <StockDecision material={m} />
 
       {data.abnormal.length > 0 && (
-        <Card info="demand.sku.abnormal" title="Abnormal consumption on this SKU" subtitle={`${data.abnormal.length} issue lines above 5× the item median, flagged for planner review before they feed the next forecast`}>
+        <Card info="demand.sku.abnormal" title="Unusual withdrawals of this part" subtitle={`${data.abnormal.length} issue lines above 5× the item median, flagged for planner review before they feed the next forecast`}>
           <div className="flex flex-wrap gap-2">
             {data.abnormal.map((a, i) => (
               <span key={i} className="rounded-lg bg-[#fff0f0] px-2.5 py-1 text-xs text-[#bf3d4b]">

@@ -14,6 +14,10 @@ import {
 import { Check, RefreshCw, Sparkles, X } from "lucide-react";
 import { InfoTip } from "@/components/ui/info-tip";
 import { DynamicMinMaxSummary } from "@/components/demand/dynamic-minmax";
+import { ReorderList } from "@/components/dashboard/reorder-list";
+import { PageHeader } from "@/components/ui/page-header";
+import { MetricCard } from "@/components/ui/metric-card";
+import type { Navigate } from "@/app/page";
 
 type Action = "Reorder Now" | "Maintain" | "Reduce / Stop-Buy" | "Monitor";
 type Candidate = {
@@ -236,7 +240,8 @@ function getServerAssignmentsSnapshot() {
   return "[]";
 }
 
-export function ActionCenterContent() {
+export function ActionCenterContent({ onNavigate, initialFocus }: { onNavigate?: Navigate; initialFocus?: string } = {}) {
+  const scrollTo = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshKey, setRefreshKey] = useState(0);
@@ -502,6 +507,16 @@ export function ActionCenterContent() {
     }
   }
 
+  // Jump to the section a button elsewhere asked for (reorder list, AI to-do, Min–Max) once the page has data.
+  useEffect(() => {
+    if (!initialFocus || loading) return;
+    const timer = window.setTimeout(
+      () => document.getElementById(initialFocus)?.scrollIntoView({ behavior: "smooth", block: "start" }),
+      300
+    );
+    return () => window.clearTimeout(timer);
+  }, [initialFocus, loading]);
+
   if (loading) {
     return <p className="text-sm text-[#5d5f60]" role="status">Loading optimization inputs…</p>;
   }
@@ -532,283 +547,59 @@ export function ActionCenterContent() {
 
   return (
     <div className="space-y-6 text-[#131416]">
-      <section className="flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <h1 className="text-[22px] font-semibold leading-7">Action Center</h1>
-          <p className="mt-1 text-sm text-[#5d5f60]">
-            Compare inventory policy scenarios, prioritize action, and assign review tasks.
-          </p>
-        </div>
-        <button
-          type="button"
-          onClick={generateQueue}
-          disabled={aiLoading || scenarioCandidates.length === 0}
-          className="inline-flex min-h-10 items-center gap-2 rounded-md bg-[#1b6c80] px-4 text-sm font-medium text-white hover:bg-[#155768] disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1b6c80]"
-        >
-          {aiLoading ? (
-            <RefreshCw className="h-4 w-4 animate-spin" aria-hidden="true" />
-          ) : (
-            <Sparkles className="h-4 w-4" aria-hidden="true" />
-          )}
-          {aiLoading ? "Prioritizing…" : "Generate AI action queue"}
-        </button>
+      <PageHeader
+        step={3}
+        title="What should we order, reduce or keep?"
+        subtitle="Start with the reorder list, let AI rank the work, then check that the recommended Min–Max and the cost vs risk balance hold up."
+      />
+
+      <section className="grid gap-3 md:grid-cols-3" aria-label="What needs action">
+        <MetricCard
+          label="Critical parts out of stock"
+          info="action.kpi.criticalZero"
+          value={integerFormat.format(data.kpis.criticalZeroPositions)}
+          verdict={data.kpis.criticalZeroPositions > 0 ? "act" : "ok"}
+          meaning="These stop a job if the equipment fails. Order or expedite them first."
+          action={{ label: "Go to reorder list", onClick: () => scrollTo("reorder") }}
+        />
+        <MetricCard
+          label="Cash tied up above Max"
+          info="action.kpi.aboveMax"
+          value={formatCurrency(data.kpis.excessCapitalIdr)}
+          verdict={data.kpis.excessCapitalIdr > 0 ? "watch" : "ok"}
+          meaning="Released by stopping purchases of overstocked parts and moving the surplus where it is needed."
+          action={onNavigate && { label: "See stop-buy list", onClick: () => onNavigate({ section: "monitor", tab: "health" }) }}
+        />
+        <MetricCard
+          label="Planned jobs in the next 90 days"
+          info="action.kpi.plans"
+          value={integerFormat.format(data.kpis.maintenancePlansDue90d)}
+          verdict="watch"
+          verdictLabel="Plan ahead"
+          meaning="Each one needs its parts on the shelf before the job date. Check which months are short."
+          action={onNavigate && { label: "See parts per month", onClick: () => onNavigate({ section: "forecast", tab: "pm" }) }}
+        />
       </section>
 
-      <section className="grid gap-4 sm:grid-cols-3">
-        <div className="relative border-y border-[#e8eaec] py-3">
-          <InfoTip id="action.kpi.criticalZero" className="absolute right-0 top-2" />
-          <p className="pr-8 text-sm text-[#5d5f60]">Critical zero-stock positions</p>
-          <p className="mt-1 text-2xl font-medium tabular-nums">
-            {integerFormat.format(data.kpis.criticalZeroPositions)}
-          </p>
-        </div>
-        <div className="relative border-y border-[#e8eaec] py-3">
-          <InfoTip id="action.kpi.aboveMax" className="absolute right-0 top-2" />
-          <p className="pr-8 text-sm text-[#5d5f60]">Estimated above-max capital</p>
-          <p className="mt-1 text-xl font-medium tabular-nums">
-            {formatCurrency(data.kpis.excessCapitalIdr)}
-          </p>
-        </div>
-        <div className="relative border-y border-[#e8eaec] py-3">
-          <InfoTip id="action.kpi.plans" className="absolute right-0 top-2" />
-          <p className="pr-8 text-sm text-[#5d5f60]">Maintenance plan items · 90 days</p>
-          <p className="mt-1 text-2xl font-medium tabular-nums">
-            {integerFormat.format(data.kpis.maintenancePlansDue90d)}
-          </p>
-        </div>
-      </section>
+      <ReorderList />
 
-      <section className="grid gap-5 xl:grid-cols-[minmax(0,1.35fr)_minmax(280px,0.65fr)]">
-        <div className="rounded-lg border border-[#e8eaec] bg-white p-4 sm:p-5">
-          <div className="flex flex-wrap items-baseline justify-between gap-2">
-            <div>
-              <h2 className="text-base font-semibold">Cost–risk matrix</h2>
-              <p className="mt-1 text-sm text-[#5d5f60]">
-                Annual holding-cost proxy vs. inventory deficit to the scenario ROP.
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-[#5d5f60]">
-                {plottedCount} priced candidates plotted
-              </span>
-              <InfoTip id="action.matrix" className="-my-1" />
-            </div>
+      <section id="ai-todo" className="rounded-lg border border-[#e8eaec] bg-white">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#e8eaec] px-4 py-4 sm:px-5">
+          <div>
+            <h2 className="text-lg font-semibold">AI to-do list: what to reorder, reduce or keep</h2>
           </div>
-          {plottedCount > 0 ? (
-            <div className="mt-3 h-[280px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <ScatterChart margin={{ top: 12, right: 12, bottom: 8, left: 8 }}>
-                  <CartesianGrid stroke="#e8eaec" />
-                  <XAxis
-                    type="number"
-                    dataKey="x"
-                    name="Annual holding cost"
-                    tick={{ fill: "#5d5f60", fontSize: 11 }}
-                    tickFormatter={(value: number) => `${Math.round(value / 1_000_000)}M`}
-                    axisLine={{ stroke: "#cdced1" }}
-                  />
-                  <YAxis
-                    type="number"
-                    dataKey="y"
-                    name="ROP deficit"
-                    domain={[0, 100]}
-                    unit="%"
-                    tick={{ fill: "#5d5f60", fontSize: 11 }}
-                    axisLine={false}
-                  />
-                  <ReferenceLine y={50} stroke="#cdced1" strokeDasharray="4 4" />
-                  <Tooltip
-                    cursor={{ strokeDasharray: "3 3" }}
-                    formatter={(value, name) => [
-                      name === "Annual holding cost"
-                        ? formatCurrency(Number(value))
-                        : `${formatNumber(Number(value))}%`,
-                      String(name),
-                    ]}
-                    labelFormatter={(_, payload) =>
-                      payload?.[0]?.payload
-                        ? `${payload[0].payload.materialNo} · ${payload[0].payload.description}`
-                        : ""
-                    }
-                  />
-                  <Scatter
-                    data={chartData}
-                    name="Inventory candidates"
-                    fill="#1b6c80"
-                  />
-                </ScatterChart>
-              </ResponsiveContainer>
-            </div>
-          ) : (
-            <p className="mt-4 rounded-md border border-dashed border-[#cdced1] p-4 text-sm text-[#5d5f60]">
-              No candidates have both a usable IDR price and a calculable scenario ROP.
-            </p>
-          )}
-          <p className="mt-2 text-xs leading-5 text-[#5d5f60]">
-            Lower y-values mean a smaller ROP deficit. Holding cost uses the latest linked
-            IDR PO price and is not downtime cost; missing prices are excluded. This is a
-            prioritization proxy, not a probability of stockout.
-          </p>
-        </div>
-
-        <section className="relative rounded-lg border border-[#e8eaec] bg-white p-4 sm:p-5">
-          <InfoTip id="action.controls" className="absolute right-3 top-3" />
-          <h2 className="pr-8 text-base font-semibold">Scenario controls</h2>
-          <p className="mt-1 text-sm text-[#5d5f60]">
-            Adjust policy assumptions; the BOM maximum remains a hard order cap.
-          </p>
-          <label className="mt-5 block text-sm">
-            <span className="flex justify-between gap-3">
-              <span>Target service level</span>
-              <strong className="tabular-nums">{serviceLevel}%</strong>
-            </span>
-            <select
-              value={serviceLevel}
-              onChange={(event) => setServiceLevel(Number(event.target.value))}
-              className="mt-2 min-h-10 w-full rounded-md border border-[#cdced1] bg-white px-3"
+          <div className="flex items-center gap-2">
+          {!queue && (
+            <button
+              type="button"
+              onClick={generateQueue}
+              disabled={aiLoading || scenarioCandidates.length === 0}
+              className="inline-flex min-h-10 items-center gap-2 rounded-md bg-[#1b6c80] px-4 text-sm font-semibold text-white hover:bg-[#155768] disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {[90, 95, 97.5, 99].map((level) => (
-                <option key={level} value={level}>{level}%</option>
-              ))}
-            </select>
-          </label>
-          <label className="mt-4 block text-sm">
-            <span className="flex justify-between gap-3">
-              <span>Annual carrying-cost assumption</span>
-              <strong className="tabular-nums">{carryingCostPercent}%</strong>
-            </span>
-            <input
-              type="range"
-              min={5}
-              max={40}
-              step={1}
-              value={carryingCostPercent}
-              onChange={(event) => setCarryingCostPercent(Number(event.target.value))}
-              className="mt-3 w-full accent-[#1b6c80]"
-            />
-            <span className="text-xs text-[#5d5f60]">5%–40% scenario range</span>
-          </label>
-          <label className="mt-4 block text-sm">
-            <span className="flex justify-between gap-3">
-              <span>Extra lead-time buffer</span>
-              <strong className="tabular-nums">{bufferDays} days</strong>
-            </span>
-            <input
-              type="range"
-              min={0}
-              max={30}
-              step={1}
-              value={bufferDays}
-              onChange={(event) => setBufferDays(Number(event.target.value))}
-              className="mt-3 w-full accent-[#1b6c80]"
-            />
-          </label>
-          <div className="mt-5 grid grid-cols-2 gap-3 border-t border-[#e8eaec] pt-4">
-            <div>
-              <p className="text-xs text-[#5d5f60]">Below scenario ROP</p>
-              <p className="mt-1 text-xl font-medium tabular-nums">
-                {integerFormat.format(belowScenarioRop)}
-              </p>
-            </div>
-            <div>
-              <p className="text-xs text-[#5d5f60]">Annual carrying-cost proxy</p>
-              <p className="mt-1 text-sm font-medium tabular-nums">
-                {formatCurrency(scenarioCarryingCost)}
-              </p>
-            </div>
-          </div>
-          <p className="mt-3 text-xs leading-5 text-[#5d5f60]">
-            The holding-cost estimate covers only priced stock. Downtime cost and
-            procurement receipt lead times are not present in the source data.
-          </p>
-        </section>
-      </section>
-
-      <section className="rounded-lg border border-[#e8eaec] bg-white">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#e8eaec] px-4 py-4 sm:px-5">
-          <div>
-            <h2 className="text-base font-semibold">Dynamic policy comparison</h2>
-            <p className="mt-1 text-sm text-[#5d5f60]">
-              Scenario ROP and safety stock update with the controls; order quantity never
-              exceeds the BOM maximum.
-            </p>
-          </div>
-          <div className="flex items-center gap-2">
-          <span className="text-xs text-[#5d5f60]">
-            Planning lead time: {data.coverage.planningLeadTimeDays === null
-              ? "unavailable"
-              : `${numberFormat.format(data.coverage.planningLeadTimeDays)} days`}
-          </span>
-          <InfoTip id="action.policy" className="-my-1" />
-          </div>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[860px] text-left text-sm">
-            <thead className="bg-[#f4f6f8] text-xs text-[#5d5f60]">
-              <tr>
-                <th className="px-4 py-3 font-medium">Material / location</th>
-                <th className="px-3 py-3 font-medium">On hand</th>
-                <th className="px-3 py-3 font-medium">Min / Max</th>
-                <th className="px-3 py-3 font-medium">Current SS / ROP</th>
-                <th className="px-3 py-3 font-medium">Scenario SS / ROP</th>
-                <th className="px-3 py-3 font-medium">Draft qty</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[#e8eaec]">
-              {scenarioCandidates.slice(0, 12).map((candidate) => (
-                <tr key={keyFor(candidate)}>
-                  <td className="px-4 py-3">
-                    <p className="font-medium">{candidate.description || "Unnamed material"}</p>
-                    <p className="font-mono text-xs text-[#5d5f60]">
-                      {candidate.materialNo} · {candidate.functionalLoc}
-                    </p>
-                  </td>
-                  <td className="px-3 py-3 tabular-nums">
-                    {formatNumber(candidate.stock)} {candidate.unit}
-                  </td>
-                  <td className="px-3 py-3 tabular-nums">
-                    {formatNumber(candidate.minQty)} / {formatNumber(candidate.maxQty)}
-                  </td>
-                  <td className="px-3 py-3 tabular-nums">
-                    {formatNumber(candidate.safetyStock)} / {formatNumber(candidate.reorderPoint)}
-                  </td>
-                  <td className="px-3 py-3 tabular-nums">
-                    {formatNumber(candidate.scenarioSafetyStock)} / {formatNumber(candidate.scenarioReorderPoint)}
-                    <span className="block text-xs text-[#5d5f60]">Max stays at BOM cap</span>
-                  </td>
-                  <td className="px-3 py-3 tabular-nums">
-                    {integerFormat.format(candidate.scenarioOrderQty)} / {integerFormat.format(candidate.orderCap)}
-                  </td>
-                </tr>
-              ))}
-              {scenarioCandidates.length === 0 && (
-                <tr>
-                  <td colSpan={6} className="px-4 py-8 text-center text-sm text-[#5d5f60]">
-                    No reorder or over-maximum candidates are available.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-        <p className="px-4 pb-4 text-xs leading-5 text-[#5d5f60] sm:px-5">
-          This scenario table keeps the BoM maximum as the order cap. The Dynamic Min–Max section below
-          recalculates both Min and Max from upcoming demand and lead time, with a backtest.
-        </p>
-      </section>
-
-      <DynamicMinMaxSummary />
-
-      <section className="rounded-lg border border-[#e8eaec] bg-white">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#e8eaec] px-4 py-4 sm:px-5">
-          <div>
-            <h2 className="text-base font-semibold">AI-prioritized action queue</h2>
-            <p className="mt-1 text-sm text-[#5d5f60]">
-              AI ranks database candidates and explains each action; approval and assignment
-              stay local and do not submit orders.
-            </p>
-          </div>
-          <div className="flex items-center gap-2">
+              {aiLoading ? <RefreshCw className="h-4 w-4 animate-spin" aria-hidden="true" /> : <Sparkles className="h-4 w-4" aria-hidden="true" />}
+              {aiLoading ? "Ranking…" : "Build my AI to-do list"}
+            </button>
+          )}
           {queue && (
             <button
               type="button"
@@ -950,6 +741,207 @@ export function ActionCenterContent() {
         )}
       </section>
 
+
+      <section className="grid gap-5 xl:grid-cols-[minmax(0,1.35fr)_minmax(280px,0.65fr)]">
+        <div className="rounded-lg border border-[#e8eaec] bg-white p-4 sm:p-5">
+          <div className="flex flex-wrap items-baseline justify-between gap-2">
+            <div>
+              <h2 className="text-lg font-semibold">Cost vs risk for each part</h2>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-[#5d5f60]">
+                {plottedCount} priced candidates plotted
+              </span>
+              <InfoTip id="action.matrix" className="-my-1" />
+            </div>
+          </div>
+          {plottedCount > 0 ? (
+            <div className="mt-3 h-[280px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <ScatterChart margin={{ top: 12, right: 12, bottom: 8, left: 8 }}>
+                  <CartesianGrid stroke="#e8eaec" />
+                  <XAxis
+                    type="number"
+                    dataKey="x"
+                    name="Annual holding cost"
+                    tick={{ fill: "#5d5f60", fontSize: 11 }}
+                    tickFormatter={(value: number) => `${Math.round(value / 1_000_000)}M`}
+                    axisLine={{ stroke: "#cdced1" }}
+                  />
+                  <YAxis
+                    type="number"
+                    dataKey="y"
+                    name="ROP deficit"
+                    domain={[0, 100]}
+                    unit="%"
+                    tick={{ fill: "#5d5f60", fontSize: 11 }}
+                    axisLine={false}
+                  />
+                  <ReferenceLine y={50} stroke="#cdced1" strokeDasharray="4 4" />
+                  <Tooltip
+                    cursor={{ strokeDasharray: "3 3" }}
+                    formatter={(value, name) => [
+                      name === "Annual holding cost"
+                        ? formatCurrency(Number(value))
+                        : `${formatNumber(Number(value))}%`,
+                      String(name),
+                    ]}
+                    labelFormatter={(_, payload) =>
+                      payload?.[0]?.payload
+                        ? `${payload[0].payload.materialNo} · ${payload[0].payload.description}`
+                        : ""
+                    }
+                  />
+                  <Scatter
+                    data={chartData}
+                    name="Inventory candidates"
+                    fill="#1b6c80"
+                  />
+                </ScatterChart>
+              </ResponsiveContainer>
+            </div>
+          ) : (
+            <p className="mt-4 rounded-md border border-dashed border-[#cdced1] p-4 text-sm text-[#5d5f60]">
+              No candidates have both a usable IDR price and a calculable scenario ROP.
+            </p>
+          )}
+        </div>
+
+        <section className="relative rounded-lg border border-[#e8eaec] bg-white p-4 sm:p-5">
+          <InfoTip id="action.controls" className="absolute right-3 top-3" />
+          <h2 className="pr-8 text-lg font-semibold">Try a different stock policy</h2>
+          <label className="mt-5 block text-sm">
+            <span className="flex justify-between gap-3">
+              <span>Chance a part is there when needed</span>
+              <strong className="tabular-nums">{serviceLevel}%</strong>
+            </span>
+            <select
+              value={serviceLevel}
+              onChange={(event) => setServiceLevel(Number(event.target.value))}
+              className="mt-2 min-h-10 w-full rounded-md border border-[#cdced1] bg-white px-3"
+            >
+              {[90, 95, 97.5, 99].map((level) => (
+                <option key={level} value={level}>{level}%</option>
+              ))}
+            </select>
+          </label>
+          <label className="mt-4 block text-sm">
+            <span className="flex justify-between gap-3">
+              <span>Yearly cost of holding stock</span>
+              <strong className="tabular-nums">{carryingCostPercent}%</strong>
+            </span>
+            <input
+              type="range"
+              min={5}
+              max={40}
+              step={1}
+              value={carryingCostPercent}
+              onChange={(event) => setCarryingCostPercent(Number(event.target.value))}
+              className="mt-3 w-full accent-[#1b6c80]"
+            />
+            <span className="text-xs text-[#5d5f60]">5%–40% scenario range</span>
+          </label>
+          <label className="mt-4 block text-sm">
+            <span className="flex justify-between gap-3">
+              <span>Extra safety days on supplier lead time</span>
+              <strong className="tabular-nums">{bufferDays} days</strong>
+            </span>
+            <input
+              type="range"
+              min={0}
+              max={30}
+              step={1}
+              value={bufferDays}
+              onChange={(event) => setBufferDays(Number(event.target.value))}
+              className="mt-3 w-full accent-[#1b6c80]"
+            />
+          </label>
+          <div className="mt-5 grid grid-cols-2 gap-3 border-t border-[#e8eaec] pt-4">
+            <div>
+              <p className="text-xs text-[#5d5f60]">Parts below the new reorder level</p>
+              <p className="mt-1 text-xl font-medium tabular-nums">
+                {integerFormat.format(belowScenarioRop)}
+              </p>
+            </div>
+            <div>
+              <p className="text-xs text-[#5d5f60]">Yearly holding cost</p>
+              <p className="mt-1 text-sm font-medium tabular-nums">
+                {formatCurrency(scenarioCarryingCost)}
+              </p>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section className="rounded-lg border border-[#e8eaec] bg-white">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#e8eaec] px-4 py-4 sm:px-5">
+          <div>
+            <h2 className="text-lg font-semibold">Recommended reorder level, part by part</h2>
+          </div>
+          <div className="flex items-center gap-2">
+          <span className="text-xs text-[#5d5f60]">
+            Planning lead time: {data.coverage.planningLeadTimeDays === null
+              ? "unavailable"
+              : `${numberFormat.format(data.coverage.planningLeadTimeDays)} days`}
+          </span>
+          <InfoTip id="action.policy" className="-my-1" />
+          </div>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[860px] text-left text-sm">
+            <thead className="bg-[#f4f6f8] text-xs text-[#5d5f60]">
+              <tr>
+                <th className="px-4 py-3 font-medium">Material / location</th>
+                <th className="px-3 py-3 font-medium">On hand</th>
+                <th className="px-3 py-3 font-medium">Min / Max</th>
+                <th className="px-3 py-3 font-medium">Today: safety / reorder level</th>
+                <th className="px-3 py-3 font-medium">Recommended: safety / reorder level</th>
+                <th className="px-3 py-3 font-medium">Order qty / max allowed</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-[#e8eaec]">
+              {scenarioCandidates.slice(0, 12).map((candidate) => (
+                <tr key={keyFor(candidate)}>
+                  <td className="px-4 py-3">
+                    <p className="font-medium">{candidate.description || "Unnamed material"}</p>
+                    <p className="font-mono text-xs text-[#5d5f60]">
+                      {candidate.materialNo} · {candidate.functionalLoc}
+                    </p>
+                  </td>
+                  <td className="px-3 py-3 tabular-nums">
+                    {formatNumber(candidate.stock)} {candidate.unit}
+                  </td>
+                  <td className="px-3 py-3 tabular-nums">
+                    {formatNumber(candidate.minQty)} / {formatNumber(candidate.maxQty)}
+                  </td>
+                  <td className="px-3 py-3 tabular-nums">
+                    {formatNumber(candidate.safetyStock)} / {formatNumber(candidate.reorderPoint)}
+                  </td>
+                  <td className="px-3 py-3 tabular-nums">
+                    {formatNumber(candidate.scenarioSafetyStock)} / {formatNumber(candidate.scenarioReorderPoint)}
+                    <span className="block text-xs text-[#5d5f60]">Max stays at BOM cap</span>
+                  </td>
+                  <td className="px-3 py-3 tabular-nums">
+                    {integerFormat.format(candidate.scenarioOrderQty)} / {integerFormat.format(candidate.orderCap)}
+                  </td>
+                </tr>
+              ))}
+              {scenarioCandidates.length === 0 && (
+                <tr>
+                  <td colSpan={6} className="px-4 py-8 text-center text-sm text-[#5d5f60]">
+                    No reorder or over-maximum candidates are available.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <div id="minmax">
+        <DynamicMinMaxSummary />
+      </div>
+
       {(storageError || assignments.length > 0) && (
         <section className="relative rounded-lg border border-[#e8eaec] bg-white p-4 sm:p-5">
           <InfoTip id="action.assignments" className="absolute right-3 top-3" />
@@ -974,17 +966,9 @@ export function ActionCenterContent() {
               ))}
             </div>
           )}
-          <p className="mt-2 text-xs text-[#5d5f60]">
-            Assignments are saved only in this browser; they are not shared or written to the source database.
-          </p>
         </section>
       )}
 
-      <p className="text-xs leading-5 text-[#5d5f60]">
-        The scenario scales the existing 95% safety-stock estimate to the selected service
-        level and adds demand for the chosen buffer days. Recommendations remain review
-        drafts; no PR is created or submitted.
-      </p>
     </div>
   );
 }

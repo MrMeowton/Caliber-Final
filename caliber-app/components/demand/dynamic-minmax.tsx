@@ -50,7 +50,7 @@ export function DynamicMinMax({ id }: { id: string }) {
     return () => ctrl.abort();
   }, [id]);
 
-  const title = "Dynamic Min–Max";
+  const title = "Recommended Min–Max (moves with demand)";
   if (error) return <Card info="demand.sku.minmax" title={title}><p className="text-sm text-[#5d5f60]">{error}</p></Card>;
   if (!data) return <Card info="demand.sku.minmax" title={title}><Loading text="Computing dynamic Min–Max…" /></Card>;
 
@@ -66,8 +66,8 @@ export function DynamicMinMax({ id }: { id: string }) {
       subtitle={`Min and Max recalculated every day from the next ${data.leadDays} days of demand (baseline, planned PM kits, open failure notifications), at a ${fmtPct(data.serviceLevel, 1)} service level for criticality ${m.criticality}`}
     >
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <Kpi label="Min (reorder point) today" value={`${fmtNum(data.minNow)} ${u}`} sub={`BoM Min ${fmtNum(m.min)} · peak ${fmtNum(data.minPeak)} in 12 months`} tone={data.minNow > m.min ? "warn" : "info"} />
-        <Kpi label="Max (order-up-to) today" value={`${fmtNum(data.maxNow)} ${u}`} sub={`BoM Max ${fmtNum(m.max)} · order qty ${fmtNum(data.orderQty)} ${u}`} tone="info" />
+        <Kpi label="Reorder when stock falls to" value={`${fmtNum(data.minNow)} ${u}`} sub={`BoM Min ${fmtNum(m.min)} · peak ${fmtNum(data.minPeak)} in 12 months`} tone={data.minNow > m.min ? "warn" : "info"} />
+        <Kpi label="Order up to" value={`${fmtNum(data.maxNow)} ${u}`} sub={`BoM Max ${fmtNum(m.max)} · order qty ${fmtNum(data.orderQty)} ${u}`} tone="info" />
         <Kpi label="Safety stock" value={`${fmtNum(data.safetyStock)} ${u}`} sub={`covers demand and supplier variability over ${data.leadDays} days`} />
         <Kpi
           label="Next order"
@@ -140,7 +140,7 @@ export function DynamicMinMaxSummary() {
     <div className="space-y-5">
       <Card
         info="action.minmax"
-        title="Dynamic Min–Max: backtest on May–Sep 2026"
+        title="Would the recommended Min–Max have worked? Replay of May–Sep 2026"
         subtitle={`Both policies replayed day by day on the ${fmtNum(bt.skus)} Stock Items that were actually issued, from the same reconstructed starting stock`}
       >
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
@@ -165,10 +165,8 @@ export function DynamicMinMaxSummary() {
           <Kpi label="Orders placed" value={`${fmtNum(bt.static.orders)} → ${fmtNum(bt.dynamic.orders)}`} sub="more, smaller orders timed to demand" />
         </div>
         <p className="mt-4 text-sm leading-6 text-[#353736]">
-          <b>Trade-off:</b> dynamic Min–Max serves more demand from the shelf and fewer parts run out, at the cost of a higher
-          average stock value and more purchase orders. It raises stock where demand is coming and holds less where it is not.
-          Forward 12 months: {fmtNum(data.forward.excess.skusAboveDynamicMax)} parts sit above their dynamic Max, worth{" "}
-          <b>{fmtIDR(data.forward.excess.aboveDynamicMax)}</b>; this is the capital a reduce / redeploy review can release.
+          <b>{fmtNum(data.forward.excess.skusAboveDynamicMax)}</b> parts sit above their recommended Max, worth{" "}
+          <b>{fmtIDR(data.forward.excess.aboveDynamicMax)}</b> that can be released.
         </p>
         <Source>
           Replay: demand = actual daily issues; dynamic policy knows only what was known on 1 May 2026 (training forecast, training
@@ -178,7 +176,7 @@ export function DynamicMinMaxSummary() {
 
       <Card
         info="action.minmaxTable"
-        title="Parts where dynamic Min–Max changes the outcome"
+        title="Parts where the recommended Min–Max matters most"
         subtitle="Next 12 months on expected demand: fewer stockout days first, then the largest stock reduction"
       >
         <div className="overflow-x-auto">

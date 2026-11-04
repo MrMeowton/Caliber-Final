@@ -97,8 +97,8 @@ export function RaceTab() {
   return (
     <div className="space-y-5">
       <Card
-        title="Demand race: will the part be on the shelf before the job that needs it?" info="demand.race"
-        subtitle="Forecast usage + planned PM kits are run against reconstructed stock and open POs from the chosen date"
+        title="Will the part arrive before the job that needs it?" info="demand.race"
+        subtitle="For every part a planned job needs: the day the shelf runs short versus the day a new part can arrive"
         right={
           <button type="button" onClick={demo} className="inline-flex items-center gap-1.5 rounded-xl border border-[#bfd3f6] bg-[#eef4ff] px-3 py-2 text-xs font-semibold text-[#1257c7] hover:bg-[#e2ecfd]">
             <Sparkles className="h-3.5 w-3.5" /> Demo: BF-112 gate valve on 1 Aug
@@ -106,7 +106,7 @@ export function RaceTab() {
         }
       >
         <div className="flex flex-wrap items-end gap-x-6 gap-y-3 rounded-xl bg-[#f4f6fa] px-4 py-3">
-          <Slider label="As-of date (time machine)" value={asofDay} min={0} max={(AS_OF_MAX - AS_OF_MIN) / DAY} onChange={setAsofDay}
+          <Slider label="Look from date (replay the past)" value={asofDay} min={0} max={(AS_OF_MAX - AS_OF_MIN) / DAY} onChange={setAsofDay}
             format={() => formatDate(asof, { day: "numeric", month: "short", year: "numeric" })} />
           <Slider label="Look-ahead" value={horizon} min={30} max={180} step={15} onChange={setHorizon} format={(v) => `${v} days`} />
           <Slider label="Install / kitting buffer" value={buffer} min={0} max={10} onChange={setBuffer} format={(v) => `${v} days`} />
@@ -125,8 +125,7 @@ export function RaceTab() {
           </div>
         </div>
         <p className="mt-2 text-xs text-[#718198]">
-          Stock at the as-of date = 30 Sep 2026 snapshot + issues since − PO receipts since. Data ends 30 Sep 2026, so moving the date back replays what the planner could have seen.
-          {data && <> Showing {fmtNum(Math.min(60, data.materials))} of <b>{fmtNum(data.materials)}</b> materials with PM demand in the window.</>}
+          {data && <>Showing {fmtNum(Math.min(60, data.materials))} of <b>{fmtNum(data.materials)}</b> parts needed in the window</>}
         </p>
       </Card>
 

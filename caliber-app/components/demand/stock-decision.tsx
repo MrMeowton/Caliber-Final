@@ -70,12 +70,11 @@ export function StockDecision({ material: m }: { material: Material }) {
 
   if (lambda <= 0) {
     return (
-      <Card title="Forecast → stock decision" info="demand.stock" subtitle="Spare-part economics and stock vs buy-on-demand">
+      <Card title="How many to keep, and should we stock it at all?" info="demand.stock" subtitle="Spare-part economics and stock vs buy-on-demand">
         <p className="rounded-xl bg-[#f4f6fa] px-4 py-3 text-sm text-[#45576f]">
-          No consumption in 17 months and no part-consuming PM job planned, so the forecast is zero.
           {m.criticality === "S" || m.criticality === "A"
-            ? ` As a critical (${m.criticality}) item it is an insurance spare: keep a floor of 1–2 units and stop buying beyond it. Current stock: ${fmtNum(m.stock)} ${m.unit}.`
-            : ` Holding ${fmtNum(m.stock)} ${m.unit} (${fmtIDR(m.stock * price)}) has no forecast use; candidate for reduce / redeploy review.`}
+            ? `No forecast use. Critical (${m.criticality}) insurance spare: keep 1–2 units, stop buying beyond that.`
+            : `No forecast use for ${fmtNum(m.stock)} ${m.unit} (${fmtIDR(m.stock * price)}): reduce or redeploy.`}
         </p>
       </Card>
     );
@@ -96,7 +95,7 @@ export function StockDecision({ material: m }: { material: Material }) {
 
   return (
     <Card
-      title="Forecast → stock decision" info="demand.stock"
+      title="How many to keep, and should we stock it at all?" info="demand.stock"
       subtitle={`Lead-time demand ~ Poisson(${fmtNum((lambda * m.lt_p50) / 365, 2)} ${m.unit}) from ${fmtNum(lambda, 1)} ${m.unit}/yr forecast and ${fmtNum(m.lt_p50)} days lead time`}
     >
       <div className="flex flex-wrap gap-x-6 gap-y-3 rounded-xl bg-[#f4f6fa] px-4 py-3">
@@ -109,7 +108,7 @@ export function StockDecision({ material: m }: { material: Material }) {
       <div className="mt-4 grid gap-5 2xl:grid-cols-2">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
-            <h4 className="text-sm font-semibold text-[#24364c]">Spare-part economics: cost-optimal stock level</h4>
+            <h4 className="text-sm font-semibold text-[#24364c]">The cheapest stock level</h4>
             {cur && best.S !== cur.S && (
               <Pill tone={best.S > cur.S ? "red" : "amber"}>{best.S > cur.S ? `Raise to ${best.S}` : `Reduce to ${best.S}`}</Pill>
             )}
@@ -150,7 +149,7 @@ export function StockDecision({ material: m }: { material: Material }) {
 
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
-            <h4 className="text-sm font-semibold text-[#24364c]">Stock Item or buy-on-demand?</h4>
+            <h4 className="text-sm font-semibold text-[#24364c]">Keep in stock or buy when needed?</h4>
             <Pill tone={m.mrp_type === "STOCK ITEM" ? "blue" : "neutral"}>today: {m.mrp_type === "STOCK ITEM" ? "Stock Item" : "Non Stock"}</Pill>
           </div>
           <div className={`mt-2 rounded-xl border px-4 py-3 ${stockSwap ? "border-[#bfd3f6] bg-[#eef4ff]" : "border-[#d7e9df] bg-[#effaf4]"}`}>
@@ -159,10 +158,8 @@ export function StockDecision({ material: m }: { material: Material }) {
               {stockSwap ? `Keep as Stock Item (${best.S} ${m.unit})` : "Buy on demand (Non Stock)"}
             </p>
             <p className="mt-1 text-sm text-[#45576f]">
-              {stockSwap
-                ? `Stocking saves ${fmtIDR(fin.npv)} in present value versus buying per job with a ${fmtPct(RUSH_PREMIUM)} rush premium and a ${fmtNum(m.lt_p50)}-day wait.`
-                : `Buying per job is ${fmtIDR(-fin.npv)} cheaper in present value: the holding cost of ${best.S} units outweighs the waiting risk at these assumptions.`}
-              {m.mrp_type !== "STOCK ITEM" && stockSwap ? " This SKU is set as Non Stock today: review the MRP Type." : ""}
+              {stockSwap ? `Saves ${fmtIDR(fin.npv)} vs buying per job.` : `Saves ${fmtIDR(-fin.npv)} vs stocking.`}
+              {m.mrp_type !== "STOCK ITEM" && stockSwap ? " Currently set as Non Stock." : ""}
             </p>
           </div>
           <div className="mt-3 grid grid-cols-2 gap-2">

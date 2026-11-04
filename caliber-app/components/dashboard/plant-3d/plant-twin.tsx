@@ -143,28 +143,32 @@ export default function PlantTwin({ assets, selectedTag, onSelect }: PlantTwinPr
 
           {rows.map((row) => {
             const isSelected = row.item.tag === selectedTag;
-            if (selectedTag && !isSelected) return null;
+            const visible = !selectedTag || isSelected;
             const box = boxes[row.item.tag];
             return (
               <group key={row.item.tag}>
-                <EquipmentInstance
-                  row={row}
-                  detail={isSelected ? "high" : "low"}
-                  xray={isSelected && xray}
-                  explode={isSelected ? explode : 0}
-                  onMeasure={onMeasure}
-                  onOpen={() => onSelect(row.item.tag)}
-                  onShellClick={isSelected ? () => setXray(true) : () => onSelect(row.item.tag)}
-                  onPartClick={isSelected ? setActiveSlot : undefined}
-                />
-                {!selectedTag && (
-                  <>
-                    {row.status !== "ok" && box && (
-                      <FaultRing position={row.item.position} box={box} color={STATUS_COLOR[row.status]} />
-                    )}
-                    <EquipmentLabel row={row} labelY={box ? box.max.y + 0.5 : 3} onOpen={() => onSelect(row.item.tag)} />
-                  </>
+                {visible && (
+                  <EquipmentInstance
+                    row={row}
+                    detail={isSelected ? "high" : "low"}
+                    xray={isSelected && xray}
+                    explode={isSelected ? explode : 0}
+                    onMeasure={onMeasure}
+                    onOpen={() => onSelect(row.item.tag)}
+                    onShellClick={isSelected ? () => setXray(true) : () => onSelect(row.item.tag)}
+                    onPartClick={isSelected ? setActiveSlot : undefined}
+                  />
                 )}
+                {!selectedTag && row.status !== "ok" && box && (
+                  <FaultRing position={row.item.position} box={box} color={STATUS_COLOR[row.status]} />
+                )}
+                {/* Labels stay mounted and are only hidden: unmounting drei <Html> mid-render logs a React root error. */}
+                <EquipmentLabel
+                  row={row}
+                  labelY={box ? box.max.y + 0.5 : 3}
+                  hidden={!!selectedTag}
+                  onOpen={() => onSelect(row.item.tag)}
+                />
               </group>
             );
           })}
@@ -323,7 +327,7 @@ function EquipmentInstance({
   );
 }
 
-function EquipmentLabel({ row, labelY, onOpen }: { row: Row; labelY: number; onOpen: () => void }) {
+function EquipmentLabel({ row, labelY, hidden, onOpen }: { row: Row; labelY: number; hidden: boolean; onOpen: () => void }) {
   const [x, , z] = row.item.position;
   const color = STATUS_COLOR[row.status];
   const faultCount = row.faults.length;
@@ -335,7 +339,7 @@ function EquipmentLabel({ row, labelY, onOpen }: { row: Row; labelY: number; onO
         : null;
 
   return (
-    <Html position={[x, labelY, z]} center zIndexRange={[20, 0]}>
+    <Html position={[x, labelY, z]} center zIndexRange={[20, 0]} style={{ display: hidden ? "none" : undefined }}>
       <button
         type="button"
         onClick={onOpen}

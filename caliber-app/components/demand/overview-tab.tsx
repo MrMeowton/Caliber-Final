@@ -5,7 +5,7 @@ import {
   Bar, CartesianGrid, ComposedChart, Legend, Line, ReferenceLine, ResponsiveContainer, Scatter,
   ScatterChart, Tooltip, XAxis, YAxis, ZAxis,
 } from "recharts";
-import { Card, Kpi, ClassBadge, Segmented, Source } from "./ui";
+import { Card, Kpi, ClassBadge, CLASS_LABEL, Segmented, Source } from "./ui";
 import { CLASS_COLORS, MODEL_LABEL, MONTH_LABEL, fmtIDR, fmtNum, fmtPct } from "@/lib/demand/format";
 import type { Summary } from "./types";
 
@@ -68,24 +68,24 @@ export function OverviewTab({ data, onOpenTab }: { data: Summary; onOpenTab: (ta
     <div className="space-y-5">
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <Kpi
-          label="Non-smooth demand" info="demand.kpi.nonSmooth"
+          label="Parts with irregular demand" info="demand.kpi.nonSmooth"
           value={fmtPct(kpi.non_smooth_share)}
           sub={`${fmtNum(consumed)} SKUs consumed in 17 months · ${fmtNum(kpi.zero_consumption)} never moved`}
           tone="warn"
         />
         <Kpi
-          label="Forecast error (WAPE)" info="demand.kpi.wape"
+          label="Forecast error" info="demand.kpi.wape"
           value={<span>{fmtPct(kpi.wape_static)} <span className="text-base text-[#718198]">→</span> <span className="text-[#16865d]">{fmtPct(kpi.wape_mind)}</span></span>}
           sub={`Static average vs MIND · bias ${fmtPct(kpi.bias_static, 0)} → ${fmtPct(kpi.bias_mind, 0)}`}
         />
         <Kpi
-          label="PM-driven demand, next 12 months" info="demand.kpi.pm"
+          label="Planned maintenance jobs, next 12 months" info="demand.kpi.pm"
           value={fmtNum(kpi.pm_items_12m)}
           sub={`PM items on ${fmtNum(kpi.pm_funclocs_12m)} FuncLocs · ${fmtNum(kpi.pm_part_items_12m)} draw parts (${fmtNum(kpi.pm_materials_12m)} SKUs)`}
           tone="info"
         />
         <Kpi
-          label="Abnormal consumption" info="demand.kpi.abnormal"
+          label="Unusual withdrawals" info="demand.kpi.abnormal"
           value={fmtNum(kpi.abnormal_lines)}
           sub={`issue lines > 5× item median · ${fmtPct(kpi.abnormal_share, 1)} of all lines`}
           tone="bad"
@@ -93,8 +93,8 @@ export function OverviewTab({ data, onOpenTab }: { data: Summary; onOpenTab: (ta
       </div>
 
       <Card
-        title="Demand decomposition: what drives spare-part consumption" info="demand.decomposition"
-        subtitle="Issued value per month split by driver, then a 12-month forecast from the baseline model plus the maintenance plan"
+        title="What drives spare-part demand?" info="demand.decomposition"
+        subtitle="Money spent on parts each month, split by reason, then the forecast for the next 12 months"
         right={
           <Segmented
             value={scenario}
@@ -128,9 +128,9 @@ export function OverviewTab({ data, onOpenTab }: { data: Summary; onOpenTab: (ta
           </ResponsiveContainer>
         </div>
         <div className="mt-3 grid gap-3 text-sm text-[#45576f] md:grid-cols-3">
-          <p><b className="text-[#15243a]">{fmtPct(kpi.event_qty_share)}</b> of issued quantity came from turnaround (order 203) and project (209) orders. A static average treats them as normal demand, which is why it over-forecasts.</p>
-          <p>Next 12 months: <b className="text-[#15243a]">{fmtIDR(fcTotal12)}</b> expected (baseline + PM plan) vs <b className="text-[#15243a]">{fmtIDR(histLast12)}</b> issued in the last 12 months including events.</p>
-          <p><b className="text-[#15243a]">{fmtNum(kpi.new_in_test)}</b> SKUs had demand in the holdout with none before, so history alone cannot see them; the PM plan can.</p>
+          <p><b className="text-[#15243a]">{fmtPct(kpi.event_qty_share)}</b> of use was one-off turnaround &amp; project work</p>
+          <p><b className="text-[#15243a]">{fmtIDR(fcTotal12)}</b> expected next 12 months vs <b className="text-[#15243a]">{fmtIDR(histLast12)}</b> last 12</p>
+          <p><b className="text-[#15243a]">{fmtNum(kpi.new_in_test)}</b> new parts only the PM plan could foresee</p>
         </div>
         <Source>
           Source: Movement Material (17,518 issue lines, May 2025–Sep 2026), order prefix 201/202/205/206 = baseline, 204 = PM, 203/209 = events (team assumption);
@@ -140,15 +140,15 @@ export function OverviewTab({ data, onOpenTab }: { data: Summary; onOpenTab: (ta
 
       <div className="grid gap-5 xl:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
         <Card
-          title="Demand classes (Syntetos–Boylan)" info="demand.classes"
-          subtitle="Average demand interval (ADI) vs variability of demand size (CV²), one dot per consumed SKU"
+          title="How regular is demand for each part?" info="demand.classes"
+          subtitle="Each dot is a part: further right = used less often, higher = more uneven amounts each time"
         >
           <div className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
               <ScatterChart margin={{ top: 10, right: 16, left: 0, bottom: 10 }}>
                 <CartesianGrid stroke="#eef2f6" />
                 <XAxis type="number" dataKey="adi" name="ADI" domain={[1, 17]} tick={{ fontSize: 11, fill: "#5f7189" }}
-                  label={{ value: "ADI (months between demands)", position: "insideBottom", offset: -4, fontSize: 11, fill: "#5f7189" }} />
+                  label={{ value: "Months between uses", position: "insideBottom", offset: -4, fontSize: 11, fill: "#5f7189" }} />
                 <YAxis type="number" dataKey="cv2" name="CV²" domain={[0, 3]} allowDataOverflow tick={{ fontSize: 11, fill: "#5f7189" }} width={36} />
                 <ZAxis range={[14, 14]} />
                 <ReferenceLine x={1.32} stroke="#64748b" strokeDasharray="4 4" />
@@ -156,7 +156,7 @@ export function OverviewTab({ data, onOpenTab }: { data: Summary; onOpenTab: (ta
                 <Tooltip cursor={{ strokeDasharray: "3 3" }} contentStyle={{ borderRadius: 12, fontSize: 12 }}
                   formatter={(v) => Number(v).toFixed(2)} />
                 {["Smooth", "Erratic", "Intermittent", "Lumpy"].map((c) => (
-                  <Scatter key={c} name={c} data={data.scatter.filter((p) => p.cls === c).map((p) => ({ ...p, cv2: Math.min(p.cv2, 3) }))}
+                  <Scatter key={c} name={CLASS_LABEL[c] ?? c} data={data.scatter.filter((p) => p.cls === c).map((p) => ({ ...p, cv2: Math.min(p.cv2, 3) }))}
                     fill={CLASS_COLORS[c]} fillOpacity={0.55} />
                 ))}
               </ScatterChart>
@@ -165,7 +165,7 @@ export function OverviewTab({ data, onOpenTab }: { data: Summary; onOpenTab: (ta
           <Source>Cut-offs ADI 1.32 and CV² 0.49 (Syntetos, Boylan &amp; Croston, 2005). CV² above 3 is drawn at 3.</Source>
         </Card>
 
-        <Card info="demand.models" title="One model per demand class" subtitle="The forecaster is chosen automatically for each class by its holdout error">
+        <Card info="demand.models" title="Best forecasting method for each demand type" subtitle="Chosen automatically by testing every method on months it had not seen">
           <div className="space-y-2.5">
             {classes.map((c) => (
               <div key={c.cls} className="flex items-center gap-3 rounded-xl border border-[#e3e8ef] px-3 py-2.5">
@@ -178,7 +178,7 @@ export function OverviewTab({ data, onOpenTab }: { data: Summary; onOpenTab: (ta
                 </div>
                 <div className="text-right">
                   <p className="text-sm font-semibold text-[#15243a]">{fmtPct(c.wape)}</p>
-                  <p className="text-[11px] text-[#718198]">class WAPE</p>
+                  <p className="text-[11px] text-[#718198]">forecast error</p>
                 </div>
               </div>
             ))}

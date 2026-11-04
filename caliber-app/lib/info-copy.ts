@@ -12,6 +12,29 @@ const BOM =
   "the plant's Bill of Materials (BoM): the list of spare parts fitted to each piece of equipment, with the quantity on the shelf (stock), the minimum and the maximum the warehouse should hold";
 
 export const INFO = {
+  // ───────────── Today ─────────────
+  "today.stockout": {
+    title: "Stockout risk: critical parts at zero",
+    what: "Stocked parts on critical equipment (criticality S or A) that have zero units on the shelf, counting only parts the plant has actually taken out of the warehouse at least once since May 2025.",
+    source: "Stock and criticality from the BoM and the Functional Location list; past use from Movement Material; planned use from Mitem & Mplan; open orders and lead time from PR/PO.",
+    why: "These are the parts most likely to stop a job: they are critical, they are really used, and there is nothing on the shelf. Parts never used are excluded so the list stays actionable.",
+    read: "The number is how many such parts exist today. 'Needed by planned maintenance' counts the ones a scheduled job will draw in the next 90 days; those come first in the list.",
+  },
+  "today.overstock": {
+    title: "Overstock risk: still buying parts above Max",
+    what: "Money spent in the last 12 months on parts whose stock is already above the agreed maximum, and the open orders on those parts that have not arrived yet.",
+    source: "Purchase lines from PR/PO (quantity × unit price), stock and Max from the BoM.",
+    why: "Buying more of a part that is already above its Max adds working capital with no benefit. Open orders on these parts are the fastest money to save: they can still be cancelled or delayed.",
+    read: "The headline is last year's spend on these parts. 'Could be stopped' is the value of orders still open on 30 Sep 2026.",
+  },
+  "today.lateJobs": {
+    title: "Maintenance at risk: jobs that will wait",
+    what: "Planned maintenance jobs in October 2026 on critical parts (S/A) where the part will arrive after the job date.",
+    source: "Job dates and parts from Mitem & Mplan + BoM, stock from the BoM, open orders and lead time from PR/PO, everyday use from the forecast. Same calculation as Forecast → 'Will the part arrive before the job?'.",
+    why: "A job without its part is postponed or the equipment runs longer at risk. Seeing it a month ahead leaves time to expedite, order or reschedule.",
+    read: "Each job lists its late parts and how many days late the latest one is. 'See timeline' opens the full race view with what-if controls.",
+  },
+
   // ───────────── Feature 1 · Dashboard ─────────────
   "overview.kpi.health": {
     title: "Stock policy health",

@@ -8,10 +8,10 @@ import type { Section } from "@/app/page";
 type Message = { role: "user" | "assistant"; content: string };
 
 const pageNames: Record<Section, string> = {
-  overview: "Dashboard",
-  forecasting: "Forecasting",
-  "action-center": "Action Center",
-  notifications: "Notifications",
+  today: "Today's decisions",
+  monitor: "Step 1 · Monitor",
+  forecast: "Step 2 · Forecast",
+  act: "Step 3 · Act",
 };
 
 function isRecord(value: unknown): value is Record<string, unknown> {

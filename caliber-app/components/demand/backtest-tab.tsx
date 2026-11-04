@@ -37,15 +37,15 @@ export function BacktestTab({ data, onOpenSku }: { data: Summary; onOpenSku: (id
   return (
     <div className="space-y-5">
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <Kpi info="demand.bt.static" label="Static average (today's Min–Max basis)" value={fmtPct(stat?.wape)} sub={`bias ${fmtPct(stat?.bias)}: buys for demand that does not come`} tone="bad" />
-        <Kpi info="demand.bt.mind" label="MIND Spares forecast" value={fmtPct(mind?.wape)} sub={`bias ${fmtPct(mind?.bias, 1)} · fixed before the test`} tone="good" />
-        <Kpi info="demand.bt.perClass" label="Per-class best" value={fmtPct(perClass?.wape)} sub="model chosen per demand class (optimistic: chosen on this holdout)" tone="info" />
-        <Kpi info="demand.bt.n" label="SKUs in the backtest" value={fmtNum(mind?.n)} sub={`train May 25–Apr 26 · test May–Sep 26 · ${fmtNum(data.kpi.new_in_test)} new-demand SKUs excluded`} />
+        <Kpi info="demand.bt.static" label="Error of today's average method" value={fmtPct(stat?.wape)} sub={`bias ${fmtPct(stat?.bias)}: buys for demand that does not come`} tone="bad" />
+        <Kpi info="demand.bt.mind" label="Error of the MIND forecast" value={fmtPct(mind?.wape)} sub={`bias ${fmtPct(mind?.bias, 1)} · fixed before the test`} tone="good" />
+        <Kpi info="demand.bt.perClass" label="Error, best method per demand type" value={fmtPct(perClass?.wape)} sub="model chosen per demand class (optimistic: chosen on this holdout)" tone="info" />
+        <Kpi info="demand.bt.n" label="Parts tested" value={fmtNum(mind?.n)} sub={`train May 25–Apr 26 · test May–Sep 26 · ${fmtNum(data.kpi.new_in_test)} new-demand SKUs excluded`} />
       </div>
 
       <Card
-        title="Backtest: every model, with and without event cleaning" info="demand.bt.table"
-        subtitle="WAPE on the 5-month holdout (lower is better). Removing turnaround and project orders from history helps every model"
+        title="Every method tested, with and without one-off events removed" info="demand.bt.table"
+        subtitle="Forecast error on 5 months the models had not seen (lower is better). Removing turnaround and project orders from history helps every model"
       >
         <div className="h-[280px]">
           <ResponsiveContainer width="100%" height="100%">
@@ -125,7 +125,7 @@ function AbnormalCard({ onOpenSku }: { onOpenSku: (id: string) => void }) {
 
   return (
     <Card
-      title="Abnormal consumption alert" info="demand.bt.abnormal"
+      title="Unusual withdrawals to review" info="demand.bt.abnormal"
       subtitle={`${fmtNum(data.total.n)} issue lines above 5× the item's median quantity, worth ${fmtIDR(data.total.v)}; ${fmtPct(eventShare)} sit on turnaround / project orders`}
       right={<Segmented value={crit} onChange={setCrit} options={[{ value: "", label: "All" }, { value: "SA", label: "Critical S/A" }]} />}
     >

@@ -4,9 +4,11 @@ import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { CLASS_COLORS, CRIT_STYLE } from "@/lib/demand/format";
 import { InfoTip } from "@/components/ui/info-tip";
+import { StatusBadge } from "@/components/ui/status";
 import type { InfoId } from "@/lib/info-copy";
 
-export function Card({ title, subtitle, right, info, children, className }: {
+// subtitle is accepted but not rendered: explanations live in the card's ⓘ.
+export function Card({ title, right, info, children, className }: {
   title?: ReactNode;
   subtitle?: ReactNode;
   right?: ReactNode;
@@ -20,7 +22,6 @@ export function Card({ title, subtitle, right, info, children, className }: {
         <div className={cn("mb-4 flex flex-wrap items-start justify-between gap-3", info && "pr-7")}>
           <div className="min-w-0">
             {title && <h3 className="text-base font-semibold text-[#131416]">{title}</h3>}
-            {subtitle && <p className="mt-0.5 text-sm text-[#5d5f60]">{subtitle}</p>}
           </div>
           {right}
         </div>
@@ -40,29 +41,44 @@ export function Kpi({ label, value, sub, tone, info }: {
 }) {
   const toneCls = {
     good: "text-[#1e7b4f]",
-    bad: "text-[#c4242a]",
-    warn: "text-[#92400e]",
+    bad: "text-[#b42318]",
+    warn: "text-[#8a5300]",
     info: "text-[#1b6c80]",
   };
+  // Same colour rule as the rest of the app: every judged number says whether it is good or bad.
+  const verdict = tone === "bad" ? { v: "act" as const, l: "Poor" } : tone === "warn" ? { v: "watch" as const, l: "Watch" } : tone === "good" ? { v: "ok" as const, l: "Good" } : null;
   return (
     <div className="relative min-w-0 rounded-lg border border-[#e8eaec] bg-white px-4 py-3.5">
       {info && <InfoTip id={info} className="absolute right-1.5 top-1.5" />}
-      <p className={cn("text-xs font-medium text-[#5d5f60]", info && "pr-6")}>{label}</p>
-      <p className={cn("mt-1 text-2xl font-semibold tabular-nums text-[#131416]", tone && toneCls[tone])}>{value}</p>
-      {sub && <p className="mt-0.5 text-xs leading-5 text-[#5d5f60]">{sub}</p>}
+      <p className={cn("text-sm font-medium text-[#353736]", info && "pr-6")}>{label}</p>
+      <div className="mt-1 flex flex-wrap items-center gap-2">
+        <p className={cn("text-2xl font-semibold tabular-nums text-[#131416]", tone && toneCls[tone])}>{value}</p>
+        {verdict && <StatusBadge verdict={verdict.v}>{verdict.l}</StatusBadge>}
+      </div>
+      {sub && <p className="mt-0.5 text-[13px] leading-5 text-[#45484a]">{sub}</p>}
     </div>
   );
 }
+
+/** Everyday names for the Syntetos–Boylan demand classes; the technical name stays in the tooltip. */
+export const CLASS_LABEL: Record<string, string> = {
+  Smooth: "Regular demand",
+  Erratic: "Frequent, uneven amounts",
+  Intermittent: "Rare, steady amounts",
+  Lumpy: "Rare & irregular",
+  "No demand": "No demand",
+};
 
 export function ClassBadge({ cls }: { cls: string }) {
   const c = CLASS_COLORS[cls] ?? "#94a3b8";
   return (
     <span
-      className="inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-[11px] font-semibold"
+      title={`Demand class: ${cls} (Syntetos–Boylan)`}
+      className="inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-xs font-semibold"
       style={{ color: c, borderColor: `${c}55`, background: `${c}12` }}
     >
       <span className="h-1.5 w-1.5 rounded-full" style={{ background: c }} />
-      {cls}
+      {CLASS_LABEL[cls] ?? cls}
     </span>
   );
 }
@@ -146,9 +162,9 @@ export function ErrorNote({ error }: { error: string }) {
   return <p className="rounded-md bg-[#ffedea] px-4 py-3 text-sm text-[#831c1e]" role="alert">{error}</p>;
 }
 
-/** Small "where does this come from" footnote; every number needs a source. */
-export function Source({ children }: { children: ReactNode }) {
-  return <p className="mt-3 text-xs leading-5 text-[#5d5f60]">{children}</p>;
+/** Sources and caveats now live in the header "Data notes" and in each card's ⓘ, so inline footnotes render nothing. */
+export function Source(_: { children: ReactNode }) {
+  return null;
 }
 
 export async function getJSON<T>(url: string, signal?: AbortSignal): Promise<T> {

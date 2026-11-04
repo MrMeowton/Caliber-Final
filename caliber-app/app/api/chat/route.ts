@@ -14,10 +14,10 @@ const MODELS = [
 const MAX_STEPS = 6;
 const MAX_ROWS = 50;
 const PAGE_CONTEXTS: Record<string, string> = {
-    overview: "Dashboard",
-    forecasting: "Forecasting",
-    "action-center": "Action Center",
-    notifications: "Notifications",
+    today: "Today's decisions (stockout, overstock and late maintenance jobs)",
+    monitor: "Step 1 Monitor (stock health, 3D plant, inventory health)",
+    forecast: "Step 2 Forecast (demand forecast, failures, maintenance demand)",
+    act: "Step 3 Act (reorder list, recommended Min-Max, cost vs risk, AI to-do list)",
 };
 
 const SYSTEM = `You are a spare-parts analyst for a petrochemical plant (Case 3: Spare Part Intelligence).

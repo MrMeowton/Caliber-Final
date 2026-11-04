@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { BarChart3, CalendarClock, Flag, Gauge, PackageSearch } from "lucide-react";
 import { ErrorNote, Loading, getJSON } from "./ui";
+import { PageHeader } from "@/components/ui/page-header";
 import { OverviewTab } from "./overview-tab";
 import { SkuTab } from "./sku-tab";
 import { PmCalendarTab } from "./pm-calendar-tab";
@@ -13,12 +14,13 @@ import type { Summary } from "./types";
 type Tab = "overview" | "sku" | "pm" | "race" | "backtest";
 
 const TABS: { id: Tab; label: string; icon: typeof Gauge }[] = [
-  { id: "overview", label: "Overview", icon: Gauge },
-  { id: "sku", label: "SKU forecast", icon: PackageSearch },
-  { id: "pm", label: "PM demand calendar", icon: CalendarClock },
-  { id: "race", label: "Demand race", icon: Flag },
-  { id: "backtest", label: "Backtest & anomalies", icon: BarChart3 },
+  { id: "overview", label: "What drives demand?", icon: Gauge },
+  { id: "sku", label: "One part in detail", icon: PackageSearch },
+  { id: "pm", label: "Parts for planned maintenance", icon: CalendarClock },
+  { id: "race", label: "Will the part arrive before the job?", icon: Flag },
+  { id: "backtest", label: "How accurate is the forecast?", icon: BarChart3 },
 ];
+const isTab = (v: string | undefined): v is Tab => TABS.some((t) => t.id === v);
 
 /**
  * Feature 2 — Demand Intelligence (Forecast · answers KQ1).
@@ -26,9 +28,9 @@ const TABS: { id: Tab; label: string; icon: typeof Gauge }[] = [
  * abnormal consumption, and three Learning-By-Building modules wired to the case data:
  * #09 spare-part race, #14 spare-part economics, #15 NPV engine (stock vs buy-on-demand).
  */
-export function DemandIntelligence() {
-  const [tab, setTab] = useState<Tab>("overview");
-  const [skuId, setSkuId] = useState<string | undefined>();
+export function DemandIntelligence({ initialTab, initialSku }: { initialTab?: string; initialSku?: string } = {}) {
+  const [tab, setTab] = useState<Tab>(initialSku ? "sku" : isTab(initialTab) ? initialTab : "overview");
+  const [skuId, setSkuId] = useState<string | undefined>(initialSku);
   const [summary, setSummary] = useState<Summary | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -44,18 +46,11 @@ export function DemandIntelligence() {
 
   return (
     <div className="min-h-full space-y-6 text-[#131416]">
-      <section className="flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <h1 className="text-[22px] font-semibold leading-7">Demand Intelligence</h1>
-          <p className="mt-1 max-w-3xl text-sm text-[#718198]">
-            Predict irregular spare-part demand from what the plant is about to do, not only what it consumed:
-            baseline usage by demand class, the maintenance plan, and turnaround events, each validated on held-out months.
-          </p>
-        </div>
-        <p className="rounded-md border border-[#e8eaec] bg-[#f4f6f8] px-3 py-2 text-xs text-[#5d5f60]">
-          Data as of <b className="text-[#15243a]">30 Sep 2026</b> · dummy SAP extract
-        </p>
-      </section>
+      <PageHeader
+        step={2}
+        title="What will we need, and when?"
+        subtitle="Spare-part demand is irregular. MIND splits it into everyday use, planned maintenance, equipment failures and one-off events, forecasts each one, and checks the forecast against months it had not seen."
+      />
 
       <nav className="flex gap-5 overflow-x-auto border-b border-[#e8eaec]" aria-label="Demand intelligence views">
         {TABS.map((t) => {
