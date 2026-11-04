@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import Image from "next/image";
+import dynamic from "next/dynamic";
+import type { ComponentType } from "react";
 import {
   AlertTriangle,
   ArrowUpRight,
@@ -11,6 +12,7 @@ import {
   Search,
 } from "lucide-react";
 import type { Section } from "@/app/page";
+import { pumpSkid as pumpSkidTemplate } from "@/templates/02-3d-asset-viewer/src/data/pumpSkid";
 
 type DataRow = Record<string, unknown>;
 
@@ -18,11 +20,9 @@ type DashboardMachine = {
   id: string;
   name: string;
   area: string;
-  x: string;
-  y: string;
   prefix: string;
   tableKey: string;
-  image: string;
+  model: "pump" | "compressor" | "unavailable";
 };
 
 type MachineSnapshot = {
@@ -46,12 +46,106 @@ type IncidentRow = {
 };
 
 const machines: DashboardMachine[] = [
-  { id: "BL-5702", name: "Product Blower", area: "Process bay", x: "25%", y: "50%", prefix: "BL5702", tableKey: "production-rca5-bl-5702", image: "/Product%20Blower.jpg" },
-  { id: "HE-3301", name: "Feed / Effluent Heat Exchanger", area: "Heat & utilities", x: "61%", y: "25%", prefix: "HE3301", tableKey: "production-rca4-he-3301", image: "/Effluent%20Heat%20Exchanger.jpg" },
-  { id: "PM-4405B", name: "Cooling Water Pump", area: "Utilities bay", x: "45%", y: "55%", prefix: "PM4405B", tableKey: "production-rca3-pm-4405b", image: "/cooling%20water%20pump.jpg" },
-  { id: "KO-3201", name: "Cracked Gas Compressor", area: "Compression bay", x: "67%", y: "57%", prefix: "KO3201", tableKey: "production-rca2-ko-3201", image: "/Cracked%20Gas%20Compressor.jpg" },
-  { id: "PU-2101B", name: "Feed Charge Pump", area: "Pump bay", x: "32%", y: "22%", prefix: "PU2101B", tableKey: "production-rca1-pu-2101b", image: "/feed%20charge%20pump.jpg" },
+  { id: "BL-5702", name: "Product Blower", area: "Process bay", prefix: "BL5702", tableKey: "production-rca5-bl-5702", model: "unavailable" },
+  { id: "HE-3301", name: "Feed / Effluent Heat Exchanger", area: "Heat & utilities", prefix: "HE3301", tableKey: "production-rca4-he-3301", model: "unavailable" },
+  { id: "PM-4405B", name: "Cooling Water Pump", area: "Utilities bay", prefix: "PM4405B", tableKey: "production-rca3-pm-4405b", model: "pump" },
+  { id: "KO-3201", name: "Cracked Gas Compressor", area: "Compression bay", prefix: "KO3201", tableKey: "production-rca2-ko-3201", model: "compressor" },
+  { id: "PU-2101B", name: "Feed Charge Pump", area: "Pump bay", prefix: "PU2101B", tableKey: "production-rca1-pu-2101b", model: "pump" },
 ];
+
+const pumpSkid = {
+  ...pumpSkidTemplate,
+  name: "Pump skid reference",
+  subtitle: "Representative geometry · no live sensor feed",
+  parts: pumpSkidTemplate.parts.map((part) => ({ ...part, sensors: [] })),
+};
+
+interface Asset3DViewProps {
+  asset: typeof pumpSkid;
+  readings: Record<string, Record<string, number>>;
+  running: boolean;
+  height: string;
+  defaultShowLabels?: boolean;
+  legend?: boolean;
+}
+
+interface XRayViewerProps {
+  faults: Record<string, { value: string }>;
+  rpm: number;
+  height: string;
+  showHint: boolean;
+}
+
+const Asset3DView = dynamic<Asset3DViewProps>(
+  () =>
+    import("@/templates/02-3d-asset-viewer/src/features/asset-3d/Asset3DView").then(
+      (module) => ({
+        default: module.default as ComponentType<Asset3DViewProps>,
+      })
+    ),
+  {
+    ssr: false,
+    loading: () => <div className="grid h-full place-items-center text-sm text-slate-400">Loading 3D model…</div>,
+  }
+);
+
+const XRayViewer = dynamic<XRayViewerProps>(
+  () =>
+    import("@/templates/04-xray-asset-view/src/features/xray/XRayViewer").then(
+      (module) => ({
+        default: module.default as ComponentType<XRayViewerProps>,
+      })
+    ),
+  {
+    ssr: false,
+    loading: () => <div className="grid h-full place-items-center text-sm text-slate-400">Loading X-Ray model…</div>,
+  }
+);
+
+function EquipmentVisualization({
+  model,
+}: {
+  model: DashboardMachine["model"];
+}) {
+  if (model === "pump") {
+    return (
+      <>
+        <div className="h-[340px] sm:h-[440px]">
+          <Asset3DView
+            asset={pumpSkid}
+            readings={{}}
+            running={false}
+            height="100%"
+            defaultShowLabels={false}
+            legend={false}
+          />
+        </div>
+        <p className="px-4 pb-4 text-xs leading-5 text-[#536a82]">
+          Reference pump-skid geometry; this is not an as-built model or a live sensor view.
+        </p>
+      </>
+    );
+  }
+
+  if (model === "compressor") {
+    return (
+      <>
+        <div className="h-[340px] sm:h-[440px]">
+          <XRayViewer faults={{}} rpm={0} height="100%" showHint={false} />
+        </div>
+        <p className="px-4 pb-4 text-xs leading-5 text-[#536a82]">
+          Reference compressor geometry. No bearing fault is shown without matching sensor data.
+        </p>
+      </>
+    );
+  }
+
+  return (
+    <div className="grid h-[340px] place-items-center px-6 text-center text-sm text-[#536a82] sm:h-[440px]">
+      No reference 3D model is available for this equipment.
+    </div>
+  );
+}
 
 const emptySnapshots = Object.fromEntries(
   machines.map((machine) => [
@@ -150,7 +244,7 @@ function statusLabel(
 }
 
 export function OverviewContent({ onNavigate }: OverviewContentProps) {
-  const [selectedId, setSelectedId] = useState("BL-5702");
+  const [selectedId, setSelectedId] = useState("PM-4405B");
   const [snapshots, setSnapshots] = useState(emptySnapshots);
   const [alerts, setAlerts] = useState<AlertRow[]>([]);
   const [incidents, setIncidents] = useState<IncidentRow[]>([]);
@@ -317,27 +411,18 @@ export function OverviewContent({ onNavigate }: OverviewContentProps) {
       </section>
 
       <section className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_290px]">
-        <div className="relative min-h-[570px] overflow-hidden rounded-[22px] border border-[#ccd7e2] bg-[#dbe3ea] p-3 shadow-[0_14px_36px_rgba(36,58,84,0.10)] sm:p-6">
-          <div
-            className="absolute inset-0 opacity-35"
-            style={{
-              backgroundImage:
-                "linear-gradient(#b7c5d1 1px, transparent 1px), linear-gradient(90deg, #b7c5d1 1px, transparent 1px)",
-              backgroundSize: "32px 32px",
-            }}
-          />
-          <div className="relative h-[518px] overflow-hidden rounded-xl border-[10px] border-[#b6c3ce] bg-[#eff3f5] shadow-[inset_0_0_0_2px_#ffffff]">
-            <div className="absolute inset-[1%]">
-              <Image
-                src="/pabrik.jpeg"
-                alt="Plant A factory floor"
-                fill
-                priority
-                sizes="(min-width: 1280px) 70vw, 90vw"
-                className="object-contain"
-              />
+        <div className="min-w-0 overflow-hidden rounded-2xl border border-[#d7dee9] bg-white">
+          <div className="flex flex-wrap items-start justify-between gap-3 px-5 pt-5">
+            <div>
+              <h3 className="text-base font-semibold text-[#24364c]">Equipment model</h3>
+              <p className="mt-1 text-sm text-[#536a82]">{selected.id} · {selected.name}</p>
             </div>
-            <div className="absolute inset-0 bg-[#082f80]/10" />
+            <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${selectedState === "Critical alert" ? "bg-[#fff0f0] text-[#bf3d4b]" : selectedIsAttention ? "bg-[#fff4d9] text-[#805300]" : selectedState === "Running" || selectedState.toLowerCase() === "on" ? "bg-[#e4f7ef] text-[#16865d]" : "bg-[#eef2f6] text-[#4c5d71]"}`}>
+              {selectedState}
+            </span>
+          </div>
+          <EquipmentVisualization key={selected.id} model={selected.model} />
+          <div className="grid grid-cols-2 gap-2 border-t border-[#edf0f4] p-4 sm:grid-cols-3 2xl:grid-cols-5">
             {machines.map((machine) => {
               const snapshot = snapshots[machine.id];
               const machineAlerts = alerts
@@ -348,41 +433,24 @@ export function OverviewContent({ onNavigate }: OverviewContentProps) {
                 machineAlerts,
                 loading && !machineHasData(snapshot)
               );
-              const markerColor =
-                state === "Critical alert"
-                  ? "bg-[#d84b56]"
-                  : state === "Attention"
-                    ? "bg-[#edac28]"
-                    : state === "Idle" || state === "No data" || state === "Unavailable"
-                      ? "bg-[#8290a3]"
-                      : "bg-[#326b9f]";
 
               return (
                 <button
                   key={machine.id}
                   type="button"
                   onClick={() => setSelectedId(machine.id)}
-                  className={`group absolute -translate-x-1/2 -translate-y-1/2 rounded-full border-4 border-white p-1.5 shadow-[0_4px_14px_rgba(18,87,199,0.35)] transition-all duration-300 hover:scale-125 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#178ee5]/30 ${markerColor} ${selected.id === machine.id ? "scale-125 ring-2 ring-[#178ee5]" : ""}`}
-                  style={{ left: machine.x, top: machine.y }}
-                  aria-label={`Select ${machine.id}, ${state}`}
                   aria-pressed={selected.id === machine.id}
+                  className={`min-w-0 rounded-lg px-3 py-2 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1257c7] ${
+                    selected.id === machine.id
+                      ? "bg-[#eaf1fa] text-[#123f7a]"
+                      : "text-[#45576f] hover:bg-[#f4f6fa]"
+                  }`}
                 >
-                  <span className="block h-3 w-3 rounded-full bg-white" />
-                  <span className="pointer-events-none absolute left-full top-1/2 ml-2 -translate-y-1/2 whitespace-nowrap rounded-md bg-[#1c2c3f] px-2.5 py-1.5 text-[10px] font-semibold text-white shadow-lg">
-                    {machine.id} · {state}
-                  </span>
+                  <span className="block truncate text-sm font-semibold">{machine.id}</span>
+                  <span className="mt-0.5 block truncate text-xs">{state}</span>
                 </button>
               );
             })}
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 rounded-lg bg-white/90 px-3 py-2 text-xs font-medium text-[#62748a] shadow-sm">
-              Select a machine to view live database readings
-            </div>
-          </div>
-          <div className="relative mt-3 flex flex-wrap gap-4 text-xs text-[#536a82]">
-            <span className="flex items-center gap-2"><i className="h-2.5 w-2.5 rounded-full bg-[#326b9f]" />Running</span>
-            <span className="flex items-center gap-2"><i className="h-2.5 w-2.5 rounded-full bg-[#edac28]" />Open alert</span>
-            <span className="flex items-center gap-2"><i className="h-2.5 w-2.5 rounded-full bg-[#d84b56]" />Critical alert</span>
-            <span className="flex items-center gap-2"><i className="h-2.5 w-2.5 rounded-full bg-[#8290a3]" />Idle / unavailable</span>
           </div>
         </div>
 
@@ -396,16 +464,6 @@ export function OverviewContent({ onNavigate }: OverviewContentProps) {
             <span className={`rounded-full px-2.5 py-1 text-xs font-bold ${selectedState === "Critical alert" ? "bg-[#fff0f0] text-[#bf3d4b]" : selectedIsAttention ? "bg-[#fff4d9] text-[#ad7412]" : selectedState === "Running" || selectedState.toLowerCase() === "on" ? "bg-[#e4f7ef] text-[#16865d]" : "bg-[#eef2f6] text-[#62748a]"}`}>
               {selectedState}
             </span>
-          </div>
-          <div className="my-5 flex h-28 items-center justify-center rounded-xl bg-[#eff3f7]">
-            <Image
-              src={selected.image}
-              alt={selected.name}
-              width={240}
-              height={120}
-              sizes="240px"
-              className="h-full w-full rounded-xl object-contain"
-            />
           </div>
           {selectedSnapshot?.error && (
             <p role="alert" className="mb-3 rounded-lg bg-[#fff0f0] p-3 text-xs leading-5 text-[#a8323e]">

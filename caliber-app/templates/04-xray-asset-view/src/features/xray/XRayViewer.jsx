@@ -64,14 +64,14 @@ export default function XRayViewer({
 
       <div className="xr-toolbar">
         <button type="button" className={xray ? 'xr-btn is-on' : 'xr-btn'} onClick={() => setXray(!xray)}>
-          {xray ? 'Tutup X-Ray' : 'X-Ray'}
+          {xray ? 'Close X-Ray' : 'X-Ray'}
         </button>
-        {faultCount > 0 && <span className="xr-badge">{faultCount} komponen bermasalah</span>}
+        {faultCount > 0 && <span className="xr-badge">{faultCount} affected components</span>}
       </div>
 
       {showHint && (
         <div className="xr-hint">
-          {xray ? 'Klik bearing untuk detail · klik area kosong / Esc untuk menutup' : 'Klik casing kompresor (atau tekan X) untuk melihat ke dalam'}
+          {xray ? 'Select a bearing for details · click outside or press Esc to close' : 'Select the compressor casing or press X to look inside'}
         </div>
       )}
     </div>

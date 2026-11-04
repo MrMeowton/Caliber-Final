@@ -50,7 +50,7 @@
 }
 
 @theme inline {
-  --font-sans: var(--font-sans);
+  --font-sans: var(--font-inter);
   --font-serif: 'Source Serif 4', 'Georgia', serif;
   --font-mono: 'JetBrains Mono', 'Menlo', monospace;
   --color-background: var(--background);

@@ -141,7 +141,7 @@ export default function Asset3DView({
               {s.label}
             </span>
           ))}
-          <span className="a3d-legend__hint">Drag putar · Scroll zoom · Klik kanan geser · Esc batal</span>
+          <span className="a3d-legend__hint">Drag to rotate · Scroll to zoom · Right-click to pan · Esc to deselect</span>
           <span className={`a3d-live ${running ? 'a3d-live--on' : ''}`}>{running ? 'LIVE' : 'PAUSED'}</span>
         </div>
       )}
