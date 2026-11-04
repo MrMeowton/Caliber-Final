@@ -24,6 +24,7 @@ type Recommendation = {
 };
 
 const num = new Intl.NumberFormat("en-US", { maximumFractionDigits: 1 });
+const PAGE_SIZE = 100;
 const day = (v: string | null) =>
   v ? new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", year: "numeric" }).format(new Date(`${v.slice(0, 10)}T00:00:00`)) : "";
 
@@ -33,6 +34,7 @@ export function ReorderList() {
   const [rows, setRows] = useState<Recommendation[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
   const [selected, setSelected] = useState<Set<string>>(() => new Set());
   const [quantities, setQuantities] = useState<Record<string, number>>({});
   const [draft, setDraft] = useState<Array<Recommendation & { qty: number }>>([]);
@@ -56,6 +58,8 @@ export function ReorderList() {
     return q ? list.filter((r) => `${r.materialNo} ${r.description} ${r.functionalLoc} ${r.locationDescription}`.toLowerCase().includes(q)) : list;
   }, [rows, search]);
 
+  const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const pageRows = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
   const qtyOf = (r: Recommendation) => quantities[key(r)] ?? r.recommendedQty;
   const stageable = (rows ?? []).filter((r) => selected.has(key(r)) && qtyOf(r) > 0);
   const urgent = (rows ?? []).filter((r) => verdictOf(r) === "act").length;
@@ -83,7 +87,10 @@ export function ReorderList() {
             <input
               type="search"
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPage(1);
+              }}
               placeholder="Search part or equipment"
               aria-label="Search reorder list"
               className="min-h-10 w-full rounded-md border border-[#cdced1] bg-white pl-9 pr-3 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1b6c80]"
@@ -117,7 +124,7 @@ export function ReorderList() {
             </tr>
           </thead>
           <tbody className="divide-y divide-[#e8eaec] tabular-nums">
-            {filtered.slice(0, 80).map((r) => {
+            {pageRows.map((r) => {
               const k = key(r);
               const v = verdictOf(r);
               return (
@@ -148,6 +155,7 @@ export function ReorderList() {
                   <td className="px-3 py-3">{num.format(r.maxQty)}</td>
                   <td className="max-w-[240px] px-3 py-3 text-xs leading-5 text-[#353736]">
                     {r.reason}
+                    {r.orderCap === 0 ? " · Max is 0; review the target stock level" : ""}
                     {r.nextMaintenance ? ` · ${r.nextMaintenance} ${day(r.nextMaintenanceDate)}` : ""}
                   </td>
                   <td className="px-3 py-3">
@@ -156,6 +164,7 @@ export function ReorderList() {
                       min={0}
                       max={r.orderCap}
                       value={qtyOf(r)}
+                      disabled={r.orderCap === 0}
                       onChange={(e) => {
                         const n = Number(e.target.value);
                         setQuantities((cur) => ({ ...cur, [k]: Number.isFinite(n) ? Math.min(r.orderCap, Math.max(0, Math.floor(n))) : 0 }));
@@ -173,6 +182,37 @@ export function ReorderList() {
           </tbody>
         </table>
       </div>
+
+      {filtered.length > 0 && (
+        <nav
+          className="flex flex-wrap items-center justify-between gap-3 border-t border-[#e8eaec] px-4 py-3 text-sm text-[#45484a] sm:px-5"
+          aria-label="Reorder list pagination"
+        >
+          <p aria-live="polite">
+            Showing {(page - 1) * PAGE_SIZE + 1}–
+            {Math.min(page * PAGE_SIZE, filtered.length)} of {filtered.length}
+          </p>
+          <div className="flex items-center gap-2">
+            <span className="tabular-nums">Page {page} of {pageCount}</span>
+            <button
+              type="button"
+              onClick={() => setPage((current) => current - 1)}
+              disabled={page === 1}
+              className="min-h-9 rounded-md border border-[#cdced1] px-3 font-medium text-[#131416] hover:bg-[#f4f6f8] disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1b6c80]"
+            >
+              Previous
+            </button>
+            <button
+              type="button"
+              onClick={() => setPage((current) => current + 1)}
+              disabled={page === pageCount}
+              className="min-h-9 rounded-md border border-[#cdced1] px-3 font-medium text-[#131416] hover:bg-[#f4f6f8] disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1b6c80]"
+            >
+              Next
+            </button>
+          </div>
+        </nav>
+      )}
 
       {draft.length > 0 && (
         <div className="border-t border-[#e8eaec] bg-[#f4f6f8] p-4 sm:p-5" aria-live="polite">

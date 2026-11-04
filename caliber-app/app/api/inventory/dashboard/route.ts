@@ -680,9 +680,10 @@ export async function GET() {
       .filter(
         (row) =>
           row.stockKnown &&
-          row.maxEligible &&
-          row.recommendedQty > 0 &&
-          row.stock < row.maxQty
+          ((row.stock <= 0 && ["S", "A"].includes(row.criticality.toUpperCase())) ||
+            (row.maxEligible &&
+              row.recommendedQty > 0 &&
+              row.stock < row.maxQty))
       )
       .map((row) => {
         const source = positionByKey.get(
@@ -717,8 +718,7 @@ export async function GET() {
             Number(["S", "A"].includes(a.criticality)) ||
           a.stock - b.stock ||
           a.functionalLoc.localeCompare(b.functionalLoc)
-      )
-      .slice(0, 100);
+      );
     const overMaxCandidates = stockItemPositions
       .filter(
         (row) =>
@@ -743,7 +743,10 @@ export async function GET() {
           reason: "On-hand exceeds the BOM maximum",
         };
       });
-    const actionCandidates = [...recommendations, ...overMaxCandidates];
+    const actionCandidates = [
+      ...recommendations.filter((row) => row.orderCap > 0).slice(0, 100),
+      ...overMaxCandidates,
+    ];
 
     const promiseAttainment = db
       .prepare(
