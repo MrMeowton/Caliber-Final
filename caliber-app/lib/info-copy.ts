@@ -209,6 +209,27 @@ export const INFO = {
     source: "Goods-movement history for this part, the forecast model chosen for its demand class, and the planned maintenance jobs that use it.",
     why: "Shows whether the forecast is believable compared with what actually happened.",
   },
+  "demand.sku.failure": {
+    title: "Failure-driven demand (MTBF)",
+    what: "How often the equipment this part is fitted to breaks down, and what that means for the part: the chance of a failure before a new order could arrive, the failures expected next year, the average time between failures (MTBF) and whether failures are becoming more frequent.",
+    source: "Notif History: N1 (malfunction) and N2 (emergency) notifications, linked to the part through the equipment's BoM. Routine work orders such as painting or scaffolding are removed. A failure counts as 'part-related' when its text mentions this part family (for example 'leak from packing' for a packing set).",
+    why: "Breakdowns are what make spare-part demand irregular. Knowing which equipment fails often, and whether it is getting worse, warns the planner before the part is needed. The model was checked on held-out months, and it beats using each machine's own history alone.",
+    read: "Chance within lead time: above 50% (red) means a failure is likely before a new order could arrive, so stock must already be on the shelf. Trend above 1× means failures are becoming more frequent. The table lists the machines that fail most.",
+  },
+  "demand.sku.aiNeed": {
+    title: "When will this part be needed? (AI)",
+    what: "An estimate of the date this part runs short, the last safe date to order it, a confidence level and the factors that could cause a problem, written in plain words.",
+    source: "The AI (Google Gemini) receives only this part's facts: stock, forecast, planned maintenance jobs, failure history from Notif History and supplier lead time, plus a rule-based day-by-day stock projection as its anchor. If the AI is unavailable, the rule-based projection is shown instead and labelled as such.",
+    why: "It brings every demand driver together into one answer a planner can act on, and explains the reason behind it. The AI can be wrong, so every factor cites the number it is based on and a person approves or rejects it.",
+    read: "'Stock needed by' is when stock is expected to run out. 'Order by' is that date minus the P90 lead time; if it is already past, order now or expedite. Red arrows are factors that raise the risk, green arrows lower it.",
+  },
+  "demand.sku.minmax": {
+    title: "Dynamic Min–Max",
+    what: "This part's recommended Min (the stock level at which to reorder) and Max (the level to order up to), recalculated for every day of the next 12 months, compared with the fixed Min/Max in the BoM today.",
+    source: "Forecast baseline and its variability, dated preventive-maintenance kits (Mitem & Mplan), open failure notifications still in progress (Notif History), supplier lead time P50/P90 and open purchase orders (PR/PO). Order quantity = the median quantity this part is usually ordered in (PR/PO).",
+    why: "A fixed Min/Max ignores what is coming. Dynamic Min rises one lead time before a busy maintenance month and falls afterwards, so the part is ordered on time without holding extra stock all year.",
+    read: "Red line = dynamic Min, teal line = dynamic Max, dashed grey lines = today's BoM Min and Max. The black line is projected stock if you follow the dynamic policy, the dotted grey line if you keep the BoM values. 'Next order' tells you when and how much to order.",
+  },
   "demand.sku.tournament": {
     title: "Model tournament on this SKU",
     what: "Each forecasting method's total prediction for May–Sep 2026 compared with what was really used.",
@@ -424,6 +445,20 @@ export const INFO = {
     source: "BoM stock, min and max; demand from the movement history; lead time from the PR/PO history; scenario settings from the controls.",
     why: "Makes the effect of a policy change concrete, part by part. The order quantity never exceeds the BoM maximum.",
     read: "SS = safety stock (extra buffer). ROP = reorder point (order when stock falls to this level). Draft qty shows proposed / maximum allowed.",
+  },
+  "action.minmax": {
+    title: "Dynamic Min–Max backtest",
+    what: "A replay of May–Sep 2026, day by day, comparing two ways of managing stock: today's fixed BoM Min/Max and the dynamic Min/Max that follows upcoming demand.",
+    source: "Actual daily issues from Movement Material, stock reconstructed back to 1 May 2026 from the snapshot, purchase orders open at that time (PR/PO), and only the forecast and maintenance plan that were known on 1 May.",
+    why: "It proves, on real history, whether the dynamic policy would have kept parts on the shelf more often and what it costs in stock value and orders. That is the cost-versus-risk trade-off the case asks for.",
+    read: "Arrows read 'BoM Min/Max → dynamic'. A higher fill rate and fewer parts running out are better; a higher stock value and more orders are the price. The sentence below the numbers states the capital that could be released from parts already above their dynamic Max.",
+  },
+  "action.minmaxTable": {
+    title: "Parts where dynamic Min–Max changes the outcome",
+    what: "The parts where switching from the BoM Min/Max to the dynamic Min/Max matters most over the next 12 months: fewer days without stock, or less money tied up.",
+    source: "The same dynamic Min/Max calculation run forward on the expected demand of every Stock Item.",
+    why: "A short worklist for the planner: these Min/Max values are worth updating first.",
+    read: "Stockout days read 'BoM → dynamic'. A green value change means less money in stock, amber means more stock is needed to stay safe.",
   },
   "action.queue": {
     title: "AI-prioritized action queue",

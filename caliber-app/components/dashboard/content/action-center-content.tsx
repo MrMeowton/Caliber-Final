@@ -13,6 +13,7 @@ import {
 } from "recharts";
 import { Check, RefreshCw, Sparkles, X } from "lucide-react";
 import { InfoTip } from "@/components/ui/info-tip";
+import { DynamicMinMaxSummary } from "@/components/demand/dynamic-minmax";
 
 type Action = "Reorder Now" | "Maintain" | "Reduce / Stop-Buy" | "Monitor";
 type Candidate = {
@@ -791,10 +792,12 @@ export function ActionCenterContent() {
           </table>
         </div>
         <p className="px-4 pb-4 text-xs leading-5 text-[#5d5f60] sm:px-5">
-          Dynamic maximum is not invented: the BOM maximum remains the binding ceiling because
-          an order-review cycle is not available for calculating an order-up-to level.
+          This scenario table keeps the BoM maximum as the order cap. The Dynamic Min–Max section below
+          recalculates both Min and Max from upcoming demand and lead time, with a backtest.
         </p>
       </section>
+
+      <DynamicMinMaxSummary />
 
       <section className="rounded-lg border border-[#e8eaec] bg-white">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#e8eaec] px-4 py-4 sm:px-5">

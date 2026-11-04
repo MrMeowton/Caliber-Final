@@ -7,6 +7,8 @@ import {
 } from "recharts";
 import { Card, ClassBadge, CritBadge, ErrorNote, Loading, Pill, Segmented, Source, getJSON } from "./ui";
 import { StockDecision } from "./stock-decision";
+import { AiNeed, FailureRisk } from "./failure-risk";
+import { DynamicMinMax } from "./dynamic-minmax";
 import { MODEL_LABEL, MONTH_LABEL, fmtIDR, fmtNum } from "@/lib/demand/format";
 import type { SkuDetail, SkuRow } from "./types";
 
@@ -236,6 +238,10 @@ function SkuDetailPanel({ id }: { id: string }) {
           <p>Reorder point with criticality service level: <b>{fmtNum(m.rop_new)} {m.unit}</b> (safety stock {fmtNum(m.ss_new)}) vs current Min <b>{fmtNum(m.min_qty)}</b>.</p>
         </div>
       </Card>
+
+      <FailureRisk id={m.material_no} unit={m.unit} />
+      <AiNeed key={m.material_no} id={m.material_no} unit={m.unit} />
+      <DynamicMinMax id={m.material_no} />
 
       <div className="grid gap-5 2xl:grid-cols-2">
         <Card info="demand.sku.tournament" title="Model tournament on this SKU" subtitle="Total forecast for the May–Sep 2026 holdout vs what was actually issued">
