@@ -16,6 +16,7 @@
 - 3D: three + @react-three/fiber + @react-three/drei · diagram: @xyflow/react · chart: recharts
 - AI: `lib/ai.ts` (Claude API, fallback bila timeout / `AI_FALLBACK_ONLY=true`), prompt di `prompts/runtime/`
 - Data: JSON dummy di `data/` (aset & posisi 3D di `data/config.json`)
+- Baca semua skills yang ada di .agent sebelum kamu mau mulai bekerja dan baru jalankan task yang diberikan setelah memahami semua skills yang tersedia.
 
 ## Perintah
 ```bash
