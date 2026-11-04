@@ -15,6 +15,15 @@ import { Color, MathUtils, Vector3 } from 'three'
 
 const XRAY_TINT = new Color('#38bdf8')
 
+function updateXRayMaterials(materials, opacity, amount) {
+  for (const { mat, baseColor } of materials) {
+    mat.opacity = MathUtils.lerp(1, opacity, amount)
+    mat.depthWrite = amount < 0.5
+    mat.color.copy(baseColor).lerp(XRAY_TINT, amount * 0.6)
+    if (mat.emissive) mat.emissive.copy(XRAY_TINT).multiplyScalar(amount * 0.25)
+  }
+}
+
 export default function XRayShell({
   active = false,
   opacity = 0.12, // opasitas casing saat x-ray
@@ -53,13 +62,7 @@ export default function XRayShell({
   useFrame((_, dt) => {
     t.current = MathUtils.damp(t.current, active ? 1 : 0, speed, dt)
     const k = t.current
-
-    for (const { mat, baseColor } of mats.current) {
-      mat.opacity = MathUtils.lerp(1, opacity, k)
-      mat.depthWrite = k < 0.5 // matikan depth agar isi di dalam terlihat
-      mat.color.copy(baseColor).lerp(XRAY_TINT, k * 0.6)
-      if (mat.emissive) mat.emissive.copy(XRAY_TINT).multiplyScalar(k * 0.25)
-    }
+    updateXRayMaterials(mats.current, opacity, k)
 
     offset.current.set(...explode).multiplyScalar(k)
     group.current.position.copy(offset.current)

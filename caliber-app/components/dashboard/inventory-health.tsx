@@ -57,23 +57,24 @@ export function InventoryHealth({
   initialFilter?: Filter;
   focusTable?: boolean;
 }) {
-  const [data, setData] = useState<Health | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [result, setResult] = useState<
+    { filter: Filter; data: Health; error?: never } | { filter: Filter; error: string; data?: never } | null
+  >(null);
   const [filter, setFilter] = useState<Filter>(initialFilter);
   const [q, setQ] = useState("");
   const tableRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const ctrl = new AbortController();
-    setLoading(true);
-    setError(null);
     getJSON<Health>(`/api/inventory/health?filter=${filter}`, ctrl.signal)
-      .then(setData)
-      .catch((e) => { if (!ctrl.signal.aborted) setError(String(e.message ?? e)); })
-      .finally(() => { if (!ctrl.signal.aborted) setLoading(false); });
+      .then((data) => { if (!ctrl.signal.aborted) setResult({ filter, data }); })
+      .catch((e) => { if (!ctrl.signal.aborted) setResult({ filter, error: String(e.message ?? e) }); });
     return () => ctrl.abort();
   }, [filter]);
+
+  const currentResult = result?.filter === filter ? result : null;
+  const data = currentResult && "data" in currentResult ? currentResult.data : null;
+  const error = currentResult && "error" in currentResult ? currentResult.error : null;
 
   useEffect(() => {
     if (data && focusTable) {

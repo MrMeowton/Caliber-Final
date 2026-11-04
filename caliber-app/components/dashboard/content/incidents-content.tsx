@@ -45,6 +45,12 @@ type RiskIncidentRow = Record<string, unknown>;
 
 const PAGE_SIZE = 30;
 
+type IncidentPage = {
+  offset: number;
+  incidents: RiskIncident[];
+  hasMore: boolean;
+};
+
 function toText(value: unknown): string {
   return value === null || value === undefined ? "" : String(value);
 }
@@ -119,11 +125,7 @@ export function IncidentsContent() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const loadIncidents = useCallback(async (nextOffset: number, signal?: AbortSignal) => {
-    setLoading(true);
-    setError(null);
-
-    try {
+  const loadIncidents = useCallback(async (nextOffset: number, signal?: AbortSignal): Promise<IncidentPage> => {
       const response = await fetch(
         `/api/tables/equipment-risk-incidents?limit=${PAGE_SIZE}&offset=${nextOffset}`,
         { cache: "no-store", signal }
@@ -150,42 +152,65 @@ export function IncidentsContent() {
           : [];
       const loaded = rows.map(mapIncident);
 
-      setIncidents(loaded);
-      setSelectedId((currentId) =>
-        loaded.some((incident) => incident.id === currentId)
-          ? currentId
-          : loaded[0]?.id ?? null
-      );
-      setOffset(nextOffset);
-      setHasMore(
-        typeof payload === "object" &&
+      return {
+        offset: nextOffset,
+        incidents: loaded,
+        hasMore:
+          typeof payload === "object" &&
           payload !== null &&
           "pagination" in payload &&
           typeof payload.pagination === "object" &&
           payload.pagination !== null &&
           "hasMore" in payload.pagination &&
-          payload.pagination.hasMore === true
-      );
-    } catch (cause) {
-      if (signal?.aborted) return;
-      setIncidents([]);
-      setSelectedId(null);
-      setHasMore(false);
-      setError(
-        cause instanceof Error
-          ? cause.message
-          : "An unexpected error occurred while loading incidents."
-      );
-    } finally {
-      if (!signal?.aborted) setLoading(false);
-    }
+          payload.pagination.hasMore === true,
+      };
+  }, []);
+
+  const applyIncidentPage = useCallback(({ incidents: loaded, offset: nextOffset, hasMore: nextHasMore }: IncidentPage) => {
+    setIncidents(loaded);
+    setSelectedId((currentId) =>
+      loaded.some((incident) => incident.id === currentId)
+        ? currentId
+        : loaded[0]?.id ?? null
+    );
+    setOffset(nextOffset);
+    setHasMore(nextHasMore);
+  }, []);
+
+  const failIncidentRequest = useCallback((cause: unknown) => {
+    setIncidents([]);
+    setSelectedId(null);
+    setHasMore(false);
+    setError(
+      cause instanceof Error
+        ? cause.message
+        : "An unexpected error occurred while loading incidents."
+    );
   }, []);
 
   useEffect(() => {
     const controller = new AbortController();
-    void loadIncidents(0, controller.signal);
+    void loadIncidents(0, controller.signal)
+      .then((page) => {
+        if (!controller.signal.aborted) applyIncidentPage(page);
+      })
+      .catch((cause: unknown) => {
+        if (!controller.signal.aborted) failIncidentRequest(cause);
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setLoading(false);
+      });
     return () => controller.abort();
-  }, [loadIncidents]);
+  }, [applyIncidentPage, failIncidentRequest, loadIncidents]);
+
+  const requestIncidents = (nextOffset: number) => {
+    setLoading(true);
+    setError(null);
+    void loadIncidents(nextOffset)
+      .then(applyIncidentPage)
+      .catch(failIncidentRequest)
+      .finally(() => setLoading(false));
+  };
 
   const equipmentOptions = useMemo(
     () => [
@@ -251,7 +276,7 @@ export function IncidentsContent() {
         <Button
           type="button"
           variant="outline"
-          onClick={() => void loadIncidents(offset)}
+          onClick={() => requestIncidents(offset)}
           disabled={loading}
           className="gap-2 border-[#dce7f7] bg-white text-[#173e82]"
         >
@@ -274,7 +299,7 @@ export function IncidentsContent() {
           <span>Could not load incident records: {error}</span>
           <button
             type="button"
-            onClick={() => void loadIncidents(offset)}
+            onClick={() => requestIncidents(offset)}
             className="font-semibold underline"
           >
             Try again
@@ -385,7 +410,7 @@ export function IncidentsContent() {
             <div className="flex gap-2">
               <button
                 type="button"
-                onClick={() => void loadIncidents(Math.max(0, offset - PAGE_SIZE))}
+                onClick={() => requestIncidents(Math.max(0, offset - PAGE_SIZE))}
                 disabled={loading || offset === 0}
                 className="rounded-md border border-[#dce7f7] px-2.5 py-1.5 font-medium disabled:opacity-40"
               >
@@ -393,7 +418,7 @@ export function IncidentsContent() {
               </button>
               <button
                 type="button"
-                onClick={() => void loadIncidents(offset + PAGE_SIZE)}
+                onClick={() => requestIncidents(offset + PAGE_SIZE)}
                 disabled={loading || !hasMore}
                 className="rounded-md border border-[#dce7f7] px-2.5 py-1.5 font-medium disabled:opacity-40"
               >

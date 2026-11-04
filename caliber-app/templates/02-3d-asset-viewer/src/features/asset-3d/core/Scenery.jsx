@@ -3,6 +3,11 @@ import { useFrame } from '@react-three/fiber'
 import { RoundedBox } from '@react-three/drei'
 import * as THREE from 'three'
 
+function updatePipeMaterial(material, target, delta) {
+  material.opacity = THREE.MathUtils.lerp(material.opacity, target, 1 - Math.exp(-delta * 8))
+  material.depthWrite = material.opacity > 0.6
+}
+
 // =========================================
 // Elemen statis (tidak bisa diklik): alas/rangka dan pipa
 // -----------------------------------------
@@ -47,8 +52,7 @@ export default function Scenery({
 
   useFrame((_, dt) => {
     const target = selectedId != null ? 0.15 : 1 - explode * 0.85
-    pipeMat.opacity = THREE.MathUtils.lerp(pipeMat.opacity, target, 1 - Math.exp(-dt * 8))
-    pipeMat.depthWrite = pipeMat.opacity > 0.6
+    updatePipeMaterial(pipeMat, target, dt)
   })
 
   return (

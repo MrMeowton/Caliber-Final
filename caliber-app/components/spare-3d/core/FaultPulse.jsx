@@ -14,6 +14,17 @@ import { AdditiveBlending, Color } from 'three'
 
 const RED = new Color('#ef4444')
 
+function updatePulseMaterials(materials, halo, active, wave) {
+  for (const material of materials) {
+    material.emissive.copy(RED)
+    material.emissiveIntensity = active ? 0.4 + wave * 2.2 : 0
+  }
+
+  halo.visible = active
+  halo.scale.setScalar(1 + wave * 0.35)
+  halo.material.opacity = 0.08 + wave * 0.22
+}
+
 export default function FaultPulse({
   active = true,
   position, // posisi komponen [x,y,z] — halo & label ikut di sini
@@ -41,16 +52,7 @@ export default function FaultPulse({
   useFrame(({ clock }) => {
     // gelombang 0..1, dipertajam agar terasa "berdenyut"
     const wave = active ? Math.pow((Math.sin(clock.elapsedTime * rate * Math.PI * 2) + 1) / 2, 2) : 0
-
-    for (const m of mats.current) {
-      m.emissive.copy(RED)
-      m.emissiveIntensity = active ? 0.4 + wave * 2.2 : 0
-    }
-
-    const h = halo.current
-    h.visible = active
-    h.scale.setScalar(1 + wave * 0.35)
-    h.material.opacity = 0.08 + wave * 0.22
+    updatePulseMaterials(mats.current, halo.current, active, wave)
   })
 
   return (

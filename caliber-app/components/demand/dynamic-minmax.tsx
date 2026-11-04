@@ -37,19 +37,21 @@ const day = (s: string) => formatDate(Date.parse(s), { day: "numeric", month: "s
 
 /** SKU view: 12-month dynamic Min/Max band vs today's fixed BoM Min/Max. */
 export function DynamicMinMax({ id }: { id: string }) {
-  const [data, setData] = useState<Detail | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [result, setResult] = useState<
+    { id: string; data: Detail; error?: never } | { id: string; error: string; data?: never } | null
+  >(null);
 
   useEffect(() => {
     const ctrl = new AbortController();
-    setData(null);
-    setError(null);
     getJSON<Detail>(`/api/demand/minmax?id=${encodeURIComponent(id)}`, ctrl.signal)
-      .then(setData)
-      .catch((e) => { if (!ctrl.signal.aborted) setError(String(e.message ?? e)); });
+      .then((data) => { if (!ctrl.signal.aborted) setResult({ id, data }); })
+      .catch((e) => { if (!ctrl.signal.aborted) setResult({ id, error: String(e.message ?? e) }); });
     return () => ctrl.abort();
   }, [id]);
 
+  const currentResult = result?.id === id ? result : null;
+  const data = currentResult && "data" in currentResult ? currentResult.data : null;
+  const error = currentResult && "error" in currentResult ? currentResult.error : null;
   const title = "Recommended Min–Max (moves with demand)";
   if (error) return <Card info="demand.sku.minmax" title={title}><p className="text-sm text-[#5d5f60]">{error}</p></Card>;
   if (!data) return <Card info="demand.sku.minmax" title={title}><Loading text="Computing dynamic Min–Max…" /></Card>;

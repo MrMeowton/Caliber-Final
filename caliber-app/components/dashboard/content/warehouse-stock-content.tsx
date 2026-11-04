@@ -128,9 +128,22 @@ export function WarehouseStockContent({ initialFilter }: { initialFilter?: strin
     initialFilter === "non-stock-onhand" ? "NON STOCK" : ""
   );
   const [page, setPage] = useState(1);
-  const [data, setData] = useState<WarehouseData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [result, setResult] = useState<{
+    key: string;
+    data: WarehouseData | null;
+    error: string | null;
+  } | null>(null);
+
+  const params = new URLSearchParams({ page: String(page) });
+  if (search) params.set("q", search);
+  if (stockStatus) params.set("stockStatus", stockStatus);
+  if (criticality) params.set("criticality", criticality);
+  if (movement) params.set("movement", movement);
+  if (mrpType) params.set("mrpType", mrpType);
+  const requestKey = params.toString();
+  const data = result?.data ?? null;
+  const loading = result?.key !== requestKey;
+  const error = result?.key === requestKey ? result.error : null;
 
   useEffect(() => {
     const timer = window.setTimeout(() => setSearch(query.trim()), 250);
@@ -139,17 +152,7 @@ export function WarehouseStockContent({ initialFilter }: { initialFilter?: strin
 
   useEffect(() => {
     const controller = new AbortController();
-    const params = new URLSearchParams({ page: String(page) });
-    if (search) params.set("q", search);
-    if (stockStatus) params.set("stockStatus", stockStatus);
-    if (criticality) params.set("criticality", criticality);
-    if (movement) params.set("movement", movement);
-    if (mrpType) params.set("mrpType", mrpType);
-
-    setLoading(true);
-    setError(null);
-
-    void fetch(`/api/inventory/warehouse?${params.toString()}`, {
+    void fetch(`/api/inventory/warehouse?${requestKey}`, {
       cache: "no-store",
       signal: controller.signal,
     })
@@ -165,23 +168,22 @@ export function WarehouseStockContent({ initialFilter }: { initialFilter?: strin
         if (!isWarehouseData(payload)) {
           throw new Error("The warehouse stock service returned an unexpected response.");
         }
-        setData(payload);
+        setResult({ key: requestKey, data: payload, error: null });
       })
       .catch((requestError) => {
         if (!controller.signal.aborted) {
-          setError(
-            requestError instanceof Error
+          setResult((current) => ({
+            key: requestKey,
+            data: current?.data ?? null,
+            error: requestError instanceof Error
               ? requestError.message
-              : "Unable to load warehouse stock."
-          );
+              : "Unable to load warehouse stock.",
+          }));
         }
-      })
-      .finally(() => {
-        if (!controller.signal.aborted) setLoading(false);
       });
 
     return () => controller.abort();
-  }, [search, stockStatus, criticality, movement, mrpType, page]);
+  }, [requestKey]);
 
   const hasFilters = Boolean(
     query.trim() || stockStatus || criticality || movement || mrpType

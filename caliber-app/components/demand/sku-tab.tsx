@@ -36,11 +36,14 @@ export function SkuTab({ initialId }: { initialId?: string }) {
   const [sort, setSort] = useState<Sort>("fc");
   const [rows, setRows] = useState<SkuRow[] | null>(null);
   const [listError, setListError] = useState<string | null>(null);
-  const [selected, setSelected] = useState<string>(initialId ?? "4100034704");
-
-  useEffect(() => {
-    if (initialId) setSelected(initialId);
-  }, [initialId]);
+  const [selection, setSelection] = useState(() => ({
+    initialId,
+    selected: initialId ?? "4100034704",
+  }));
+  const selected =
+    selection.initialId === initialId
+      ? selection.selected
+      : initialId ?? selection.selected;
 
   useEffect(() => {
     const ctrl = new AbortController();
@@ -91,7 +94,7 @@ export function SkuTab({ initialId }: { initialId?: string }) {
             <button
               key={r.material_no}
               type="button"
-              onClick={() => setSelected(r.material_no)}
+              onClick={() => setSelection({ initialId, selected: r.material_no })}
               className={`w-full rounded-xl border px-3 py-2 text-left transition-colors ${selected === r.material_no ? "border-[#1257c7] bg-[#eef4ff]" : "border-transparent hover:bg-[#f4f6fa]"}`}
             >
               <div className="flex items-center gap-2">
@@ -113,19 +116,22 @@ export function SkuTab({ initialId }: { initialId?: string }) {
 }
 
 function SkuDetailPanel({ id }: { id: string }) {
-  const [data, setData] = useState<SkuDetail | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [result, setResult] = useState<
+    { id: string; data: SkuDetail; error?: never } | { id: string; error: string; data?: never } | null
+  >(null);
   const [view, setView] = useState<"qty" | "cum">("qty");
 
   useEffect(() => {
     const ctrl = new AbortController();
-    setData(null);
-    setError(null);
     getJSON<SkuDetail>(`/api/demand/sku?id=${encodeURIComponent(id)}`, ctrl.signal)
-      .then(setData)
-      .catch((e) => { if (!ctrl.signal.aborted) setError(String(e.message ?? e)); });
+      .then((data) => { if (!ctrl.signal.aborted) setResult({ id, data }); })
+      .catch((e) => { if (!ctrl.signal.aborted) setResult({ id, error: String(e.message ?? e) }); });
     return () => ctrl.abort();
   }, [id]);
+
+  const currentResult = result?.id === id ? result : null;
+  const data = currentResult && "data" in currentResult ? currentResult.data : null;
+  const error = currentResult && "error" in currentResult ? currentResult.error : null;
 
   const chart = useMemo(() => {
     if (!data) return [];

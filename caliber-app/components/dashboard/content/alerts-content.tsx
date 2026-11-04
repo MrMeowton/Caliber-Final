@@ -134,39 +134,51 @@ export function AlertsContent() {
     const [busyKey, setBusyKey] = useState<string | null>(null);
     const [refreshKey, setRefreshKey] = useState(0);
 
-    const loadAlerts = useCallback(async () => {
+    const refreshAlerts = () => {
         setLoading(true);
         setSourceError(null);
-        try {
-            const rows = await fetchTableRows("alerts");
-            const loadedAlerts = rows.filter(isAlert);
-            setAlerts(loadedAlerts);
-            setActionDrafts(
-                Object.fromEntries(
-                    loadedAlerts.map((alert) => [
-                        alert.id,
-                        alert.recommended_action ?? "",
-                    ])
-                )
-            );
-        } catch (error) {
-            setAlerts([]);
-            setSourceError(
-                error instanceof Error ? error.message : "Unable to load alerts."
-            );
-        } finally {
-            setLoading(false);
-        }
+        setRefreshKey((value) => value + 1);
+    };
+
+    const loadAlerts = useCallback(async () => {
+        const rows = await fetchTableRows("alerts");
+        return rows.filter(isAlert);
     }, []);
 
     useEffect(() => {
-        void loadAlerts();
+        let active = true;
+        void loadAlerts()
+            .then((loadedAlerts) => {
+                if (!active) return;
+                setAlerts(loadedAlerts);
+                setSourceError(null);
+                setActionDrafts(
+                    Object.fromEntries(
+                        loadedAlerts.map((alert) => [
+                            alert.id,
+                            alert.recommended_action ?? "",
+                        ])
+                    )
+                );
+            })
+            .catch((error: unknown) => {
+                if (!active) return;
+                setAlerts([]);
+                setSourceError(
+                    error instanceof Error ? error.message : "Unable to load alerts."
+                );
+            })
+            .finally(() => {
+                if (active) setLoading(false);
+            });
+
+        return () => {
+            active = false;
+        };
     }, [loadAlerts, refreshKey]);
 
     useEffect(() => {
         let active = true;
-        setEmployeesLoading(true);
-        setEmployeesError(null);
 
         void fetchTableRows("employees")
             .then((rows) => {
@@ -244,7 +256,7 @@ export function AlertsContent() {
             }
             setMutationMessage("Alert updated.");
             window.dispatchEvent(new Event("alerts:updated"));
-            setRefreshKey((value) => value + 1);
+            refreshAlerts();
         } catch (error) {
             setMutationError(
                 error instanceof Error ? error.message : "Could not update alert."
@@ -270,7 +282,7 @@ export function AlertsContent() {
             }
             setMutationMessage("Solved alert deleted.");
             window.dispatchEvent(new Event("alerts:updated"));
-            setRefreshKey((value) => value + 1);
+            refreshAlerts();
         } catch (error) {
             setMutationError(
                 error instanceof Error ? error.message : "Could not delete solved alert."
@@ -312,7 +324,7 @@ export function AlertsContent() {
                     : 0;
             setMutationMessage(`${deleted} solved alert${deleted === 1 ? "" : "s"} deleted.`);
             window.dispatchEvent(new Event("alerts:updated"));
-            setRefreshKey((value) => value + 1);
+            refreshAlerts();
         } catch (error) {
             setMutationError(
                 error instanceof Error ? error.message : "Could not delete solved alerts."
@@ -348,7 +360,7 @@ export function AlertsContent() {
                     </button>
                     <button
                         type="button"
-                        onClick={() => setRefreshKey((value) => value + 1)}
+                        onClick={refreshAlerts}
                         disabled={loading || busyKey !== null}
                         className="inline-flex items-center gap-2 rounded-xl border border-[#dce7f7] bg-white px-3 py-2 text-sm font-semibold text-[#173e82] shadow-sm hover:border-[#91b1ed] disabled:opacity-50"
                     >

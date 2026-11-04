@@ -163,12 +163,6 @@ export function ServicesContent() {
 
   useEffect(() => {
     const controller = new AbortController();
-    setProductionState({
-      machineId: selectedMachine.id,
-      loading: true,
-      records: [],
-      error: null,
-    });
 
     async function loadProductionData() {
       try {
@@ -227,12 +221,6 @@ export function ServicesContent() {
 
   useEffect(() => {
     const controller = new AbortController();
-    setAlertsState({
-      machineId: selectedMachine.id,
-      loading: true,
-      alerts: [],
-      error: null,
-    });
 
     async function loadAlerts() {
       try {
