@@ -18,6 +18,7 @@ import {
 import { RefreshCw, Search } from "lucide-react";
 import type { PlantAsset } from "@/components/dashboard/plant-3d/faults";
 import { InfoTip } from "@/components/ui/info-tip";
+import { InventoryHealth } from "@/components/dashboard/inventory-health";
 import type { InfoId } from "@/lib/info-copy";
 import {
   Card,
@@ -26,7 +27,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-type DashboardTab = "monitor" | "pareto" | "actions";
+type DashboardTab = "monitor" | "health" | "pareto" | "actions";
 type Status = "critical" | "watch" | "ready";
 
 type InventoryPart = {
@@ -566,6 +567,7 @@ export function OverviewContent() {
         {(
           [
             ["monitor", "Monitor"],
+            ["health", "Inventory health"],
             ["pareto", "Pareto & segmentation"],
             ["actions", "Replenishment"],
           ] as const
@@ -913,6 +915,12 @@ export function OverviewContent() {
               </CardContent>
             </Card>
           </section>
+        </div>
+      )}
+
+      {activeTab === "health" && (
+        <div id="inventory-panel-health" role="tabpanel" aria-labelledby="inventory-tab-health">
+          <InventoryHealth />
         </div>
       )}
 

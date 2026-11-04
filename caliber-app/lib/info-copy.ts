@@ -89,6 +89,27 @@ export const INFO = {
     source: "Derived from the goods-movement history and the PR/PO history.",
     why: "Every number on the page is only as good as its data. This tells you how much history the calculations rest on.",
   },
+  "overview.health.categories": {
+    title: "Inventory health categories",
+    what: "Every part that holds stock is put into one group: Excess (more than its Max), Slow-moving (still used, but stock lasts over a year), Non-moving (not used for 12 months), Potentially obsolete (never used in 17 months and nothing planned), Insurance spare (critical part kept on purpose) or Healthy. 'Becoming slow-moving' is an early alert for parts whose use dropped by more than 70% in the last 6 months.",
+    source: "Stock, Max and criticality from the BoM; every warehouse issue from Movement Material (May 2025 – Sep 2026); planned maintenance needs from Mitem & Mplan; open purchase orders and prices from PR/PO.",
+    why: "Money stuck in parts nobody uses cannot be spent on parts that are missing. These groups show where capital can be released and which parts must stay even though they never move.",
+    read: "Click a tile to filter the table below. 'Releasable' is the value a review could free up: the stock above Max for excess, the stock beyond one year of use for slow-moving, and the whole value for non-moving and obsolete parts.",
+  },
+  "overview.health.aging": {
+    title: "Inventory aging",
+    what: "How much stock value sits in parts grouped by how long ago they were last taken out of the warehouse.",
+    source: "Last issue date per part from Movement Material, stock × median purchase price from PR/PO.",
+    why: "The older the last use, the more likely the stock is no longer needed. Aging shows how much money is getting old on the shelf.",
+    read: "Bars on the right are the oldest stock. 'No issue in 17 months' means the part was never used in the whole history; part of it is insurance stock for critical equipment and is kept on purpose.",
+  },
+  "overview.health.table": {
+    title: "Parts to review",
+    what: "The flagged parts with their status, stock, last use, how long the stock would last at the current rate, the money a review could release and the recommended action.",
+    source: "The same inventory-health calculation as the tiles above.",
+    why: "A ready worklist for the planner, largest money first. Nothing is changed in SAP; a person decides.",
+    read: "'Stock lasts' = stock ÷ average monthly use over the last 12 months. 'Imputed price' means the part had no purchase history, so the price of similar parts was used.",
+  },
   "overview.pareto.top80": {
     title: "SKUs to reach 80% of valued stock",
     what: "How few parts make up 80% of the total money held in stock.",
