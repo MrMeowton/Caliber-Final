@@ -40,8 +40,8 @@ export function PmCalendarTab({ onOpenRace }: { onOpenRace: () => void }) {
   return (
     <div className="space-y-5">
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <Kpi info="demand.pm.jobs" label="Planned maintenance jobs, Oct 26 – Sep 27" value={fmtNum(totalJobs)} sub="from 10,153 maintenance items, cycles normalised to months" />
-        <Kpi info="demand.pm.partJobs" label="Jobs that consume parts" value={fmtNum(partJobs)} sub="overhaul, consumable change, cleaning, internal inspection" tone="info" />
+        <Kpi info="demand.pm.jobs" label="Maintenance item occurrences, Oct 26 – Sep 27" value={fmtNum(totalJobs)} sub="from 10,153 maintenance items, cycles normalised to months" />
+        <Kpi info="demand.pm.partJobs" label="Part-consuming item occurrences" value={fmtNum(partJobs)} sub="overhaul, consumable change, cleaning, internal inspection" tone="info" />
         <Kpi info="demand.pm.expected" label="Expected PM part demand" value={fmtIDR(totalExpected)} sub="known in advance: no statistics needed" tone="good" />
         <Kpi info="demand.pm.gaps" label={`Critical parts short in ${MONTH_LABEL(data.month)}`} value={fmtNum(sel?.critical_short ?? 0)} sub="S/A Stock Items with stock below the job kit" tone="bad" />
       </div>

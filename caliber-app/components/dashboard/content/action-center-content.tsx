@@ -3,7 +3,6 @@
 import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import {
   CartesianGrid,
-  ReferenceLine,
   ResponsiveContainer,
   Scatter,
   ScatterChart,
@@ -101,6 +100,12 @@ const currencyFormat = new Intl.NumberFormat("en-US", {
   currency: "IDR",
   maximumFractionDigits: 0,
 });
+const compactCurrencyFormat = new Intl.NumberFormat("en-US", {
+  notation: "compact",
+  maximumFractionDigits: 0,
+});
+const costToChartScale = (value: number) => Math.log10(value + 1);
+const costFromChartScale = (value: number) => Math.max(0, 10 ** value - 1);
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -387,12 +392,47 @@ export function ActionCenterContent({ onNavigate, initialFocus }: { onNavigate?:
         candidate.reorderGapPercent !== null
     )
     .map((candidate) => ({
-      x: candidate.annualCarryingCost!,
+      x: costToChartScale(candidate.annualCarryingCost!),
+      annualCarryingCost: candidate.annualCarryingCost!,
       y: candidate.reorderGapPercent!,
       materialNo: candidate.materialNo,
       description: candidate.description,
       action: candidate.suggestedAction,
     }));
+  const maxAnnualCarryingCost = chartData.reduce(
+    (maximum, point) => Math.max(maximum, point.annualCarryingCost),
+    0
+  );
+  const positiveCostExponents = chartData
+    .map((point) => point.annualCarryingCost)
+    .filter((cost) => cost > 0)
+    .map((cost) => Math.floor(Math.log10(cost)));
+  const minCostExponent = positiveCostExponents.length
+    ? Math.max(0, Math.min(...positiveCostExponents))
+    : 0;
+  const maxCostExponent = positiveCostExponents.length
+    ? Math.max(...positiveCostExponents)
+    : 0;
+  const costExponentStep = Math.max(
+    1,
+    Math.ceil((maxCostExponent - minCostExponent) / 4)
+  );
+  const costAxisTicks = [0];
+  if (positiveCostExponents.length > 0) {
+    for (
+      let exponent = minCostExponent;
+      exponent <= maxCostExponent;
+      exponent += costExponentStep
+    ) {
+      costAxisTicks.push(10 ** exponent);
+    }
+    if (
+      maxCostExponent > minCostExponent &&
+      (maxCostExponent - minCostExponent) % costExponentStep !== 0
+    ) {
+      costAxisTicks.push(10 ** maxCostExponent);
+    }
+  }
 
   const belowScenarioRop = scenarioCandidates.filter(
     (candidate) =>
@@ -755,8 +795,11 @@ export function ActionCenterContent({ onNavigate, initialFocus }: { onNavigate?:
               <InfoTip id="action.matrix" className="-my-1" />
             </div>
           </div>
+          <p className="mt-1 text-sm text-[#5d5f60]">
+            Each dot is one part · horizontal: yearly holding cost (IDR, log scale) · vertical: stock below scenario reorder point
+          </p>
           {plottedCount > 0 ? (
-            <div className="mt-3 h-[280px]">
+            <div className="mt-3 h-[320px]">
               <ResponsiveContainer width="100%" height="100%">
                 <ScatterChart margin={{ top: 12, right: 12, bottom: 8, left: 8 }}>
                   <CartesianGrid stroke="#e8eaec" />
@@ -764,8 +807,12 @@ export function ActionCenterContent({ onNavigate, initialFocus }: { onNavigate?:
                     type="number"
                     dataKey="x"
                     name="Annual holding cost"
+                    domain={[0, Math.max(1, costToChartScale(maxAnnualCarryingCost) * 1.06)]}
+                    ticks={costAxisTicks.map(costToChartScale)}
                     tick={{ fill: "#5d5f60", fontSize: 11 }}
-                    tickFormatter={(value: number) => `${Math.round(value / 1_000_000)}M`}
+                    tickFormatter={(value: number) =>
+                      compactCurrencyFormat.format(costFromChartScale(value))
+                    }
                     axisLine={{ stroke: "#cdced1" }}
                   />
                   <YAxis
@@ -777,12 +824,11 @@ export function ActionCenterContent({ onNavigate, initialFocus }: { onNavigate?:
                     tick={{ fill: "#5d5f60", fontSize: 11 }}
                     axisLine={false}
                   />
-                  <ReferenceLine y={50} stroke="#cdced1" strokeDasharray="4 4" />
                   <Tooltip
                     cursor={{ strokeDasharray: "3 3" }}
                     formatter={(value, name) => [
                       name === "Annual holding cost"
-                        ? formatCurrency(Number(value))
+                        ? formatCurrency(costFromChartScale(Number(value)))
                         : `${formatNumber(Number(value))}%`,
                       String(name),
                     ]}

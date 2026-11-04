@@ -17,7 +17,7 @@ const TABS: { id: Tab; label: string; icon: typeof Gauge }[] = [
   { id: "overview", label: "Demand drivers", icon: Gauge },
   { id: "sku", label: "One part in detail", icon: PackageSearch },
   { id: "pm", label: "Parts for planned maintenance", icon: CalendarClock },
-  { id: "race", label: "Part arrival vs. job date", icon: Flag },
+  { id: "race", label: "Part Race", icon: Flag },
   { id: "backtest", label: "Forecast accuracy", icon: BarChart3 },
 ];
 const isTab = (v: string | undefined): v is Tab => TABS.some((t) => t.id === v);
