@@ -267,25 +267,32 @@ export async function POST(request: Request) {
        WHERE b.functional_loc = ? AND b.material_no = ?`
     );
 
-    const verified: Array<DraftInput & BomRow> = [];
+    const verified: Array<
+      Omit<DraftInput & BomRow, "stock" | "maxQty"> & {
+        stock: number;
+        maxQty: number;
+      }
+    > = [];
     for (const input of inputs) {
       const row = findBom.get(input.functionalLoc, input.materialNo) as BomRow | undefined;
+      const stock = row?.stock;
+      const maxQty = row?.maxQty;
       if (
         !row ||
         row.mrpType?.trim().toUpperCase() !== "STOCK ITEM" ||
-        typeof row.stock !== "number" ||
-        !Number.isFinite(row.stock) ||
-        typeof row.maxQty !== "number" ||
-        !Number.isFinite(row.maxQty) ||
-        row.maxQty <= row.stock ||
-        input.quantity > Math.floor(row.maxQty - row.stock)
+        typeof stock !== "number" ||
+        !Number.isFinite(stock) ||
+        typeof maxQty !== "number" ||
+        !Number.isFinite(maxQty) ||
+        maxQty <= stock ||
+        input.quantity > Math.floor(maxQty - stock)
       ) {
         return NextResponse.json(
           { error: `${input.materialNo} at ${input.functionalLoc} is no longer eligible for that reorder quantity.` },
           { status: 409 }
         );
       }
-      verified.push({ ...input, ...row });
+      verified.push({ ...input, ...row, stock, maxQty });
     }
 
     const materials = [...new Set(verified.map((item) => item.materialNo))];

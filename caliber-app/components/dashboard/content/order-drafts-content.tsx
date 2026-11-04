@@ -203,7 +203,10 @@ export function OrderDraftsContent({ onNavigate }: { onNavigate: Navigate }) {
         supplier: String(form.get("supplier") ?? ""),
         expectedDeliveryDate: String(form.get("expectedDeliveryDate") ?? ""),
         requester: String(form.get("requester") ?? ""),
-        totalEstimatedIdr: totals.reduce((sum, total) => sum + (total ?? 0), 0),
+        totalEstimatedIdr: totals.reduce<number>(
+          (sum, total) => sum + (total ?? 0),
+          0
+        ),
         unpricedItemCount: totals.filter((total) => total === null).length,
       },
     }));

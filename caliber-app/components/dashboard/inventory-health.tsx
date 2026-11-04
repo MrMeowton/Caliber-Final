@@ -75,6 +75,7 @@ export function InventoryHealth({
   const currentResult = result?.filter === filter ? result : null;
   const data = currentResult && "data" in currentResult ? currentResult.data : null;
   const error = currentResult && "error" in currentResult ? currentResult.error : null;
+  const loading = currentResult === null;
 
   useEffect(() => {
     if (data && focusTable) {
