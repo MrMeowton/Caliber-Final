@@ -451,7 +451,7 @@ export function OverviewContent({ initialTab, onNavigate }: { initialTab?: strin
           <div className="flex min-w-0 flex-wrap items-baseline gap-x-4 gap-y-1">
             <h2 className="text-lg font-semibold">Where in the plant is the risk?</h2>
             <p className="text-sm text-[#5d5f60]">
-              Click a tag to zoom · X-Ray shows the missing part
+              Click the plant to split it · click a tag to zoom · X-Ray shows the missing part
             </p>
           </div>
           <InfoTip id="overview.plant" className="-mt-1" />

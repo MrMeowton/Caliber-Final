@@ -1,6 +1,6 @@
 {
  "plant": "Chandra Asri cracker complex (demo area, Plant PX)",
- "units": "scene units (each model is normalised to 4 units on its longest side, then scaled per type)",
+ "units": "scene units (each model is normalised to 4 units on its longest side, then scaled per type); position = place in the assembled plant",
  "equipment": [
   {
    "tag": "BF-105",
@@ -19,12 +19,13 @@
     "ceramic-fiber": 10,
     "anchor": 8
    },
+   "scale": 1.6,
+   "area": "furnaces",
    "position": [
-    -12,
+    -9,
     0,
-    -9
-   ],
-   "scale": 1.6
+    -4
+   ]
   },
   {
    "tag": "BF-112",
@@ -43,12 +44,13 @@
     "bolt": 8,
     "thermocouple": 8
    },
+   "scale": 1.6,
+   "area": "furnaces",
    "position": [
-    -7,
+    -5.6,
     0,
-    -9
-   ],
-   "scale": 1.6
+    -4
+   ]
   },
   {
    "tag": "BF-111",
@@ -67,12 +69,13 @@
     "ceramic-fiber": 8,
     "bolt": 8
    },
+   "scale": 1.6,
+   "area": "furnaces",
    "position": [
-    -2,
+    -2.2,
     0,
-    -9
-   ],
-   "scale": 1.6
+    -4
+   ]
   },
   {
    "tag": "BF-106",
@@ -91,12 +94,13 @@
     "bolt": 8,
     "studbolt": 8
    },
+   "scale": 1.6,
+   "area": "furnaces",
    "position": [
-    3,
+    1.2,
     0,
-    -9
-   ],
-   "scale": 1.6
+    -4
+   ]
   },
   {
    "tag": "KC-210D",
@@ -115,12 +119,13 @@
     "o-ring": 3,
     "coupling": 2
    },
+   "scale": 1,
+   "area": "compression",
    "position": [
-    -6,
+    -5.6,
     0,
-    -2
-   ],
-   "scale": 1
+    3.5
+   ]
   },
   {
    "tag": "KC-773A",
@@ -139,12 +144,13 @@
     "gasket": 2,
     "oil": 2
    },
+   "scale": 1,
+   "area": "compression",
    "position": [
-    5,
+    3.4,
     0,
-    -2
-   ],
-   "scale": 1
+    3.5
+   ]
   },
   {
    "tag": "KT-856A",
@@ -163,12 +169,13 @@
     "filter-element": 14,
     "spring": 13
    },
+   "scale": 0.9,
+   "area": "compression",
    "position": [
-    -11,
+    -9.6,
     0,
-    -2
-   ],
-   "scale": 0.9
+    3.5
+   ]
   },
   {
    "tag": "KT-447",
@@ -187,12 +194,13 @@
     "blade": 14,
     "filter-element": 12
    },
+   "scale": 0.9,
+   "area": "compression",
    "position": [
+    -0.6,
     0,
-    0,
-    -2
-   ],
-   "scale": 0.9
+    3.5
+   ]
   },
   {
    "tag": "PP-1574B",
@@ -210,12 +218,13 @@
     "oil": 1,
     "terminal": 1
    },
+   "scale": 0.7,
+   "area": "utilities",
    "position": [
-    -12,
+    -8,
     0,
-    5
-   ],
-   "scale": 0.7
+    6.6
+   ]
   },
   {
    "tag": "PP-506A",
@@ -234,12 +243,13 @@
     "gland": 1,
     "terminal": 1
    },
+   "scale": 0.7,
+   "area": "utilities",
    "position": [
-    -8.5,
+    -4.6,
     0,
-    5
-   ],
-   "scale": 0.7
+    6.6
+   ]
   },
   {
    "tag": "PP-1729A",
@@ -257,12 +267,13 @@
     "sleeve": 1,
     "gasket": 1
    },
+   "scale": 0.7,
+   "area": "utilities",
    "position": [
-    -5,
+    -1.2,
     0,
-    5
-   ],
-   "scale": 0.7
+    6.6
+   ]
   },
   {
    "tag": "HE-1756B",
@@ -275,12 +286,13 @@
     "gasket": 2,
     "studbolt": 1
    },
+   "scale": 1.1,
+   "area": "exchangers",
    "position": [
-    0.5,
+    9,
     0,
-    5
-   ],
-   "scale": 1.1
+    2.6
+   ]
   },
   {
    "tag": "HE-1423B",
@@ -293,12 +305,13 @@
     "gasket": 1,
     "pipe": 1
    },
+   "scale": 1.1,
+   "area": "exchangers",
    "position": [
-    6.5,
+    9,
     0,
-    5
-   ],
-   "scale": 1.1
+    4.4
+   ]
   },
   {
    "tag": "VD-1069",
@@ -312,12 +325,13 @@
     "demister-pad": 2,
     "studbolt": 1
    },
+   "scale": 1,
+   "area": "separation",
    "position": [
-    11,
+    7.4,
     0,
-    -8
-   ],
-   "scale": 1
+    -4
+   ]
   },
   {
    "tag": "CL-457",
@@ -331,12 +345,13 @@
     "gasket": 1,
     "demister-pad": 1
    },
+   "scale": 1.7,
+   "area": "separation",
    "position": [
-    12,
+    4.9,
     0,
-    0
-   ],
-   "scale": 1.7
+    -4
+   ]
   },
   {
    "tag": "LCV-1691A",
@@ -352,12 +367,13 @@
     "diaphragm": 1,
     "trim-set": 1
    },
+   "scale": 0.4,
+   "area": "utilities",
    "position": [
-    -8,
+    2,
     0,
-    10
-   ],
-   "scale": 0.4
+    6.6
+   ]
   },
   {
    "tag": "FCV-529A",
@@ -372,12 +388,13 @@
     "positioner": 1,
     "trim-set": 1
    },
+   "scale": 0.4,
+   "area": "utilities",
    "position": [
-    -5,
+    3.6,
     0,
-    10
-   ],
-   "scale": 0.4
+    6.6
+   ]
   },
   {
    "tag": "PRV-489B",
@@ -389,12 +406,13 @@
    "partFamilies": {
     "nozzle": 3
    },
+   "scale": 0.4,
+   "area": "utilities",
    "position": [
-    -2,
+    5.2,
     0,
-    10
-   ],
-   "scale": 0.4
+    6.6
+   ]
   }
  ],
  "connections": [
@@ -414,7 +432,6 @@
   {
    "from": "BF-112",
    "to": "KC-210D",
-   "viaZ": -5.5,
    "note": "Cracked gas to compression"
   },
   {
@@ -430,13 +447,11 @@
   {
    "from": "KC-210D",
    "to": "KC-773A",
-   "viaZ": 1.5,
    "note": "Compressor stage 1 to 2"
   },
   {
    "from": "KC-773A",
    "to": "HE-1756B",
-   "viaZ": 1.5,
    "note": "Discharge to exchangers"
   },
   {
@@ -446,13 +461,11 @@
   {
    "from": "HE-1423B",
    "to": "VD-1069",
-   "viaZ": 5,
    "note": "To KO drum"
   },
   {
    "from": "VD-1069",
    "to": "CL-457",
-   "viaZ": -8,
    "note": "Drum to column"
   },
   {
@@ -472,7 +485,6 @@
   {
    "from": "PP-506A",
    "to": "LCV-1691A",
-   "viaZ": 8,
    "note": "Level control"
   },
   {
@@ -483,8 +495,356 @@
   {
    "from": "HE-1756B",
    "to": "PRV-489B",
-   "viaZ": 8,
    "note": "Relief"
   }
+ ],
+ "areas": [
+  {
+   "id": "furnaces",
+   "name": "Cracking furnaces",
+   "rect": [
+    -11,
+    -5.3,
+    3,
+    -2.7
+   ]
+  },
+  {
+   "id": "separation",
+   "name": "Separation",
+   "rect": [
+    3.9,
+    -5.3,
+    9,
+    -2.7
+   ]
+  },
+  {
+   "id": "compression",
+   "name": "Compression trains",
+   "rect": [
+    -11.8,
+    2.2,
+    5.6,
+    4.8
+   ]
+  },
+  {
+   "id": "exchangers",
+   "name": "Heat exchange",
+   "rect": [
+    6.4,
+    1.7,
+    11.6,
+    5.3
+   ]
+  },
+  {
+   "id": "utilities",
+   "name": "Pumps & valves",
+   "rect": [
+    -9.8,
+    5.8,
+    6,
+    7.4
+   ]
+  }
+ ],
+ "rack": {
+  "from": -12.5,
+  "to": 11.5,
+  "z": 0,
+  "width": 1.6,
+  "height": 2.4
+ },
+ "assembledPipes": [
+  [
+   [
+    -9,
+    1.4,
+    -3.1
+   ],
+   [
+    -9,
+    1.4,
+    -0.4
+   ],
+   [
+    -9,
+    2.4,
+    -0.4
+   ]
+  ],
+  [
+   [
+    -5.6,
+    1.4,
+    -3.1
+   ],
+   [
+    -5.6,
+    1.4,
+    -0.4
+   ],
+   [
+    -5.6,
+    2.4,
+    -0.4
+   ]
+  ],
+  [
+   [
+    -2.2,
+    1.4,
+    -3.1
+   ],
+   [
+    -2.2,
+    1.4,
+    -0.4
+   ],
+   [
+    -2.2,
+    2.4,
+    -0.4
+   ]
+  ],
+  [
+   [
+    1.2,
+    1.4,
+    -3.1
+   ],
+   [
+    1.2,
+    1.4,
+    -0.4
+   ],
+   [
+    1.2,
+    2.4,
+    -0.4
+   ]
+  ],
+  [
+   [
+    4.9,
+    1.6,
+    -3.6
+   ],
+   [
+    4.9,
+    1.6,
+    -0.4
+   ],
+   [
+    4.9,
+    2.4,
+    -0.4
+   ]
+  ],
+  [
+   [
+    7.4,
+    1,
+    -3.3
+   ],
+   [
+    7.4,
+    1,
+    0
+   ],
+   [
+    7.4,
+    2.4,
+    0
+   ]
+  ],
+  [
+   [
+    -5.6,
+    1.2,
+    2.5
+   ],
+   [
+    -5.6,
+    1.2,
+    0.4
+   ],
+   [
+    -5.6,
+    2.4,
+    0.4
+   ]
+  ],
+  [
+   [
+    3.4,
+    1.2,
+    2.5
+   ],
+   [
+    3.4,
+    1.2,
+    0.4
+   ],
+   [
+    3.4,
+    2.4,
+    0.4
+   ]
+  ],
+  [
+   [
+    -9.6,
+    1,
+    2.6
+   ],
+   [
+    -9.6,
+    1,
+    0
+   ],
+   [
+    -9.6,
+    2.4,
+    0
+   ]
+  ],
+  [
+   [
+    -0.6,
+    1,
+    2.6
+   ],
+   [
+    -0.6,
+    1,
+    0
+   ],
+   [
+    -0.6,
+    2.4,
+    0
+   ]
+  ],
+  [
+   [
+    9,
+    1,
+    2.05
+   ],
+   [
+    9,
+    1,
+    0.4
+   ],
+   [
+    9,
+    2.4,
+    0.4
+   ]
+  ],
+  [
+   [
+    7.2,
+    0.6,
+    3.1
+   ],
+   [
+    7.2,
+    0.6,
+    3.9
+   ]
+  ],
+  [
+   [
+    -8,
+    0.3,
+    5.5
+   ],
+   [
+    9,
+    0.3,
+    5.5
+   ],
+   [
+    9,
+    0.3,
+    4.95
+   ]
+  ],
+  [
+   [
+    -8,
+    0.3,
+    6.2
+   ],
+   [
+    -8,
+    0.3,
+    5.5
+   ]
+  ],
+  [
+   [
+    -4.6,
+    0.3,
+    6.2
+   ],
+   [
+    -4.6,
+    0.3,
+    5.5
+   ]
+  ],
+  [
+   [
+    -1.2,
+    0.3,
+    6.2
+   ],
+   [
+    -1.2,
+    0.3,
+    5.5
+   ]
+  ],
+  [
+   [
+    2,
+    0.3,
+    6.2
+   ],
+   [
+    2,
+    0.3,
+    5.5
+   ]
+  ],
+  [
+   [
+    3.6,
+    0.3,
+    6.2
+   ],
+   [
+    3.6,
+    0.3,
+    5.5
+   ]
+  ],
+  [
+   [
+    5.2,
+    0.3,
+    6.2
+   ],
+   [
+    5.2,
+    0.3,
+    5.5
+   ]
+  ]
  ]
 }

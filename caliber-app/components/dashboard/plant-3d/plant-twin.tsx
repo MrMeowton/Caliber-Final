@@ -1,13 +1,13 @@
 "use client";
 
-// Plant layout → click equipment tag → isolated equipment (camera flies in) → X-Ray / explode → faulty parts.
+// One assembled plant → split into equipment by area → click a tag → isolated equipment → X-Ray / explode → faulty parts.
 // Models come from Learning-By-Building/19-spare-part-3d-catalog (components/spare-3d).
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode, type RefObject } from "react";
 import type { ThreeEvent } from "@react-three/fiber";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { CameraControls, Grid, Html } from "@react-three/drei";
 import { Box3, Group, Mesh, MeshBasicMaterial, Vector3 } from "three";
-import { ArrowLeft, ScanEye } from "lucide-react";
+import { ArrowLeft, Boxes, Factory, ScanEye } from "lucide-react";
 import layout from "@/data/plant-layout.json";
 import { EQUIPMENT, type EquipmentId } from "@/components/spare-3d/registry";
 import type { Faults, Vec3 } from "@/components/spare-3d/contract";
@@ -20,6 +20,7 @@ import {
   type SlotFault,
 } from "./faults";
 import PlantPipes, { type PipeConnection } from "./plant-pipes";
+import PlantStructure, { type Area, type Rack } from "./plant-structure";
 
 type LayoutItem = {
   tag: string;
@@ -27,6 +28,7 @@ type LayoutItem = {
   description: string;
   criticality: string | null;
   notifications: number;
+  area: string;
   position: Vec3;
   scale: number;
 };
@@ -42,10 +44,37 @@ type Row = {
 };
 
 const ITEMS = layout.equipment as unknown as LayoutItem[];
+const AREAS = layout.areas as unknown as Area[];
+const RACK = layout.rack as Rack;
+const ASSEMBLED_PIPES = layout.assembledPipes as unknown as Vec3[][];
 const CONNECTIONS = layout.connections as PipeConnection[];
-const POSITIONS = Object.fromEntries(ITEMS.map((item) => [item.tag, item.position]));
+
+// Split layout: every area moves out from the plant centre and its units spread apart.
+const PLANT_CENTER = { x: 0, z: 1 };
+const AREA_PUSH = 1.55;
+const UNIT_SPREAD = 1.45;
+const AREA_CENTER: Record<string, { x: number; z: number }> = Object.fromEntries(
+  AREAS.map((area) => {
+    const members = ITEMS.filter((item) => item.area === area.id);
+    const x = members.reduce((s, m) => s + m.position[0], 0) / Math.max(1, members.length);
+    const z = members.reduce((s, m) => s + m.position[2], 0) / Math.max(1, members.length);
+    return [area.id, { x, z }];
+  })
+);
+const SPLIT: Record<string, Vec3> = Object.fromEntries(
+  ITEMS.map((item) => {
+    const c = AREA_CENTER[item.area] ?? { x: item.position[0], z: item.position[2] };
+    const cx = PLANT_CENTER.x + (c.x - PLANT_CENTER.x) * AREA_PUSH;
+    const cz = PLANT_CENTER.z + (c.z - PLANT_CENTER.z) * AREA_PUSH;
+    return [item.tag, [cx + (item.position[0] - c.x) * UNIT_SPREAD, 0, cz + (item.position[2] - c.z) * UNIT_SPREAD] as Vec3];
+  })
+);
+
 const FOV = 40;
-const OVERVIEW = { position: [0, 19, 27] as Vec3, target: [0, 0, 1] as Vec3 };
+const VIEWS = {
+  plant: { position: [0, 15, 21] as Vec3, target: [-0.5, 1, 1.2] as Vec3 },
+  split: { position: [0, 24, 33] as Vec3, target: [0, 0, 2] as Vec3 },
+};
 const STATUS_COLOR: Record<Status, string> = {
   critical: "#E5534B",
   warning: "#D4A72C",
@@ -56,8 +85,10 @@ const STATUS_LABEL: Record<Status, string> = {
   warning: "Part below reorder point",
   ok: "No modelled part at risk",
 };
+const RANK: Record<Status, number> = { critical: 2, warning: 1, ok: 0 };
 
 const fmt = new Intl.NumberFormat("en-US", { maximumFractionDigits: 1 });
+const ease = (t: number) => t * t * (3 - 2 * t);
 
 export type PlantTwinProps = {
   assets: PlantAsset[];
@@ -66,10 +97,18 @@ export type PlantTwinProps = {
 };
 
 export default function PlantTwin({ assets, selectedTag, onSelect }: PlantTwinProps) {
+  const [splitWanted, setSplitWanted] = useState(!!selectedTag);
   const [xray, setXray] = useState(false);
   const [explode, setExplode] = useState(0);
   const [activeSlot, setActiveSlot] = useState<string | null>(null);
   const [boxes, setBoxes] = useState<Record<string, Box3>>({});
+
+  // Opening an equipment always happens from the split view.
+  const split = splitWanted || !!selectedTag;
+  const target = split ? 1 : 0;
+  const progress = useRef({ t: target });
+  const [settledAt, setSettledAt] = useState<number>(target);
+  const settled = settledAt === target;
 
   // Reset the inspection state whenever another equipment is opened.
   const [viewTag, setViewTag] = useState(selectedTag);
@@ -92,26 +131,47 @@ export default function PlantTwin({ assets, selectedTag, onSelect }: PlantTwinPr
     });
   }, [assets]);
 
+  const areaRows = useMemo(
+    () =>
+      AREAS.map((area) => {
+        const members = rows.filter((row) => row.item.area === area.id);
+        const status = members.reduce<Status>((worst, row) => (RANK[row.status] > RANK[worst] ? row.status : worst), "ok");
+        return {
+          area,
+          status,
+          critical: members.filter((row) => row.status === "critical").length,
+          warning: members.filter((row) => row.status === "warning").length,
+          tags: members.map((row) => row.item.tag),
+        };
+      }),
+    [rows]
+  );
+
   const selected = rows.find((row) => row.item.tag === selectedTag) ?? null;
 
   const onMeasure = useCallback((tag: string, box: Box3) => {
     setBoxes((current) => (current[tag] ? current : { ...current, [tag]: box }));
   }, []);
 
+  const focus = useMemo(() => {
+    if (!selectedTag || !boxes[selectedTag]) return null;
+    return boxes[selectedTag].clone().translate(new Vector3(...SPLIT[selectedTag]));
+  }, [selectedTag, boxes]);
+
   useEffect(() => {
-    if (!selectedTag) return;
     const onKey = (event: KeyboardEvent) => {
-      const target = event.target as HTMLElement | null;
-      if (target && (["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName) || target.isContentEditable)) return;
-      if (event.key === "x" || event.key === "X") setXray((value) => !value);
+      const el = event.target as HTMLElement | null;
+      if (el && (["INPUT", "TEXTAREA", "SELECT"].includes(el.tagName) || el.isContentEditable)) return;
+      if (selectedTag && (event.key === "x" || event.key === "X")) setXray((value) => !value);
       if (event.key === "Escape") {
-        if (xray) setXray(false);
-        else onSelect(null);
+        if (selectedTag && xray) setXray(false);
+        else if (selectedTag) onSelect(null);
+        else if (splitWanted) setSplitWanted(false);
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [selectedTag, xray, onSelect]);
+  }, [selectedTag, xray, splitWanted, onSelect]);
 
   const counts = useMemo(
     () => ({
@@ -121,17 +181,23 @@ export default function PlantTwin({ assets, selectedTag, onSelect }: PlantTwinPr
     [rows]
   );
 
+  const showSplit = () => setSplitWanted(true);
+  const assemble = () => {
+    onSelect(null);
+    setSplitWanted(false);
+  };
+
   return (
     <div className="flex flex-col overflow-hidden rounded-lg border border-[#e8eaec] bg-[#0e1419] lg:flex-row">
       <div className="relative h-[420px] min-w-0 flex-1 sm:h-[560px]">
-        <Canvas camera={{ position: OVERVIEW.position, fov: FOV }} dpr={[1, 2]}>
+        <Canvas camera={{ position: (split ? VIEWS.split : VIEWS.plant).position, fov: FOV }} dpr={[1, 2]}>
           <color attach="background" args={["#0e1419"]} />
           <ambientLight intensity={0.8} />
           <directionalLight position={[8, 14, 6]} intensity={1.6} />
           <directionalLight position={[-8, 6, -6]} intensity={0.8} color="#93c5fd" />
           <Grid
             args={[60, 60]}
-            position={[0, -0.01, 0]}
+            position={[0, -0.12, 0]}
             cellSize={1}
             sectionSize={5}
             cellColor="#1b2530"
@@ -139,14 +205,19 @@ export default function PlantTwin({ assets, selectedTag, onSelect }: PlantTwinPr
             fadeDistance={70}
             infiniteGrid
           />
-          {!selectedTag && <PlantPipes positions={POSITIONS} connections={CONNECTIONS} />}
+          <Animator progressRef={progress} target={target} onSettled={setSettledAt} />
+
+          {!split && settled && (
+            <PlantStructure areas={AREAS} rack={RACK} pipes={ASSEMBLED_PIPES} onClick={showSplit} />
+          )}
+          {split && settled && !selectedTag && <PlantPipes positions={SPLIT} connections={CONNECTIONS} />}
 
           {rows.map((row) => {
             const isSelected = row.item.tag === selectedTag;
             const visible = !selectedTag || isSelected;
             const box = boxes[row.item.tag];
             return (
-              <group key={row.item.tag}>
+              <MovingGroup key={row.item.tag} from={row.item.position} to={SPLIT[row.item.tag]} progressRef={progress}>
                 {visible && (
                   <EquipmentInstance
                     row={row}
@@ -154,26 +225,44 @@ export default function PlantTwin({ assets, selectedTag, onSelect }: PlantTwinPr
                     xray={isSelected && xray}
                     explode={isSelected ? explode : 0}
                     onMeasure={onMeasure}
-                    onOpen={() => onSelect(row.item.tag)}
-                    onShellClick={isSelected ? () => setXray(true) : () => onSelect(row.item.tag)}
+                    onOpen={split ? () => onSelect(row.item.tag) : showSplit}
+                    onShellClick={isSelected ? () => setXray(true) : split ? () => onSelect(row.item.tag) : showSplit}
                     onPartClick={isSelected ? setActiveSlot : undefined}
                   />
                 )}
-                {!selectedTag && row.status !== "ok" && box && (
-                  <FaultRing position={row.item.position} box={box} color={STATUS_COLOR[row.status]} />
-                )}
+                {!selectedTag && row.status !== "ok" && box && <FaultRing box={box} color={STATUS_COLOR[row.status]} />}
                 {/* Labels stay mounted and are only hidden: unmounting drei <Html> mid-render logs a React root error. */}
                 <EquipmentLabel
                   row={row}
                   labelY={box ? box.max.y + 0.5 : 3}
-                  hidden={!!selectedTag}
+                  hidden={!split || !settled || !!selectedTag}
                   onOpen={() => onSelect(row.item.tag)}
                 />
-              </group>
+              </MovingGroup>
             );
           })}
 
-          <CameraRig focus={selectedTag ? boxes[selectedTag] ?? null : null} />
+          {areaRows.map((a) => {
+            const [x0, z0, x1, z1] = a.area.rect;
+            const top = Math.max(2, ...a.tags.map((tag) => boxes[tag]?.max.y ?? 0));
+            return (
+              <AreaLabel
+                key={a.area.id}
+                position={[(x0 + x1) / 2, top + 0.6, (z0 + z1) / 2]}
+                hidden={split}
+                color={STATUS_COLOR[a.status]}
+                pulse={a.status === "critical"}
+                onOpen={showSplit}
+              >
+                <span className="font-medium">{a.area.name}</span>
+                <span style={{ color: STATUS_COLOR[a.status] }}>
+                  {a.critical > 0 ? `${a.critical} critical` : a.warning > 0 ? `${a.warning} watch` : "OK"}
+                </span>
+              </AreaLabel>
+            );
+          })}
+
+          <CameraRig focus={focus} view={split ? "split" : "plant"} />
         </Canvas>
 
         {/* Overlays */}
@@ -186,7 +275,7 @@ export default function PlantTwin({ assets, selectedTag, onSelect }: PlantTwinPr
                 className="inline-flex min-h-9 items-center gap-1.5 rounded px-2 text-sm text-white/80 hover:bg-white/10 hover:text-white focus-visible:outline-2 focus-visible:outline-[#4EA8DE]"
               >
                 <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-                Plant
+                All equipment
               </button>
               <span className="h-5 w-px bg-white/15" />
               <div className="min-w-0">
@@ -198,14 +287,14 @@ export default function PlantTwin({ assets, selectedTag, onSelect }: PlantTwinPr
             </div>
           ) : (
             <div className="rounded-md border border-white/10 bg-[#121a21]/90 px-3 py-2 text-white backdrop-blur">
-              <p className="text-sm font-medium">Plant layout · cracker demo area</p>
+              <p className="text-sm font-medium">Plant PX · cracker area</p>
               <p className="text-xs text-white/60">
-                {ITEMS.length} equipment · {counts.critical} critical · {counts.warning} below reorder point
+                {ITEMS.length} equipment · {counts.critical} critical · {counts.warning} watch
               </p>
             </div>
           )}
 
-          {selected && (
+          {selected ? (
             <div className="pointer-events-auto flex items-center gap-3 rounded-md border border-white/10 bg-[#121a21]/90 p-1.5 pl-3 text-white backdrop-blur">
               <label className="flex items-center gap-2 text-xs text-white/70">
                 Explode
@@ -232,13 +321,22 @@ export default function PlantTwin({ assets, selectedTag, onSelect }: PlantTwinPr
                 {xray ? "X-Ray on" : "X-Ray"}
               </button>
             </div>
+          ) : (
+            <button
+              type="button"
+              onClick={split ? assemble : showSplit}
+              className="pointer-events-auto inline-flex min-h-9 items-center gap-1.5 rounded-md border border-white/10 bg-[#4EA8DE]/15 px-3 text-sm font-medium text-[#8ccbf0] backdrop-blur hover:bg-[#4EA8DE]/25 focus-visible:outline-2 focus-visible:outline-[#4EA8DE]"
+            >
+              {split ? <Factory className="h-4 w-4" aria-hidden="true" /> : <Boxes className="h-4 w-4" aria-hidden="true" />}
+              {split ? "Show whole plant" : "Break into equipment"}
+            </button>
           )}
         </div>
 
         <div className="pointer-events-none absolute inset-x-0 bottom-0 flex flex-wrap items-end justify-between gap-2 p-3 text-xs text-white/70">
           {selected ? (
             <p className="rounded bg-[#121a21]/80 px-2 py-1">
-              <Kbd>X</Kbd> X-Ray · <Kbd>Esc</Kbd> {xray ? "close X-Ray" : "back to plant"} · drag to orbit
+              <Kbd>X</Kbd> X-Ray · <Kbd>Esc</Kbd> {xray ? "close X-Ray" : "back"} · drag to orbit
             </p>
           ) : (
             <>
@@ -250,7 +348,9 @@ export default function PlantTwin({ assets, selectedTag, onSelect }: PlantTwinPr
                   </span>
                 ))}
               </div>
-              <p className="rounded bg-[#121a21]/80 px-2 py-1">Click an equipment tag to inspect it</p>
+              <p className="rounded bg-[#121a21]/80 px-2 py-1">
+                {split ? "Click an equipment tag to inspect it" : "Click the plant to break it into equipment"}
+              </p>
             </>
           )}
         </div>
@@ -267,6 +367,63 @@ export default function PlantTwin({ assets, selectedTag, onSelect }: PlantTwinPr
         />
       )}
     </div>
+  );
+}
+
+/** Eases a shared 0 → 1 progress value towards the target and reports when it arrives. */
+function Animator({
+  progressRef,
+  target,
+  onSettled,
+}: {
+  progressRef: RefObject<{ t: number }>;
+  target: number;
+  onSettled: (target: number) => void;
+}) {
+  const reported = useRef<number | null>(target);
+  useFrame((_, delta) => {
+    const p = progressRef.current;
+    const gap = target - p.t;
+    if (Math.abs(gap) < 0.002) {
+      progressRef.current.t = target;
+      if (reported.current !== target) {
+        reported.current = target;
+        onSettled(target);
+      }
+      return;
+    }
+    reported.current = null;
+    progressRef.current.t += gap * Math.min(1, delta * 3.5);
+  });
+  return null;
+}
+
+/** Places its children between the assembled and the split position. */
+function MovingGroup({
+  from,
+  to,
+  progressRef,
+  children,
+}: {
+  from: Vec3;
+  to: Vec3;
+  progressRef: RefObject<{ t: number }>;
+  children: ReactNode;
+}) {
+  const ref = useRef<Group>(null);
+  const at = (t: number): Vec3 => {
+    const k = ease(t);
+    return [from[0] + (to[0] - from[0]) * k, 0, from[2] + (to[2] - from[2]) * k];
+  };
+  const place = () => {
+    if (ref.current) ref.current.position.set(...at(progressRef.current.t));
+  };
+  useLayoutEffect(place);
+  useFrame(place);
+  return (
+    <group ref={ref}>
+      {children}
+    </group>
   );
 }
 
@@ -293,16 +450,19 @@ function EquipmentInstance({
   const { Component } = EQUIPMENT[row.item.equipment];
   const isLow = detail === "low";
 
+  // Measured relative to the moving parent, so the box stays valid in both the plant and the split view.
   useLayoutEffect(() => {
-    if (!ref.current) return;
-    ref.current.updateWorldMatrix(true, true);
-    onMeasure(row.item.tag, new Box3().setFromObject(ref.current));
+    const group = ref.current;
+    if (!group?.parent) return;
+    group.updateWorldMatrix(true, true);
+    const box = new Box3().setFromObject(group);
+    box.translate(group.parent.getWorldPosition(new Vector3()).negate());
+    onMeasure(row.item.tag, box);
   }, [row.item.tag, onMeasure]);
 
   return (
     <group
       ref={ref}
-      position={row.item.position}
       scale={row.item.scale}
       onClick={
         isLow
@@ -328,7 +488,6 @@ function EquipmentInstance({
 }
 
 function EquipmentLabel({ row, labelY, hidden, onOpen }: { row: Row; labelY: number; hidden: boolean; onOpen: () => void }) {
-  const [x, , z] = row.item.position;
   const color = STATUS_COLOR[row.status];
   const faultCount = row.faults.length;
   const riskText =
@@ -339,7 +498,7 @@ function EquipmentLabel({ row, labelY, hidden, onOpen }: { row: Row; labelY: num
         : null;
 
   return (
-    <Html position={[x, labelY, z]} center zIndexRange={[20, 0]} style={{ display: hidden ? "none" : undefined }}>
+    <Html position={[0, labelY, 0]} center zIndexRange={[20, 0]} style={{ display: hidden ? "none" : undefined }}>
       <button
         type="button"
         onClick={onOpen}
@@ -352,18 +511,45 @@ function EquipmentLabel({ row, labelY, hidden, onOpen }: { row: Row; labelY: num
         />
         <span className="font-medium">{row.item.tag}</span>
         {riskText && <span style={{ color }}>{riskText}</span>}
-        {row.item.notifications > 0 && (
-          <span className="text-white/50">{row.item.notifications} notifs</span>
-        )}
+      </button>
+    </Html>
+  );
+}
+
+function AreaLabel({
+  position,
+  hidden,
+  color,
+  pulse,
+  onOpen,
+  children,
+}: {
+  position: Vec3;
+  hidden: boolean;
+  color: string;
+  pulse: boolean;
+  onOpen: () => void;
+  children: ReactNode;
+}) {
+  return (
+    <Html position={position} center zIndexRange={[20, 0]} style={{ display: hidden ? "none" : undefined }}>
+      <button
+        type="button"
+        onClick={onOpen}
+        className="flex items-center gap-1.5 whitespace-nowrap rounded-md border border-white/15 bg-[#0e1419]/85 px-2.5 py-1 text-xs leading-4 text-white shadow-lg backdrop-blur transition-colors hover:border-white/50 focus-visible:outline-2 focus-visible:outline-[#4EA8DE]"
+      >
+        <span className={`h-2 w-2 shrink-0 rounded-full ${pulse ? "animate-pulse" : ""}`} style={{ background: color }} />
+        {children}
       </button>
     </Html>
   );
 }
 
 /** Pulsing ring on the ground under equipment that has a part at risk. */
-function FaultRing({ position, box, color }: { position: Vec3; box: Box3; color: string }) {
+function FaultRing({ box, color }: { box: Box3; color: string }) {
   const mesh = useRef<Mesh>(null);
   const size = box.getSize(new Vector3());
+  const center = box.getCenter(new Vector3());
   const radius = Math.max(size.x, size.z) / 2 + 0.35;
 
   useFrame(({ clock }) => {
@@ -374,21 +560,22 @@ function FaultRing({ position, box, color }: { position: Vec3; box: Box3; color:
   });
 
   return (
-    <mesh ref={mesh} position={[position[0], 0.02, position[2]]} rotation={[-Math.PI / 2, 0, 0]} raycast={() => null}>
+    <mesh ref={mesh} position={[center.x, 0.03, center.z]} rotation={[-Math.PI / 2, 0, 0]} raycast={() => null}>
       <ringGeometry args={[radius, radius + 0.12, 64]} />
       <meshBasicMaterial color={color} transparent depthWrite={false} />
     </mesh>
   );
 }
 
-function CameraRig({ focus }: { focus: Box3 | null }) {
+function CameraRig({ focus, view }: { focus: Box3 | null; view: keyof typeof VIEWS }) {
   const ref = useRef<CameraControls>(null);
 
   useEffect(() => {
     const controls = ref.current;
     if (!controls) return;
     if (!focus) {
-      void controls.setLookAt(...OVERVIEW.position, ...OVERVIEW.target, true);
+      const v = VIEWS[view];
+      void controls.setLookAt(...v.position, ...v.target, true);
       return;
     }
     const center = focus.getCenter(new Vector3());
@@ -396,7 +583,7 @@ function CameraRig({ focus }: { focus: Box3 | null }) {
     const distance = Math.max((radius / Math.sin((FOV * Math.PI) / 360)) * 1.05, 2.5);
     const eye = center.clone().addScaledVector(new Vector3(1, 0.6, 1.3).normalize(), distance);
     void controls.setLookAt(eye.x, eye.y, eye.z, center.x, center.y, center.z, true);
-  }, [focus]);
+  }, [focus, view]);
 
   return (
     <CameraControls
