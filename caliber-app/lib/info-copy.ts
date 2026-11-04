@@ -73,10 +73,10 @@ export const INFO = {
   },
   "overview.plant": {
     title: "Plant view (3D)",
-    what: "A simplified 3D map of 18 real pieces of equipment in the cracker area (furnaces BF, compressors KC, turbines KT, pumps PP, exchangers HE, a drum, a column and valves). Click a tag to zoom in, then switch on X-Ray to see inside the casing and find the part that is at risk.",
+    what: "A simplified 3D map of 18 real pieces of equipment in the cracker area (furnaces BF, compressors KC, turbines KT, pumps PP, exchangers HE, a drum, a column and valves). It opens as one plant built around a pipe rack, grouped into five process areas. Click the plant to break it into separate equipment, click a tag to zoom in, then switch on X-Ray to find the part that is at risk.",
     source: "Equipment tags and notification counts come from the Functional Location list and the maintenance notification history. Part risk comes from the same BoM stock check as the rest of this page. The 3D shapes are representative models from the Learning-By-Building #19 spare-part catalogue, not as-built drawings.",
     why: "Tables tell you a part number; the 3D view shows where that part physically sits in the plant and inside the machine. It makes the risk easy to explain to anyone, including people who do not read part numbers.",
-    read: "Red = a critical part has zero stock. Amber = a part is below its reorder point. Green = no modelled part at risk. 'notifs' = how many maintenance notifications (reported problems) that equipment has on record. Thin grey lines are simplified process pipes, for orientation only.",
+    read: "Red = a critical part has zero stock. Amber = a part is below its reorder point. Green = no modelled part at risk. Area tags show the worst status inside that area. Pipes and the pipe rack are simplified, for orientation only.",
   },
   "overview.equipmentRisk": {
     title: "Equipment risk & linked BOM",
