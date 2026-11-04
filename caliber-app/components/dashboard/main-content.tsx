@@ -7,7 +7,7 @@ import { OverviewContent } from "./content/overview-content";
 import { ActionCenterContent } from "./content/action-center-content";
 import { IncidentsContent } from "./content/incidents-content";
 import { AlertsContent } from "./content/alerts-content";
-import { ForecastingContent } from "./content/forecasting-content";
+import { DemandIntelligence } from "@/components/demand/demand-intelligence";
 
 interface MainContentProps {
   activeSection: Section;
@@ -32,7 +32,7 @@ export function MainContent({
       case "overview":
         return <OverviewContent />;
       case "forecasting":
-        return <ForecastingContent />;
+        return <DemandIntelligence />;
       case "action-center":
         return <ActionCenterContent />;
       case "notifications":
